@@ -1,3 +1,4 @@
+import 'package:aplikasi_rw/status_item_warga/status_warga.dart';
 import 'package:flutter/material.dart';
 
 class HomePageScreen extends StatefulWidget {
@@ -6,13 +7,13 @@ class HomePageScreen extends StatefulWidget {
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
-  // tinggi utuk app bar 
+  // tinggi utuk app bar
   double heightAppBar;
   //  posisi dari atas untuk card status
   double positionedCardStatus;
   // tinggi card status
   double heightCardStatus;
-  // color rounded 
+  // color rounded
   var colorRoundedCircle = Color(0xff8CBBF1);
   // warna card
   var colorCard = Color(0xffFCEECB);
@@ -21,11 +22,17 @@ class _HomePageScreenState extends State<HomePageScreen> {
   String userName = 'feri winarta'.toUpperCase();
   String rw = 'RW 007';
 
+  // objek status warga
+  StatusWarga statusWarga = StatusWarga();
+
   @override
   Widget build(BuildContext context) {
     heightAppBar = MediaQuery.of(context).size.height * 0.15;
     positionedCardStatus = MediaQuery.of(context).size.height * 0.05;
     heightCardStatus = MediaQuery.of(context).size.height * 0.2;
+
+    // test ambil data status warga
+    List<Widget> cardStatusSampel = cardStatusWarga(sampelStatus());
 
     return Container(
       color: Colors.grey[200],
@@ -95,7 +102,47 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                             BorderRadius.circular(40)),
                                   )
                                 ],
+                              ),
+
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 20, right: 20, top: 15),
+                                    child: Text(
+                                      '$userName $rw',
+                                      style: TextStyle(
+                                        color: Colors.deepOrange,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      maxLines: 2,
+                                    ),
+                                  ))
+                                ],
                               )
+
+                              /// backup nama dan rw
+                              // Container(
+                              //   decoration: BoxDecoration(
+                              //       color: Colors.cyan[300],
+                              //       borderRadius: BorderRadius.circular(7)),
+                              //   margin: EdgeInsets.only(
+                              //       top: 10, left: 10, right: 10),
+                              //   child: Row(
+                              //     children: [
+                              //       Padding(
+                              //         padding: EdgeInsets.all(5),
+                              //         child: Text(
+                              //           'aaaaaa',
+                              //           textAlign: TextAlign.left,
+                              //           maxLines: 2,
+                              //           softWrap: true,
+                              //         ),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // )
                             ],
                           ),
                         ),
@@ -103,11 +150,68 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     ]),
                   ),
                 )
-              ])
+              ]),
             ],
+          ),
+
+          // status dari warga
+          Column(
+            children: listStatus
           ),
         ],
       ),
     );
+  }
+
+  // list berisi status warga
+  // setiap data didatabase akan disimpan dalam template container yang sudah dibikin
+  List<Widget> listStatus = [
+    StatusWarga(),
+    StatusWarga(),
+    StatusWarga(),
+    StatusWarga(),
+    StatusWarga(),
+    StatusWarga(),
+  ];
+
+  List<Widget> cardStatusWarga(List<Widget> isiStatus) {
+    List<Widget> cardStatus = [];
+
+    for (var item in isiStatus) {
+      var data = Card(
+        color: Colors.red,
+        child: item,
+      );
+      cardStatus.add(data);
+    }
+
+    return cardStatus;
+  }
+
+  List<Widget> sampelStatus() {
+    return <Widget>[
+      Text('Status 1'),
+      Text('Status 2'),
+      Text('Status 3'),
+      Text('Status 4'),
+      Text('Status 5'),
+      Text('Status 6'),
+      Text('Status 7'),
+      Text('Status 8'),
+      Text('Status 2'),
+      Text('Status 3'),
+      Text('Status 4'),
+      Text('Status 5'),
+      Text('Status 6'),
+      Text('Status 7'),
+      Text('Status 8'),
+      Text('Status 2'),
+      Text('Status 3'),
+      Text('Status 4'),
+      Text('Status 5'),
+      Text('Status 6'),
+      Text('Status 7'),
+      Text('Status 8'),
+    ];
   }
 }

@@ -1,4 +1,4 @@
-import 'package:aplikasi_rw/HomePageScreen.dart';
+import 'package:aplikasi_rw/screen/home_page_screen.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -28,19 +28,10 @@ class _TemplateScreenState extends State<TemplateScreen> {
 
   // Item untuk tab bar bawah
   final itemsTabBottomBar = <Widget>[
-    Icon(
-      Icons.home,
-      size: 30,
-    ),
-    Icon(
-      Icons.report,
-      size: 30,
-    ),
-    Icon(
-      Icons.payment,
-      size: 30,
-    ),
-    Icon(Icons.recommend, size: 30)
+    Icon(Icons.home,size: 30,),
+    Icon(Icons.report,size: 30,),
+    Icon(Icons.payment,size: 30,),
+    Icon(Icons.recommend, size: 30),
   ];
 
   // tinggi app bar
@@ -55,6 +46,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
     heightTabBar = MediaQuery.of(context).size.height * 0.2;
 
     return Scaffold(
+      extendBody: true,
         appBar: AppBar(
           // Mengganti icon drawer sidebar menjadi icon person
           leading: Builder(
@@ -66,7 +58,10 @@ class _TemplateScreenState extends State<TemplateScreen> {
           ),
           elevation: 0,
           backgroundColor: colorTabBar,
-          title: Text('NEXT G - RW', style: TextStyle(fontWeight: FontWeight.bold),),
+          title: Text(
+            'NEXT G - RW',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
 
         // Membuat sidebar dengan drawer widget
@@ -93,50 +88,44 @@ class _TemplateScreenState extends State<TemplateScreen> {
             ],
           ),
         ),
-
         body: HomePageScreen(),
-        bottomNavigationBar: CurvedNavigationBar(
-          height: MediaQuery.of(context).size.height * 0.1 / 1.5,
-          items: itemsTabBottomBar,
-          color: Color(0xff2196F3),
-          buttonBackgroundColor: Colors.yellow,
-          backgroundColor: Colors.grey[200],
-          animationDuration: Duration(milliseconds: 300),
+
+        // bottom navigation bar
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(
+            iconTheme: IconThemeData(color: Colors.white),
+          ),
+          child: CurvedNavigationBar(
+            height: MediaQuery.of(context).size.height * 0.1 / 1.6,
+            items: itemsTabBottomBar,
+            color: Colors.blue[500],
+            buttonBackgroundColor: Colors.blue,
+            backgroundColor: Colors.transparent,
+            animationDuration: Duration(milliseconds: 300),
+          ),
         ));
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 // body: Container(
-        //   color: Colors.grey[200],
-        //   child: ListView(
-        //     children: <Widget>[
-        //       Column(
-        //         children: <Widget>[
-        //           Stack(children: [
-        //             Container(
-        //               height: heightAppBar,
-        //               decoration: BoxDecoration(
-        //                   color: Color(0xff4dff88),
-        //                   borderRadius: BorderRadius.only(
-        //                     bottomLeft: Radius.circular(40),
-        //                     bottomRight: Radius.circular(40),
-        //                   )),
-        //             ),
-        //           ])
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // ),
+//   color: Colors.grey[200],
+//   child: ListView(
+//     children: <Widget>[
+//       Column(
+//         children: <Widget>[
+//           Stack(children: [
+//             Container(
+//               height: heightAppBar,
+//               decoration: BoxDecoration(
+//                   color: Color(0xff4dff88),
+//                   borderRadius: BorderRadius.only(
+//                     bottomLeft: Radius.circular(40),
+//                     bottomRight: Radius.circular(40),
+//                   )),
+//             ),
+//           ])
+//         ],
+//       ),
+//     ],
+//   ),
+// ),
