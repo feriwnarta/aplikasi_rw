@@ -10,6 +10,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // debug banner
+      debugShowCheckedModeBanner: false,
       home: TemplateScreen(),
     );
   }
@@ -21,6 +23,9 @@ class TemplateScreen extends StatefulWidget {
 }
 
 class _TemplateScreenState extends State<TemplateScreen> {
+  // tinggi bottom tab bar
+  double heightTabBar;
+
   // Item untuk tab bar bawah
   final itemsTabBottomBar = <Widget>[
     Icon(
@@ -41,8 +46,14 @@ class _TemplateScreenState extends State<TemplateScreen> {
   // tinggi app bar
   double heightAppBar;
 
+  // warna tab bar
+  // var colorTabBar = Color(0xff8CBBF1);
+  var colorTabBar = Color(0xff2196F3);
+
   @override
   Widget build(BuildContext context) {
+    heightTabBar = MediaQuery.of(context).size.height * 0.2;
+
     return Scaffold(
         appBar: AppBar(
           // Mengganti icon drawer sidebar menjadi icon person
@@ -54,8 +65,8 @@ class _TemplateScreenState extends State<TemplateScreen> {
             },
           ),
           elevation: 0,
-          backgroundColor: Color(0xff4dff88),
-          title: Text('NEXT G - RW'),
+          backgroundColor: colorTabBar,
+          title: Text('NEXT G - RW', style: TextStyle(fontWeight: FontWeight.bold),),
         ),
 
         // Membuat sidebar dengan drawer widget
@@ -85,10 +96,23 @@ class _TemplateScreenState extends State<TemplateScreen> {
 
         body: HomePageScreen(),
         bottomNavigationBar: CurvedNavigationBar(
+          height: MediaQuery.of(context).size.height * 0.1 / 1.5,
           items: itemsTabBottomBar,
+          color: Color(0xff2196F3),
+          buttonBackgroundColor: Colors.yellow,
+          backgroundColor: Colors.grey[200],
+          animationDuration: Duration(milliseconds: 300),
         ));
   }
 }
+
+
+
+
+
+
+
+
 
 
 
