@@ -1,11 +1,45 @@
 import 'package:flutter/material.dart';
 
 class StatusWarga extends StatefulWidget {
+  String namaUser,
+      rw,
+      waktuUpload,
+      urlFotoStatus,
+      fotoProfile,
+      caption,
+      jumlahLike,
+      jumlahKomen;
+
+  // Constructor untuk menerima data
+  StatusWarga(this.namaUser, this.rw, this.waktuUpload, this.urlFotoStatus,
+      this.fotoProfile, this.caption, this.jumlahLike, this.jumlahKomen);
+
   @override
-  State<StatusWarga> createState() => _StatusWargaState();
+  State<StatusWarga> createState() => _StatusWargaState(
+      namaUser,
+      rw,
+      waktuUpload,
+      urlFotoStatus,
+      fotoProfile,
+      caption,
+      jumlahLike,
+      jumlahKomen);
 }
 
 class _StatusWargaState extends State<StatusWarga> {
+  // String namaUser, rw, waktuUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
+
+  // Container untuk data
+  _StatusWargaState(
+      this.namaUser,
+      this.rw,
+      this.waktuUpload,
+      this.urlFotoStatus,
+      this.fotoProfile,
+      this.caption,
+      this.jumlahLike,
+      this.jumlahKomen);
+
   // sampel data untuk status warga
   String namaUser = 'Siska';
   String rw = 'RW 01';
@@ -25,7 +59,7 @@ class _StatusWargaState extends State<StatusWarga> {
       margin: EdgeInsets.only(top: 10),
       color: Colors.white,
       child: Padding(
-        padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+        padding: EdgeInsets.only(left: 20, right: 10, top: 10),
         child: Column(
           children: [
             Row(children: [
@@ -79,7 +113,7 @@ class _StatusWargaState extends State<StatusWarga> {
               children: [
                 Container(
                   child: Image(
-                    width: MediaQuery.of(context).size.width * 0.86,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     height: MediaQuery.of(context).size.height * 0.4,
                     alignment: Alignment.bottomLeft,
                     fit: BoxFit.fill,
@@ -91,29 +125,34 @@ class _StatusWargaState extends State<StatusWarga> {
             ),
 
             // Like Dan comment
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.thumb_up_alt_outlined,
-                          color: Colors.black),
-                      onPressed: () {},
-                    ),
-                    Text('21')
-                  ],
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.comment_outlined, color: Colors.black),
-                      onPressed: () {},
-                    ),
-                    Text('15')
-                  ],
-                )
-              ],
+            Padding(
+              // padding tambahahan karena row pembungus padding kanannya dikurangin 10
+              // jadi total 20
+              padding: EdgeInsets.only(right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.thumb_up_alt_outlined,
+                            color: Colors.black),
+                        onPressed: () {},
+                      ),
+                      Text(jumlahLike)
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.comment_outlined, color: Colors.black),
+                        onPressed: () {},
+                      ),
+                      Text(jumlahKomen)
+                    ],
+                  )
+                ],
+              ),
             )
           ],
         ),

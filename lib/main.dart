@@ -28,9 +28,18 @@ class _TemplateScreenState extends State<TemplateScreen> {
 
   // Item untuk tab bar bawah
   final itemsTabBottomBar = <Widget>[
-    Icon(Icons.home,size: 30,),
-    Icon(Icons.report,size: 30,),
-    Icon(Icons.payment,size: 30,),
+    Icon(
+      Icons.home_filled,
+      size: 30,
+    ),
+    Icon(
+      Icons.report,
+      size: 30,
+    ),
+    Icon(
+      Icons.payment,
+      size: 30,
+    ),
     Icon(Icons.recommend, size: 30),
   ];
 
@@ -46,21 +55,30 @@ class _TemplateScreenState extends State<TemplateScreen> {
     heightTabBar = MediaQuery.of(context).size.height * 0.2;
 
     return Scaffold(
-      extendBody: true,
-        appBar: AppBar(
-          // Mengganti icon drawer sidebar menjadi icon person
-          leading: Builder(
-            builder: (context) {
-              return IconButton(
-                  icon: Icon(Icons.person),
-                  onPressed: () => Scaffold.of(context).openDrawer());
-            },
-          ),
-          elevation: 0,
-          backgroundColor: colorTabBar,
-          title: Text(
-            'NEXT G - RW',
-            style: TextStyle(fontWeight: FontWeight.bold),
+        extendBody: true,
+        appBar: PreferredSize(
+          // tinggi app bar
+          preferredSize:
+              Size.fromHeight(MediaQuery.of(context).size.height * 0.065),
+          child: AppBar(
+            // Mengganti icon drawer sidebar menjadi icon person
+            leading: Builder(
+              builder: (context) {
+                return IconButton(
+                    iconSize: MediaQuery.of(context).size.height * 0.040,
+                    icon: Icon(Icons.person),
+                    onPressed: () => Scaffold.of(context).openDrawer());
+              },
+            ),
+            elevation: 0,
+            backgroundColor: colorTabBar,
+            title: Align(
+              alignment: Alignment.topRight,
+              child: Text('NEXT G - RW',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
           ),
         ),
 
@@ -71,18 +89,40 @@ class _TemplateScreenState extends State<TemplateScreen> {
             children: [
               DrawerHeader(
                 decoration: BoxDecoration(color: Colors.blue),
-                child: Text('Drawer header'),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage(
+                            'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg'),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: Text(
+                          'Nama user',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      Text(
+                        'Alamat user',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               ListTile(
-                title: Text('item1'),
+                title: Text('Ganti Data'),
                 onTap: () {},
               ),
               ListTile(
-                title: Text('item1'),
+                title: Text('item 2'),
                 onTap: () {},
               ),
               ListTile(
-                title: Text('item1'),
+                title: Text('item 3'),
                 onTap: () {},
               ),
             ],
@@ -96,10 +136,11 @@ class _TemplateScreenState extends State<TemplateScreen> {
             iconTheme: IconThemeData(color: Colors.white),
           ),
           child: CurvedNavigationBar(
-            height: MediaQuery.of(context).size.height * 0.1 / 1.6,
+            height: MediaQuery.of(context).size.height * 0.1 / 1.7,
             items: itemsTabBottomBar,
-            color: Colors.blue[500],
-            buttonBackgroundColor: Colors.blue,
+            color: Colors.blue[400],
+            // color: Colors.blueGrey,
+            buttonBackgroundColor: Colors.blueAccent[200],
             backgroundColor: Colors.transparent,
             animationDuration: Duration(milliseconds: 300),
           ),
