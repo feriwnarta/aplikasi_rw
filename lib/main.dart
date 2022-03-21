@@ -13,6 +13,9 @@ class MyApp extends StatelessWidget {
       // debug banner
       debugShowCheckedModeBanner: false,
       home: TemplateScreen(),
+      theme: ThemeData(
+      
+      ),
     );
   }
 }
@@ -23,6 +26,8 @@ class TemplateScreen extends StatefulWidget {
 }
 
 class _TemplateScreenState extends State<TemplateScreen> {
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+
   // tinggi bottom tab bar
   double heightTabBar;
 
@@ -55,32 +60,33 @@ class _TemplateScreenState extends State<TemplateScreen> {
     heightTabBar = MediaQuery.of(context).size.height * 0.2;
 
     return Scaffold(
+        key: scaffoldKey,
         extendBody: true,
-        appBar: PreferredSize(
-          // tinggi app bar
-          preferredSize:
-              Size.fromHeight(MediaQuery.of(context).size.height * 0.065),
-          child: AppBar(
-            // Mengganti icon drawer sidebar menjadi icon person
-            leading: Builder(
-              builder: (context) {
-                return IconButton(
-                    iconSize: MediaQuery.of(context).size.height * 0.040,
-                    icon: Icon(Icons.person),
-                    onPressed: () => Scaffold.of(context).openDrawer());
-              },
-            ),
-            elevation: 0,
-            backgroundColor: colorTabBar,
-            title: Align(
-              alignment: Alignment.topRight,
-              child: Text('NEXT G - RW',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  )),
-            ),
-          ),
-        ),
+        // appBar: PreferredSize(
+        //   // tinggi app bar
+        //   preferredSize:
+        //       Size.fromHeight(MediaQuery.of(context).size.height * 0.065),
+        //   child: AppBar(
+        //     // Mengganti icon drawer sidebar menjadi icon person
+        //     leading: Builder(
+        //       builder: (context) {
+        //         return IconButton(
+        //             iconSize: MediaQuery.of(context).size.height * 0.040,
+        //             icon: Icon(Icons.person),
+        //             onPressed: () => Scaffold.of(context).openDrawer());
+        //       },
+        //     ),
+        //     elevation: 0,
+        //     backgroundColor: colorTabBar,
+        //     title: Align(
+        //       alignment: Alignment.topRight,
+        //       child: Text('NEXT G - RW',
+        //           style: TextStyle(
+        //             fontWeight: FontWeight.bold,
+        //           )),
+        //     ),
+        //   ),
+        // ),
 
         // Membuat sidebar dengan drawer widget
         drawer: Drawer(
@@ -128,7 +134,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
             ],
           ),
         ),
-        body: HomePageScreen(),
+        body: HomePageScreen(scaffoldKey),
 
         // bottom navigation bar
         bottomNavigationBar: Theme(

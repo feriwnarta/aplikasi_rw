@@ -11,26 +11,28 @@ class StatusWarga extends StatefulWidget {
       jumlahKomen;
 
   // Constructor untuk menerima data
-  StatusWarga(this.namaUser, this.rw, this.waktuUpload, this.urlFotoStatus,
-      this.fotoProfile, this.caption, this.jumlahLike, this.jumlahKomen);
+  StatusWarga({this.namaUser, this.rw, this.waktuUpload, this.urlFotoStatus,
+      this.fotoProfile, this.caption, this.jumlahLike, this.jumlahKomen});
 
   @override
   State<StatusWarga> createState() => _StatusWargaState(
-      namaUser,
-      rw,
-      waktuUpload,
-      urlFotoStatus,
-      fotoProfile,
-      caption,
-      jumlahLike,
-      jumlahKomen);
+    namaUser: namaUser,
+    rw: rw,
+    waktuUpload: waktuUpload,
+    urlFotoStatus: urlFotoStatus,
+    fotoProfile: fotoProfile,
+    caption: caption,
+    jumlahLike: jumlahLike,
+    jumlahKomen: jumlahKomen
+  );
+      
 }
 
 class _StatusWargaState extends State<StatusWarga> {
   // String namaUser, rw, waktuUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
 
   // Container untuk data
-  _StatusWargaState(
+  _StatusWargaState({
       this.namaUser,
       this.rw,
       this.waktuUpload,
@@ -38,7 +40,7 @@ class _StatusWargaState extends State<StatusWarga> {
       this.fotoProfile,
       this.caption,
       this.jumlahLike,
-      this.jumlahKomen);
+      this.jumlahKomen});
 
   // sampel data untuk status warga
   String namaUser = 'Siska';
@@ -102,6 +104,10 @@ class _StatusWargaState extends State<StatusWarga> {
                   Expanded(
                       child: Text(
                     caption,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      height: 1.4
+                    ),
                     maxLines: 10,
                   ))
                 ],
@@ -145,8 +151,10 @@ class _StatusWargaState extends State<StatusWarga> {
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.comment_outlined, color: Colors.black),
-                        onPressed: () {},
+                        icon: Icon(Icons.comment_outlined, color: Colors.black,),
+                        onPressed: () {
+                          
+                        },
                       ),
                       Text(jumlahKomen)
                     ],

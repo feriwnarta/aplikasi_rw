@@ -1,14 +1,21 @@
+import 'package:aplikasi_rw/screen/tempat_tulis_status.dart';
 import 'package:aplikasi_rw/status_item_warga/status_warga.dart';
 import 'package:flutter/material.dart';
 
 class HomePageScreen extends StatefulWidget {
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+  HomePageScreen(this.scaffoldKey);
+
   @override
-  State<HomePageScreen> createState() => _HomePageScreenState();
+  State<HomePageScreen> createState() => _HomePageScreenState(this.scaffoldKey);
 }
 
 class _HomePageScreenState extends State<HomePageScreen> {
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+  _HomePageScreenState(this.scaffoldKey);
+
   // tinggi utuk app bar
-  double heightAppBar;
+  double heightBackgroundRounded;
   //  posisi dari atas untuk card status
   double positionedCardStatus;
   // tinggi card status
@@ -20,13 +27,24 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   // demo user
   String userName = 'Citra susanti'.toUpperCase();
-  String rw = 'RW 007';
+  String rt = 'RT 02';
+  String rw = 'RW 07';
+  String fotoProfile = 'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg';
 
   @override
   Widget build(BuildContext context) {
-    heightAppBar = MediaQuery.of(context).size.height * 0.15;
-    positionedCardStatus = MediaQuery.of(context).size.height * 0.03;
-    heightCardStatus = MediaQuery.of(context).size.height * 0.2;
+    final mediaSizeHeight =
+        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+    final mediaSizeWidth = MediaQuery.of(context).size.width;
+
+    // heightAppBar = MediaQuery.of(context).size.height * 0.15;
+    // positionedCardStatus = MediaQuery.of(context).size.height * 0.03;
+    // heightCardStatus = MediaQuery.of(context).size.height * 0.25;
+
+    // ukuran media query dikurangin dengan tinggi status
+    heightBackgroundRounded = mediaSizeHeight * 0.25;
+    positionedCardStatus = mediaSizeHeight * 0.1;
+    heightCardStatus = mediaSizeHeight * 0.22;
 
     return Container(
       color: Colors.grey[200],
@@ -37,18 +55,55 @@ class _HomePageScreenState extends State<HomePageScreen> {
               Stack(children: [
                 // Rounded bottom circle
                 Container(
-                  height: heightAppBar,
-                  decoration: BoxDecoration(
-                      color: Color(0xff2196F3),
-                      // shadow untuk belakang rounded circle
-                      boxShadow: [
-                        BoxShadow(color: Colors.lightBlue, blurRadius: 20)
+                    width: mediaSizeWidth,
+                    height: heightBackgroundRounded,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [Color(0xff2196F3), Colors.lightBlueAccent],
+                            begin: Alignment.topLeft,
+                            end: Alignment.topRight),
+
+                        // color: Color(0xff2196F3),
+                        // shadow untuk belakang rounded circle
+                        // boxShadow: [
+                        //   BoxShadow(color: Colors.lightBlue, blurRadius: 20)
+                        // ],
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                        )),
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10, top: 5),
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                    size: mediaSizeWidth * 0.085,
+                                  ),
+                                  onPressed: () =>
+                                      scaffoldKey.currentState.openDrawer()),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 25, top: 15),
+                              child: Text(
+                                'NEXT G - RW',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 19,
+                                  fontFamily: 'poppins',
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ],
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(40),
-                        bottomRight: Radius.circular(40),
-                      )),
-                ),
+                    )),
 
                 // bagian card status
                 Padding(
@@ -78,26 +133,46 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                       radius: 35,
                                       backgroundImage: NetworkImage(
                                           // gambar profile user
-                                          'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg'),
+                                          fotoProfile),
                                     ),
                                   ),
 
                                   // container ini berisi tempat menulis status
-                                  Container(
-                                    margin: EdgeInsets.only(top: 20, left: 10),
-                                    padding: EdgeInsets.only(top: 10),
-                                    height: 40,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.58,
-                                    child: Text(
-                                      'Apa yang anda sedang pikirkan ?',
-                                      style: TextStyle(color: Colors.black),
-                                      textAlign: TextAlign.center,
+                                  // gesture detector jika tulis status diklik
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TempatTulisStatus(
+                                                    fotoProfile: fotoProfile,
+                                                    nama: userName,
+                                                    rt: rt,
+                                                    rw: rw,
+                                                  )));
+                                    },
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.only(top: 20, left: 10),
+                                      padding: EdgeInsets.only(top: 10),
+                                      height: 40,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.58,
+                                      child: Text(
+                                        'Apa yang anda sedang pikirkan ?',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.035),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius:
+                                              BorderRadius.circular(40)),
                                     ),
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius:
-                                            BorderRadius.circular(40)),
                                   )
                                 ],
                               ),
@@ -108,7 +183,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                     padding: EdgeInsets.only(
                                         left: 20, right: 20, top: 15),
                                     child: Text(
-                                      '$userName $rw',
+                                      '$userName $rt $rw',
                                       style: TextStyle(
                                         color: Colors.teal,
                                         fontWeight: FontWeight.w700,
@@ -141,44 +216,54 @@ class _HomePageScreenState extends State<HomePageScreen> {
   List<Widget> listStatus = [
     // data url
     // String namaUser, rw, waktuUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
-    StatusWarga(
-        'Siti',
-        'RW 07',
-        '15 menit',
-        'https://lovelybogor.com/wp-content/uploads/2016/02/Pedagang-Kumang-Di-Bogor-Fotografi-Jalanan-01.jpg',
-        'https://media.suara.com/pictures/653x366/2021/09/18/26068-jung-ho-yeong.jpg',
-        'pedagang kumang berjualan dipinggir jalan deket rumah pak RT',
-        '12',
-        '11'),
-    StatusWarga(
-      'Joko',
-      'RW 07',
-      '30 menit',
-      'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
-      'https://akcdn.detik.net.id/visual/2022/02/04/ainun-najib-1_169.jpeg?w=650',
-      'Jalanan rusak di RT 07 ',
-      '15',
-      '21',
-    ),
-    StatusWarga(
-        'Susanto',
-        'RW 07',
-        '1 jam',
-        'https://cdn-2.tstatic.net/kaltim/foto/bank/images/jalan-asmawarman1_20160202_133513.jpg',
-        'https://disk.mediaindonesia.com/thumbs/600x400/news/2020/10/fe8644c762c90d7b7ff16ed49786cd96.jpg',
-        'Lampu jalanan kurang penerangan',
-        '11',
-        '19'),
 
     StatusWarga(
-        'Yani',
-        'RW 07',
-        '2 jam yang lalu',
-        'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
-        'https://www.superprof.co.id/gambar/guru/rumah-guru-saya-orang-indonesia-asli-menawarkan-belajar-bahasa-indonesia-simple-untuk-orang-asing.jpg',
-        'Dijual tanaman hias hubungi saya segera..',
-        '19',
-        '25'),
+      namaUser: 'Siti',
+      rw: 'RW 07',
+      waktuUpload: '15 menit',
+      urlFotoStatus:
+          'https://lovelybogor.com/wp-content/uploads/2016/02/Pedagang-Kumang-Di-Bogor-Fotografi-Jalanan-01.jpg',
+      fotoProfile:
+          'https://media.suara.com/pictures/653x366/2021/09/18/26068-jung-ho-yeong.jpg',
+      caption:
+          'pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT',
+      jumlahKomen: '12',
+      jumlahLike: '19',
+    ),
+    StatusWarga(
+      namaUser: 'Joko',
+      rw: 'RW 07',
+      waktuUpload: '30 menit',
+      urlFotoStatus:
+          'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
+      fotoProfile:
+          'https://akcdn.detik.net.id/visual/2022/02/04/ainun-najib-1_169.jpeg?w=650',
+      caption: 'Jalanan rusak di RT 07 ',
+      jumlahKomen: '15',
+      jumlahLike: '21',
+    ),
+
+    StatusWarga(
+        namaUser: 'Susanto',
+        rw: 'RW 07',
+        waktuUpload: '1 jam',
+        urlFotoStatus:
+            'https://cdn-2.tstatic.net/kaltim/foto/bank/images/jalan-asmawarman1_20160202_133513.jpg',
+        fotoProfile:
+            'https://disk.mediaindonesia.com/thumbs/600x400/news/2020/10/fe8644c762c90d7b7ff16ed49786cd96.jpg',
+        caption: 'Lampu jalanan kurang penerangan',
+        jumlahKomen: '11',
+        jumlahLike: '19'),
+
+    StatusWarga(
+        namaUser: 'Yani',
+        rw: 'RW 07',
+        waktuUpload: '2 jam yang lalu',
+        urlFotoStatus: 'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
+        fotoProfile: 'https://www.superprof.co.id/gambar/guru/rumah-guru-saya-orang-indonesia-asli-menawarkan-belajar-bahasa-indonesia-simple-untuk-orang-asing.jpg',
+        caption: 'Dijual tanaman hias hubungi saya segera..',
+        jumlahKomen: '19',
+        jumlahLike: '25'),
     // StatusWarga(),
   ];
 
