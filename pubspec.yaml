@@ -77,6 +77,14 @@ flutter:
     - family: Saira Condensed
       fonts:
         - asset: assets\fonts\SairaCondensed-Regular.ttf
+
+    - family: PT Sans Narrow
+      fonts:
+        - asset: assets\fonts\PTSansNarrow-Regular.ttf
+
+    - family: Karla
+      fonts:
+        - asset: assets\fonts\Karla-Regular.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #

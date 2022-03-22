@@ -27,6 +27,9 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
   // field untuk data user
   String fotoProfile, nama, rt, rw;
 
+  // height bottom image picker
+  double heightBottomImagePicker;
+
   @override
   Widget build(BuildContext context) {
     // media query hanya body saja
@@ -35,6 +38,10 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
         MediaQuery.of(context).padding.top;
 
     final mediaSizeWidth = MediaQuery.of(context).size.width;
+
+    heightBottomImagePicker = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
 
     return Scaffold(
         appBar: appBar,
@@ -136,17 +143,39 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
               Container(
                 width: mediaSizeWidth,
                 color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Image(
-                    alignment: Alignment.topLeft,
-                    repeat: ImageRepeat.noRepeat,
-                    image: NetworkImage(
-                        'https://i.pinimg.com/originals/ce/16/b9/ce16b9ea78dc83667937dfcc509d66a2.jpg'),
-                    height: mediaSizeHeight * 0.08,
-                    width: mediaSizeWidth * 0.08,
-                  ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Image(
+                        alignment: Alignment.topLeft,
+                        repeat: ImageRepeat.noRepeat,
+                        image: NetworkImage(
+                            'https://i.pinimg.com/originals/ce/16/b9/ce16b9ea78dc83667937dfcc509d66a2.jpg'),
+                        height: mediaSizeHeight * 0.09,
+                        // width: mediaSizeWidth * 0.1,
+                      ),
+                    ),
+
+                    //  button hapus gambar
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: RaisedButton(
+                          elevation: 0,
+                          color: Colors.blueGrey[100],
+                          child: Text(
+                            'Hapus',
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          onPressed: () {}),
+                    ),
+                  ],
                 ),
+              ),
+
+              // divider untuk memberikan batas antara container gambar yg di upload dengan button bawahnya
+              Divider(
+                height: 2,
               ),
 
               // button untuk upload gambar
@@ -172,7 +201,11 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                     )
                   ],
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: ((builder) => bottomImagePicker()));
+                },
               ),
 
               // button untuk kirim posting status
@@ -198,4 +231,40 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
           ),
         ]));
   }
+
+  Widget bottomImagePicker() => Container(
+        margin: EdgeInsets.only(top: 20),
+        width: MediaQuery.of(context).size.width,
+        height: heightBottomImagePicker * 0.18,
+        child: Column(
+          children: [
+            Text(
+              'Pilih gambar',
+              style: TextStyle(fontSize: 20, fontFamily: 'Pt Sans Narrow'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FlatButton.icon(
+                    icon: Icon(Icons.camera_alt),
+                    label: Text(
+                      'Kamera',
+                      style:
+                          TextStyle(fontSize: 18, fontFamily: 'Pt Sans Narrow'),
+                    ),
+                    onPressed: () {}),
+                FlatButton.icon(
+                  icon: Icon(Icons.image),
+                  label: Text(
+                    'Galery',
+                    style:
+                        TextStyle(fontSize: 18, fontFamily: 'Pt Sans Narrow'),
+                  ),
+                  onPressed: () {},
+                )
+              ],
+            )
+          ],
+        ),
+      );
 }
