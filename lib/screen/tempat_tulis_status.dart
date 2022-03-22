@@ -40,6 +40,11 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
   // height bottom image picker
   double heightBottomImagePicker;
 
+  // field untuk visibility container hapus gambar
+  bool isVisible = false;
+
+  bool isDelete = false;
+  
   @override
   Widget build(BuildContext context) {
     // media query hanya body saja
@@ -150,37 +155,47 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
               ),
 
               // gambar jika diupload
-              Container(
-                width: mediaSizeWidth,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Image(
-                        alignment: Alignment.topLeft,
-                        repeat: ImageRepeat.noRepeat,
-                        image: _imageFile != null
-                            ? FileImage(File(_imageFile.path))
-                            : AssetImage(''),
-                        height: mediaSizeHeight * 0.09,
-                        // width: mediaSizeWidth * 0.1,
+              Visibility(
+                visible: isVisible,
+                child: Container(
+                  width: mediaSizeWidth,
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Image(
+                          alignment: Alignment.topLeft,
+                          repeat: ImageRepeat.noRepeat,
+                          image: (_imageFile != null && !isDelete)
+                              ? FileImage(File(_imageFile.path))
+                              : AssetImage(''),
+                          height: mediaSizeHeight * 0.09,
+                          // width: mediaSizeWidth * 0.1,
+                        ),
                       ),
-                    ),
 
-                    //  button hapus gambar
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: RaisedButton(
-                          elevation: 0,
-                          color: Colors.blueGrey[100],
-                          child: Text(
-                            'Hapus',
-                            style: TextStyle(fontWeight: FontWeight.w500),
-                          ),
-                          onPressed: () {}),
-                    ),
-                  ],
+                      //  button hapus gambar
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: RaisedButton(
+                            elevation: 0,
+                            color: Colors.blueGrey[100],
+                            child: Text(
+                              'Hapus',
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                            onPressed: () {
+                              // url foto dari container foto status dikosongin
+                              // widget container ini akan di hide
+                              setState(() {
+                                isVisible = false;
+                                isDelete = !isDelete;
+                              });
+                            }),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
@@ -215,7 +230,12 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                 onPressed: () {
                   showModalBottomSheet(
                       context: context,
-                      builder: ((builder) => bottomImagePicker()));
+                      builder: ((builder) =>bottomImagePicker(context)));
+                  // untuk menguabh is delete menjadi false, sehingga gambar akan kembali muncul
+                  // saat dipilih ulang
+                  if(isDelete) 
+                  isDelete = !isDelete;
+
                 },
               ),
 
@@ -243,7 +263,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
         ]));
   }
 
-  Widget bottomImagePicker() => Container(
+  Widget bottomImagePicker(BuildContext context) => Container(
         margin: EdgeInsets.only(top: 20),
         width: MediaQuery.of(context).size.width,
         height: heightBottomImagePicker * 0.18,
@@ -263,7 +283,10 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                       style:
                           TextStyle(fontSize: 18, fontFamily: 'Pt Sans Narrow'),
                     ),
-                    onPressed: () => getImage(ImageSource.camera)),
+                    onPressed: () {
+                      getImage(ImageSource.camera);
+                      Navigator.of(context).pop(); // -> digunakan untuk menutup show modal bottom sheet secara programatic
+                    }),
                 FlatButton.icon(
                   icon: Icon(Icons.image),
                   label: Text(
@@ -271,7 +294,10 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                     style:
                         TextStyle(fontSize: 18, fontFamily: 'Pt Sans Narrow'),
                   ),
-                  onPressed: () => getImage(ImageSource.gallery),
+                  onPressed: () {
+                    getImage(ImageSource.gallery);
+                    Navigator.of(context).pop(); // -> digunakan untuk menutup show modal bottom sheet secara programatic
+                  },
                 )
               ],
             )
@@ -282,8 +308,9 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
   void getImage(ImageSource source) async {
     final pickedFile = await _picker.getImage(source: source);
     setState(() {
-      if(pickedFile != null) {
+      if (pickedFile != null) {
         _imageFile = pickedFile;
+        isVisible = true;
       }
     });
   }
