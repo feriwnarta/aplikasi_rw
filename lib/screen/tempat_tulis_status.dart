@@ -100,7 +100,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                             ),
                             IconButton(
                               icon: Icon(
-                                Icons.photo_size_select_actual_rounded,
+                                Icons.image,
                                 color: Colors.green[400],
                               ),
                               onPressed: () {},
@@ -114,7 +114,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
               ),
 
               SizedBox(
-                height: mediaSizeHeight * 0.3,
+                height: mediaSizeHeight * 0.4,
                 child: Container(
                   decoration: BoxDecoration(
                       color: Colors.white,
@@ -130,6 +130,69 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                     ),
                   ),
                 ),
+              ),
+
+              // gambar jika diupload
+              Container(
+                width: mediaSizeWidth,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Image(
+                    alignment: Alignment.topLeft,
+                    repeat: ImageRepeat.noRepeat,
+                    image: NetworkImage(
+                        'https://i.pinimg.com/originals/ce/16/b9/ce16b9ea78dc83667937dfcc509d66a2.jpg'),
+                    height: mediaSizeHeight * 0.08,
+                    width: mediaSizeWidth * 0.08,
+                  ),
+                ),
+              ),
+
+              // button untuk upload gambar
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size.fromHeight(mediaSizeHeight * 0.07),
+                    primary: Colors.white,
+                    onPrimary: Colors.green // splash color
+                    ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.image_outlined,
+                      color: Colors.green[700],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Text(
+                        'Pilih gambar',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    )
+                  ],
+                ),
+                onPressed: () {},
+              ),
+
+              // button untuk kirim posting status
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size.fromHeight(mediaSizeHeight * 0.08),
+                    primary: Colors.lightBlue,
+                    onPrimary: Colors.white,
+                    textStyle:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Text('Posting'),
+                    )
+                  ],
+                ),
+                onPressed: () {},
               )
             ],
           ),

@@ -29,7 +29,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
   String userName = 'Citra susanti'.toUpperCase();
   String rt = 'RT 02';
   String rw = 'RW 07';
-  String fotoProfile = 'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg';
+  String fotoProfile =
+      'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg';
 
   @override
   Widget build(BuildContext context) {
@@ -259,8 +260,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
         namaUser: 'Yani',
         rw: 'RW 07',
         waktuUpload: '2 jam yang lalu',
-        urlFotoStatus: 'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
-        fotoProfile: 'https://www.superprof.co.id/gambar/guru/rumah-guru-saya-orang-indonesia-asli-menawarkan-belajar-bahasa-indonesia-simple-untuk-orang-asing.jpg',
+        urlFotoStatus:
+            'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
+        fotoProfile:
+            'https://www.superprof.co.id/gambar/guru/rumah-guru-saya-orang-indonesia-asli-menawarkan-belajar-bahasa-indonesia-simple-untuk-orang-asing.jpg',
         caption: 'Dijual tanaman hias hubungi saya segera..',
         jumlahKomen: '19',
         jumlahLike: '25'),
