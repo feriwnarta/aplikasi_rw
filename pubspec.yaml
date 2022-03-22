@@ -24,8 +24,11 @@ dependencies:
   flutter:
     sdk: flutter
   
-  # navigasi bar bawah curvved
+  # navigasi bar bawah curvved tanpa null safety
   curved_navigation_bar: ^0.3.4
+  
+  # image picker tanpa null safety
+  image_picker: ^0.6.7+22
 
 
   # The following adds the Cupertino Icons font to your application.

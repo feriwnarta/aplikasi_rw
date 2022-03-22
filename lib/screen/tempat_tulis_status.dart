@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class TempatTulisStatus extends StatefulWidget {
   // field untuk data user
@@ -13,6 +17,12 @@ class TempatTulisStatus extends StatefulWidget {
 
 class _TempatTulisStatusState extends State<TempatTulisStatus> {
   _TempatTulisStatusState({this.fotoProfile, this.nama, this.rt, this.rw});
+
+  /**
+     * field untuk menyimpan image picker
+     */
+  PickedFile _imageFile;
+  final _picker = ImagePicker();
 
   // app bar disimpan ke variabel untuk diambil tingginya
   var appBar = AppBar(
@@ -150,8 +160,9 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                       child: Image(
                         alignment: Alignment.topLeft,
                         repeat: ImageRepeat.noRepeat,
-                        image: NetworkImage(
-                            'https://i.pinimg.com/originals/ce/16/b9/ce16b9ea78dc83667937dfcc509d66a2.jpg'),
+                        image: _imageFile != null
+                            ? FileImage(File(_imageFile.path))
+                            : AssetImage(''),
                         height: mediaSizeHeight * 0.09,
                         // width: mediaSizeWidth * 0.1,
                       ),
@@ -252,7 +263,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                       style:
                           TextStyle(fontSize: 18, fontFamily: 'Pt Sans Narrow'),
                     ),
-                    onPressed: () {}),
+                    onPressed: () => getImage(ImageSource.camera)),
                 FlatButton.icon(
                   icon: Icon(Icons.image),
                   label: Text(
@@ -260,11 +271,20 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                     style:
                         TextStyle(fontSize: 18, fontFamily: 'Pt Sans Narrow'),
                   ),
-                  onPressed: () {},
+                  onPressed: () => getImage(ImageSource.gallery),
                 )
               ],
             )
           ],
         ),
       );
+
+  void getImage(ImageSource source) async {
+    final pickedFile = await _picker.getImage(source: source);
+    setState(() {
+      if(pickedFile != null) {
+        _imageFile = pickedFile;
+      }
+    });
+  }
 }
