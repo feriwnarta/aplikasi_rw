@@ -54,7 +54,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     // ukuran media query dikurangin dengan tinggi status
     heightBackgroundRounded = mediaSizeHeight * 0.25;
     positionedCardStatus = mediaSizeHeight * 0.1;
-    heightCardStatus = mediaSizeHeight * 0.21;
+    heightCardStatus = mediaSizeHeight * 0.24;
 
     return Scaffold(
       // resizeToAvoidBottomInset: false,
@@ -253,6 +253,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     ],
                   ),
 
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Divider(
+                      color: Colors.white,
+                      thickness: 1,
+                      indent: 20,
+                      endIndent: 20,
+                    ),
+                  ),
+
                   IntrinsicHeight(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -267,10 +277,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               'Camera',
                               style: TextStyle(color: Colors.white),
                             )),
+
                         VerticalDivider(
                           color: Colors.white,
-                          width: 80,
+                          width: 50,
                           thickness: 1,
+                          indent: 15,
+                          endIndent: 10,
                         ),
                         FlatButton.icon(
                             onPressed: () {},
