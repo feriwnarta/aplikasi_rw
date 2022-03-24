@@ -60,7 +60,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       // resizeToAvoidBottomInset: false,
 
       body: Container(
-        color: Colors.grey[200],
+        color: Colors.white,
         child: ListView(
           children: <Widget>[
             Column(
@@ -185,10 +185,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
           child: Card(
             elevation: 10,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
             child: Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(25),
                   gradient: LinearGradient(
                       colors: [Color(0xff2297F4), Color(0xff3ABBFD)])),
               child: Column(

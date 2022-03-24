@@ -59,10 +59,19 @@ class _StatusWargaState extends State<StatusWarga> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 10),
-      color: Colors.white,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 2 
+          )
+        ]
+      ),
+      margin: EdgeInsets.only(top: 10, left: 10, right: 10),
       child: Padding(
-        padding: EdgeInsets.only(left: 20, right: 10, top: 10),
+        padding: EdgeInsets.only(left: 20, right: 10, top: 20),
         child: Column(
           children: [
             Row(children: [
@@ -99,7 +108,7 @@ class _StatusWargaState extends State<StatusWarga> {
 
             // bagian caption
             Padding(
-              padding: EdgeInsets.only(top: 5, bottom: 10),
+              padding: EdgeInsets.only(top: 5, bottom: 10, right: 5),
               child: Row(
                 children: [
                   Expanded(
@@ -120,7 +129,7 @@ class _StatusWargaState extends State<StatusWarga> {
               children: [
                 Container(
                   child: Image(
-                    width: MediaQuery.of(context).size.width * 0.9,
+                    width: MediaQuery.of(context).size.width * 0.85,
                     height: MediaQuery.of(context).size.height * 0.4,
                     alignment: Alignment.bottomLeft,
                     fit: BoxFit.fill,
