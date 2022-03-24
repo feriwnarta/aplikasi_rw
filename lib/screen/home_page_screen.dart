@@ -1,6 +1,7 @@
 import 'package:aplikasi_rw/screen/tempat_tulis_status.dart';
 import 'package:aplikasi_rw/status_item_warga/status_warga.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePageScreen extends StatefulWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
@@ -26,7 +27,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   var colorCard = Color(0xffFCEECB);
 
   // demo user
-  String userName = 'Citra susanti'.toUpperCase();
+  String userName = 'Citra susanti';
   String rt = 'RT 02';
   String rw = 'RW 07';
   String fotoProfile =
@@ -53,7 +54,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     // ukuran media query dikurangin dengan tinggi status
     heightBackgroundRounded = mediaSizeHeight * 0.25;
     positionedCardStatus = mediaSizeHeight * 0.1;
-    heightCardStatus = mediaSizeHeight * 0.22;
+    heightCardStatus = mediaSizeHeight * 0.21;
 
     return Scaffold(
       // resizeToAvoidBottomInset: false,
@@ -72,7 +73,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
                    * card status berisi avatar, container untuk membuat status
                    * dan informasi nama user serta rt rw
                    */
-                  cardStatus(context)
+
+                  // cardStatus(context)
                 ]),
               ],
             ),
@@ -88,22 +90,25 @@ class _HomePageScreenState extends State<HomePageScreen> {
   Container roundedCircleBackground(double mediaSizeWidth) {
     return Container(
         width: mediaSizeWidth,
-        height: heightBackgroundRounded,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Color(0xff2196F3), Colors.lightBlueAccent],
-                begin: Alignment.topLeft,
-                end: Alignment.topRight),
+        // height: heightBackgroundRounded,
+        color: Colors.white,
+        // decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //         colors: [Color(0xff2196F3), Colors.lightBlueAccent],
+        //         begin: Alignment.topLeft,
+        //         end: Alignment.topRight),
 
-            // color: Color(0xff2196F3),
-            // shadow untuk belakang rounded circle
-            // boxShadow: [
-            //   BoxShadow(color: Colors.lightBlue, blurRadius: 20)
-            // ],
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-            )),
+        //     // color: Color(0xff2196F3),
+        //     // shadow untuk belakang rounded circle
+        //     // boxShadow: [
+        //     //   BoxShadow(color: Colors.lightBlue, blurRadius: 20)
+        //     // ],
+        //     borderRadius: BorderRadius.only(
+        //       bottomLeft: Radius.circular(20),
+        //     )),
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,20 +116,23 @@ class _HomePageScreenState extends State<HomePageScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 5),
-                  child: IconButton(
-                      icon: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: mediaSizeWidth * 0.085,
-                      ),
-                      onPressed: () => scaffoldKey.currentState.openDrawer()),
+                  child: RotatedBox(
+                    quarterTurns: 1,
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.bar_chart_sharp,
+                          color: Colors.black,
+                          size: mediaSizeWidth * 0.085,
+                        ),
+                        onPressed: () => scaffoldKey.currentState.openDrawer()),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 25, top: 15),
                   child: Text(
                     'NEXT G - RW',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 19,
                       fontFamily: 'poppins',
                     ),
@@ -132,24 +140,57 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 )
               ],
             ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 20, top: 10),
+                  child: Text(
+                    '$userName, BLOK XY 9 NO 21',
+                    style: TextStyle(
+                      fontSize: 19,
+                      fontFamily: 'poppins',
+                    ),
+                  ),
+                )
+              ],
+            ),
+            cardStatus(context),
+            Padding(
+              padding: const EdgeInsets.only(left: 15, top: 10),
+              child: Text(
+                'Kabar Hari ini',
+                style: TextStyle(fontFamily: 'poppins', fontSize: 15),
+              ),
+            ),
           ],
         ));
   }
 
+  // versi update
   Padding cardStatus(BuildContext context) {
+    double paddingHeightCard =
+        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+
+    //height: heightCardStatus,
+    //width: MediaQuery.of(context).size.width * 0.95,
+
     return Padding(
-      padding: EdgeInsets.only(top: positionedCardStatus),
+      padding: EdgeInsets.only(top: paddingHeightCard * 0.02),
       child: Align(
         alignment: Alignment.center,
-        child: Stack(children: [
-          SizedBox(
-            height: heightCardStatus,
-            width: MediaQuery.of(context).size.width * 0.95,
-            child: Card(
-              elevation: 10,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+        child: SizedBox(
+          height: heightCardStatus,
+          width: MediaQuery.of(context).size.width * 0.95,
+          child: Card(
+            elevation: 10,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: LinearGradient(
+                      colors: [Color(0xff2297F4), Color(0xff3ABBFD)])),
               child: Column(
                 children: [
                   /**
@@ -184,12 +225,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               isScrollControlled: true,
                               context: context,
                               builder: (builder) => TempatTulisStatus(
-                                fotoProfile: fotoProfile,
-                                nama: userName,
-                                rt: rt,
-                                rw: rw,
-                                mediaSizeHeightParent: mediaSizeHeight,
-                              ));
+                                    fotoProfile: fotoProfile,
+                                    nama: userName,
+                                    rt: rt,
+                                    rw: rw,
+                                    mediaSizeHeightParent: mediaSizeHeight,
+                                  ));
                         },
                         child: Container(
                           margin: EdgeInsets.only(top: 20, left: 10),
@@ -199,42 +240,181 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           child: Text(
                             'Apa yang anda sedang pikirkan ?',
                             style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.grey,
                                 fontSize:
                                     MediaQuery.of(context).size.width * 0.035),
                             textAlign: TextAlign.center,
                           ),
                           decoration: BoxDecoration(
-                              color: Colors.grey[200],
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(40)),
                         ),
                       )
                     ],
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Padding(
-                        padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-                        child: Text(
-                          '$userName $rt $rw',
-                          style: TextStyle(
-                            color: Colors.teal,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          maxLines: 2,
+
+                  IntrinsicHeight(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FlatButton.icon(
+                            onPressed: () {},
+                            icon: Icon(
+                              FontAwesomeIcons.camera,
+                              color: Colors.white,
+                            ),
+                            label: Text(
+                              'Camera',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                        VerticalDivider(
+                          color: Colors.white,
+                          width: 80,
+                          thickness: 1,
                         ),
-                      ))
-                    ],
+                        FlatButton.icon(
+                            onPressed: () {},
+                            icon: Icon(
+                              FontAwesomeIcons.solidImage,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                            label: Text(
+                              'Gallery',
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      ],
+                    ),
                   )
+
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //         child: Padding(
+                  //       padding: EdgeInsets.only(left: 20, right: 20, top: 15),
+                  //       child: Text(
+                  //         '$userName $rt $rw',
+                  //         style: TextStyle(
+                  //           color: Colors.teal,
+                  //           fontWeight: FontWeight.w700,
+                  //         ),
+                  //         maxLines: 2,
+                  //       ),
+                  //     ))
+                  //   ],
+                  // )
                 ],
               ),
             ),
           ),
-        ]),
+        ),
       ),
     );
   }
+
+  /**
+   * versi Sebelumnya
+   */
+
+  // Padding cardStatus(BuildContext context) {
+  //   return Padding(
+  //     padding: EdgeInsets.only(top: positionedCardStatus),
+  //     child: Align(
+  //       alignment: Alignment.center,
+  //       child: Stack(children: [
+  //         SizedBox(
+  //           height: heightCardStatus,
+  //           width: MediaQuery.of(context).size.width * 0.95,
+  //           child: Card(
+  //             elevation: 10,
+  //             color: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20)),
+  //             child: Column(
+  //               children: [
+  //                 /**
+  //                            * bagian dalam card status yang isinya dapat berubah
+  //                            * mulai dari avatar, nama user, dan rw user
+  //                            */
+  //                 Row(
+  //                   children: [
+  //                     Padding(
+  //                       padding: EdgeInsets.only(left: 20, top: 20),
+  //                       child: CircleAvatar(
+  //                         radius: 35,
+  //                         backgroundImage: NetworkImage(
+  //                             // gambar profile user
+  //                             fotoProfile),
+  //                       ),
+  //                     ),
+
+  //                     // container ini berisi tempat menulis status
+  //                     // gesture detector jika tulis status diklik
+  //                     GestureDetector(
+  //                       onTap: () {
+  //                         // Navigator.of(context).push(MaterialPageRoute(
+  //                         //     builder: (context) => TempatTulisStatus(
+  //                         //           fotoProfile: fotoProfile,
+  //                         //           nama: userName,
+  //                         //           rt: rt,
+  //                         //           rw: rw,
+  //                         //         )));
+
+  //                         showModalBottomSheet(
+  //                             isScrollControlled: true,
+  //                             context: context,
+  //                             builder: (builder) => TempatTulisStatus(
+  //                                   fotoProfile: fotoProfile,
+  //                                   nama: userName,
+  //                                   rt: rt,
+  //                                   rw: rw,
+  //                                   mediaSizeHeightParent: mediaSizeHeight,
+  //                                 ));
+  //                       },
+  //                       child: Container(
+  //                         margin: EdgeInsets.only(top: 20, left: 10),
+  //                         padding: EdgeInsets.only(top: 10),
+  //                         height: 40,
+  //                         width: MediaQuery.of(context).size.width * 0.58,
+  //                         child: Text(
+  //                           'Apa yang anda sedang pikirkan ?',
+  //                           style: TextStyle(
+  //                               color: Colors.black,
+  //                               fontSize:
+  //                                   MediaQuery.of(context).size.width * 0.035),
+  //                           textAlign: TextAlign.center,
+  //                         ),
+  //                         decoration: BoxDecoration(
+  //                             color: Colors.grey[200],
+  //                             borderRadius: BorderRadius.circular(40)),
+  //                       ),
+  //                     )
+  //                   ],
+  //                 ),
+  //                 Row(
+  //                   children: [
+  //                     Expanded(
+  //                         child: Padding(
+  //                       padding: EdgeInsets.only(left: 20, right: 20, top: 15),
+  //                       child: Text(
+  //                         '$userName $rt $rw',
+  //                         style: TextStyle(
+  //                           color: Colors.teal,
+  //                           fontWeight: FontWeight.w700,
+  //                         ),
+  //                         maxLines: 2,
+  //                       ),
+  //                     ))
+  //                   ],
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ]),
+  //     ),
+  //   );
+  // }
 
   // list berisi status warga
   // setiap data didatabase akan disimpan dalam template container yang sudah dibikin

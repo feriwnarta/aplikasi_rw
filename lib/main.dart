@@ -1,7 +1,8 @@
 import 'package:aplikasi_rw/screen/home_page_screen.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,6 +29,8 @@ class TemplateScreen extends StatefulWidget {
 
 class _TemplateScreenState extends State<TemplateScreen> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
+
+  int _index = 0;
 
   // tinggi bottom tab bar
   double heightTabBar;
@@ -77,25 +80,84 @@ class _TemplateScreenState extends State<TemplateScreen> {
         body: HomePageScreen(scaffoldKey),
 
         // bottom navigation bar
-        bottomNavigationBar: bottomNavigationBarCurved(context));
-  }
-
-  Theme bottomNavigationBarCurved(BuildContext context) {
-    return Theme(
-        data: Theme.of(context).copyWith(
-          iconTheme: IconThemeData(color: Colors.white),
-        ),
-        child: CurvedNavigationBar(
-          height: MediaQuery.of(context).size.height * 0.1 / 1.7,
-          items: itemsTabBottomBar,
-          color: Colors.blue[400],
-          // color: Colors.blueGrey,
-          buttonBackgroundColor: Colors.blueAccent[200],
-          backgroundColor: Colors.transparent,
-          animationDuration: Duration(milliseconds: 300),
+        bottomNavigationBar: Container(
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          margin: EdgeInsets.symmetric(vertical: 2),
+          decoration: BoxDecoration(  
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 5,
+              )
+            ]
+          ),
+          child: GNav(
+            curve: Curves.easeInOut,
+            duration: Duration(milliseconds: 250),
+            iconSize: 24,
+            gap: 8,
+            // rippleColor: Colors.purpleAccent, // splash color / riple
+            color: Colors.blueGrey.withOpacity(0.6), // warna icon dan text yang tidak aktif
+            activeColor: Colors.white, // warna icon dan text jika aktif
+            // hoverColor: Colors.green,
+            // haptic: true,
+            // tabBorderRadius: 100, // border radius untuk tab belakang icon dan text
+            // tabShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 8)],
+            //tabBackgroundColor: Colors.lightBlue.withOpacity(0.8), // background color
+            tabBackgroundColor: Color(0xff2297F4).withOpacity(0.9),
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),  
+            tabs: [
+              GButton(
+                icon: FontAwesomeIcons.home,
+                text: 'Home',
+                // iconSize: 25,
+              ),
+              GButton(
+                icon: FontAwesomeIcons.clipboardList,
+                text: 'Report',
+              ),
+              GButton(
+                icon: FontAwesomeIcons.wallet,
+                text: 'Payment',
+              ),
+              GButton(
+                icon: FontAwesomeIcons.fileInvoiceDollar,
+                text: 'Bills',
+              ),
+              GButton(
+                icon:Icons.thumb_up,
+                text: 'Recommen',
+              )
+            ],
+            selectedIndex: _index,
+            onTabChange: (index) {
+              setState(() {
+                _index = index;
+              });
+            },
+          ),
         ),
       );
   }
+
+  // Theme bottomNavigationBarCurved(BuildContext context) {
+  //   return Theme(
+  //       data: Theme.of(context).copyWith(
+  //         iconTheme: IconThemeData(color: Colors.white),
+  //       ),
+  //       child: CurvedNavigationBar(
+  //         height: MediaQuery.of(context).size.height * 0.1 / 1.7,
+  //         items: itemsTabBottomBar,
+  //         color: Colors.blue[400],
+  //         // color: Colors.blueGrey,
+  //         buttonBackgroundColor: Colors.blueAccent[200],
+  //         backgroundColor: Colors.transparent,
+  //         animationDuration: Duration(milliseconds: 300),
+  //       ),
+  //     );
+  // }
 
   Drawer drawerSideBar() {
     return Drawer(
