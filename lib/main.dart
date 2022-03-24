@@ -67,119 +67,81 @@ class _TemplateScreenState extends State<TemplateScreen> {
     heightTabBar = MediaQuery.of(context).size.height * 0.2;
 
     return Scaffold(
+      // resizeToAvoidBottomInset: false,
         key: scaffoldKey,
-        extendBody: true,
-        // appBar: PreferredSize(
-        //   // tinggi app bar
-        //   preferredSize:
-        //       Size.fromHeight(MediaQuery.of(context).size.height * 0.065),
-        //   child: AppBar(
-        //     // Mengganti icon drawer sidebar menjadi icon person
-        //     leading: Builder(
-        //       builder: (context) {
-        //         return IconButton(
-        //             iconSize: MediaQuery.of(context).size.height * 0.040,
-        //             icon: Icon(Icons.person),
-        //             onPressed: () => Scaffold.of(context).openDrawer());
-        //       },
-        //     ),
-        //     elevation: 0,
-        //     backgroundColor: colorTabBar,
-        //     title: Align(
-        //       alignment: Alignment.topRight,
-        //       child: Text('NEXT G - RW',
-        //           style: TextStyle(
-        //             fontWeight: FontWeight.bold,
-        //           )),
-        //     ),
-        //   ),
-        // ),
+        // membuat bottomNavigationBar transparent
+        // extendBody: true,
 
-        // Membuat sidebar dengan drawer widget
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(color: Colors.blue),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundImage: NetworkImage(
-                            'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg'),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Text(
-                          'Nama user',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      Text(
-                        'Alamat user',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text('Ganti Data'),
-                onTap: () {},
-              ),
-              ListTile(
-                title: Text('item 2'),
-                onTap: () {},
-              ),
-              ListTile(
-                title: Text('item 3'),
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
+        // membuat sidebar dan drawer
+        drawer: drawerSideBar(),
         body: HomePageScreen(scaffoldKey),
 
         // bottom navigation bar
-        bottomNavigationBar: Theme(
-          data: Theme.of(context).copyWith(
-            iconTheme: IconThemeData(color: Colors.white),
-          ),
-          child: CurvedNavigationBar(
-            height: MediaQuery.of(context).size.height * 0.1 / 1.7,
-            items: itemsTabBottomBar,
-            color: Colors.blue[400],
-            // color: Colors.blueGrey,
-            buttonBackgroundColor: Colors.blueAccent[200],
-            backgroundColor: Colors.transparent,
-            animationDuration: Duration(milliseconds: 300),
-          ),
-        ));
+        bottomNavigationBar: bottomNavigationBarCurved(context));
+  }
+
+  Theme bottomNavigationBarCurved(BuildContext context) {
+    return Theme(
+        data: Theme.of(context).copyWith(
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        child: CurvedNavigationBar(
+          height: MediaQuery.of(context).size.height * 0.1 / 1.7,
+          items: itemsTabBottomBar,
+          color: Colors.blue[400],
+          // color: Colors.blueGrey,
+          buttonBackgroundColor: Colors.blueAccent[200],
+          backgroundColor: Colors.transparent,
+          animationDuration: Duration(milliseconds: 300),
+        ),
+      );
+  }
+
+  Drawer drawerSideBar() {
+    return Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(
+                          'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Text(
+                        'Nama user',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    Text(
+                      'Alamat user',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Ganti Data'),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text('item 2'),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text('item 3'),
+              onTap: () {},
+            ),
+          ],
+        ),
+      );
   }
 }
-
-// body: Container(
-//   color: Colors.grey[200],
-//   child: ListView(
-//     children: <Widget>[
-//       Column(
-//         children: <Widget>[
-//           Stack(children: [
-//             Container(
-//               height: heightAppBar,
-//               decoration: BoxDecoration(
-//                   color: Color(0xff4dff88),
-//                   borderRadius: BorderRadius.only(
-//                     bottomLeft: Radius.circular(40),
-//                     bottomRight: Radius.circular(40),
-//                   )),
-//             ),
-//           ])
-//         ],
-//       ),
-//     ],
-//   ),
-// ),

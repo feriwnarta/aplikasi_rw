@@ -8,7 +8,7 @@ class StatusWarga extends StatefulWidget {
       fotoProfile,
       caption,
       jumlahLike,
-      jumlahKomen;
+      jumlahKomen;  
 
   // Constructor untuk menerima data
   StatusWarga({this.namaUser, this.rw, this.waktuUpload, this.urlFotoStatus,
@@ -23,7 +23,7 @@ class StatusWarga extends StatefulWidget {
     fotoProfile: fotoProfile,
     caption: caption,
     jumlahLike: jumlahLike,
-    jumlahKomen: jumlahKomen
+    jumlahKomen: jumlahKomen,
   );
       
 }
@@ -40,7 +40,8 @@ class _StatusWargaState extends State<StatusWarga> {
       this.fotoProfile,
       this.caption,
       this.jumlahLike,
-      this.jumlahKomen});
+      this.jumlahKomen,
+      });
 
   // sampel data untuk status warga
   String namaUser = 'Siska';
