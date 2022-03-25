@@ -36,21 +36,21 @@ class _TemplateScreenState extends State<TemplateScreen> {
   double heightTabBar;
 
   // Item untuk tab bar bawah
-  final itemsTabBottomBar = <Widget>[
-    Icon(
-      Icons.home_filled,
-      size: 30,
-    ),
-    Icon(
-      Icons.report,
-      size: 30,
-    ),
-    Icon(
-      Icons.payment,
-      size: 30,
-    ),
-    Icon(Icons.recommend, size: 30),
-  ];
+  // final itemsTabBottomBar = <Widget>[
+  //   Icon(
+  //     Icons.home_filled,
+  //     size: 30,
+  //   ),
+  //   Icon(
+  //     Icons.report,
+  //     size: 30,
+  //   ),
+  //   Icon(
+  //     Icons.payment,
+  //     size: 30,
+  //   ),
+  //   Icon(Icons.recommend, size: 30),
+  // ];
 
   // tinggi app bar
   double heightAppBar;
@@ -63,9 +63,9 @@ class _TemplateScreenState extends State<TemplateScreen> {
   Widget build(BuildContext context) {
     
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.lightBlue
-    ));
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    //   statusBarColor: Colors.lightBlue
+    // ));
 
     heightTabBar = MediaQuery.of(context).size.height * 0.2;
 

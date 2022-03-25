@@ -6,15 +6,19 @@ import 'package:image_picker/image_picker.dart';
 
 class TempatTulisStatus extends StatefulWidget {
   // field untuk data user
-  String fotoProfile, nama, rt, rw;
+  String fotoProfile, nama, rt, rw, imagePath;
   double mediaSizeHeightParent;
+  PickedFile imageFile;
+  bool isVisible;
 
   TempatTulisStatus(
       {this.fotoProfile,
       this.nama,
       this.rt,
       this.rw,
-      this.mediaSizeHeightParent});
+      this.mediaSizeHeightParent,
+      this.imageFile,
+      this.isVisible});
 
   @override
   State<TempatTulisStatus> createState() => _TempatTulisStatusState(
@@ -22,7 +26,9 @@ class TempatTulisStatus extends StatefulWidget {
       nama: this.nama,
       rt: this.rt,
       rw: this.rw,
-      mediaSizeHeightParent: mediaSizeHeightParent);
+      mediaSizeHeightParent: mediaSizeHeightParent,
+      imageFile: imageFile,
+      isVisible: isVisible);
 }
 
 class _TempatTulisStatusState extends State<TempatTulisStatus> {
@@ -31,13 +37,16 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
       this.nama,
       this.rt,
       this.rw,
-      this.mediaSizeHeightParent});
+      this.mediaSizeHeightParent,
+      this.imageFile,
+      this.isVisible});
 
   /**
      * field untuk menyimpan image picker
      */
-  PickedFile _imageFile;
+  PickedFile imageFile;
   final _picker = ImagePicker();
+  String imagePath;
 
   // app bar disimpan ke variabel untuk diambil tingginya
   var appBar = AppBar(
@@ -80,11 +89,9 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
       child: Scaffold(
           // resizeToAvoidBottomInset: false,
           // resizeToAvoidBottomPadding: false,
-
           appBar: appBar,
-          body: SingleChildScrollView(
-            physics: ClampingScrollPhysics(),
-            child: Column(
+          body: ListView(children: [
+            Column(
               children: [
                 // header informasi user
                 SizedBox(
@@ -167,7 +174,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                 buttonPosting(mediaSizeHeight)
               ],
             ),
-          )),
+          ])),
     );
   }
 
@@ -239,9 +246,12 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
               child: Image(
                 alignment: Alignment.topLeft,
                 repeat: ImageRepeat.noRepeat,
-                image: (_imageFile != null && !isDelete)
-                    ? FileImage(File(_imageFile.path))
+                image: (imageFile != null && !isDelete)
+                    ? FileImage(File(imageFile.path))
                     : AssetImage(''),
+                // image: (imageFile != null)
+                //     ? FileImage(File(imageFile.path))
+                //     : AssetImage(''),
                 height: mediaSizeHeight * 0.08,
                 width: mediaSizeWidth * 0.2,
               ),
@@ -272,20 +282,18 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
     );
   }
 
-  SizedBox textFieldTulisStatus(double mediaSizeHeight) {
-    return SizedBox(
-      // height: mediaSizeHeight * 0.3,
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(bottom: BorderSide(color: Colors.grey[200]))),
-        child: Padding(
-          padding: EdgeInsets.only(left: 10),
-          child: TextField(
-            maxLines: 10,
-            decoration: InputDecoration(
-                border: InputBorder.none, hintText: 'Apa yang anda pikirkan ?'),
-          ),
+  // sebelumnya pake sizebox
+  Container textFieldTulisStatus(double mediaSizeHeight) {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(bottom: BorderSide(color: Colors.grey[200]))),
+      child: Padding(
+        padding: EdgeInsets.only(left: 10),
+        child: TextField(
+          maxLines: 10,
+          decoration: InputDecoration(
+              border: InputBorder.none, hintText: 'Apa yang anda pikirkan ?'),
         ),
       ),
     );
@@ -377,8 +385,9 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
     final pickedFile = await _picker.getImage(source: source);
     setState(() {
       if (pickedFile != null) {
-        _imageFile = pickedFile;
+        imageFile = pickedFile;
         isVisible = true;
+        imagePath = imageFile.path;
       }
     });
   }

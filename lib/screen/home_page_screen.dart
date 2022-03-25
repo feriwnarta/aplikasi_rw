@@ -2,6 +2,7 @@ import 'package:aplikasi_rw/screen/tempat_tulis_status.dart';
 import 'package:aplikasi_rw/status_item_warga/status_warga.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomePageScreen extends StatefulWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
@@ -38,6 +39,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
   // boolean untuk mengecek apakah keyboard terbuka atau tidak
   bool isKeyboardOpen;
   double keyboardOpenHeight;
+
+  // untuk image picker
+  PickedFile _imageFile;
+  final _picker = ImagePicker();
+  String imagePath = '';
+  bool isVisible;
+  PickedFile imageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -196,137 +204,154 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   borderRadius: BorderRadius.circular(25),
                   gradient: LinearGradient(
                       colors: [Color(0xff2297F4), Color(0xff3ABBFD)])),
-              child: Column(
-                children: [
-                  /**
-                             * bagian dalam card status yang isinya dapat berubah
-                             * mulai dari avatar, nama user, dan rw user
-                             */
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 20, top: 20),
-                        child: CircleAvatar(
-                          radius: 35,
-                          backgroundImage: NetworkImage(
-                              // gambar profile user
-                              fotoProfile),
-                        ),
-                      ),
-
-                      // container ini berisi tempat menulis status
-                      // gesture detector jika tulis status diklik
-                      GestureDetector(
-                        onTap: () {
-                          // Navigator.of(context).push(MaterialPageRoute(
-                          //     builder: (context) => TempatTulisStatus(
-                          //           fotoProfile: fotoProfile,
-                          //           nama: userName,
-                          //           rt: rt,
-                          //           rw: rw,
-                          //         )));
-
-                          showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (builder) => TempatTulisStatus(
-                                    fotoProfile: fotoProfile,
-                                    nama: userName,
-                                    rt: rt,
-                                    rw: rw,
-                                    mediaSizeHeightParent: mediaSizeHeight,
-                                  ));
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(top: 20, left: 10),
-                          padding: EdgeInsets.only(top: 10),
-                          height: 40,
-                          width: MediaQuery.of(context).size.width * 0.58,
-                          child: Text(
-                            'Apa yang anda sedang pikirkan ?',
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.035),
-                            textAlign: TextAlign.center,
-                          ),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(40)),
-                        ),
-                      )
-                    ],
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Divider(
-                      color: Colors.white,
-                      thickness: 1,
-                      indent: 20,
-                      endIndent: 20,
-                    ),
-                  ),
-
-                  IntrinsicHeight(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              child: ListView(children: [
+                Column(
+                  children: [
+                    /**
+                     * bagian dalam card status yang isinya dapat berubah
+                     * mulai dari avatar, nama user, dan rw user
+                     */
+                    Row(
                       children: [
-                        FlatButton.icon(
-                            onPressed: () {},
-                            icon: Icon(
-                              FontAwesomeIcons.camera,
-                              color: Colors.white,
-                            ),
-                            label: Text(
-                              'Camera',
-                              style: TextStyle(color: Colors.white),
-                            )),
-                        VerticalDivider(
-                          color: Colors.white,
-                          width: 50,
-                          thickness: 1,
-                          indent: 15,
-                          endIndent: 10,
+                        Padding(
+                          padding: EdgeInsets.only(left: 20, top: 20),
+                          child: CircleAvatar(
+                            radius: 35,
+                            backgroundImage: NetworkImage(
+                                // gambar profile user
+                                fotoProfile),
+                          ),
                         ),
-                        FlatButton.icon(
-                            onPressed: () {},
-                            icon: Icon(
-                              FontAwesomeIcons.solidImage,
-                              color: Colors.white,
-                              size: 32,
+
+                        // container ini berisi tempat menulis status
+                        // gesture detector jika tulis status diklik
+                        GestureDetector(
+                          onTap: () {
+                            // Navigator.of(context).push(MaterialPageRoute(
+                            //     builder: (context) => TempatTulisStatus(
+                            //           fotoProfile: fotoProfile,
+                            //           nama: userName,
+                            //           rt: rt,
+                            //           rw: rw,
+                            //         )));
+
+                            showModalBottomStatus(context, _imageFile, false);
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 20, left: 10),
+                            padding: EdgeInsets.only(top: 10),
+                            height: 40,
+                            width: MediaQuery.of(context).size.width * 0.58,
+                            child: Text(
+                              'Apa yang anda sedang pikirkan ?',
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: MediaQuery.of(context).size.width *
+                                      0.035),
+                              textAlign: TextAlign.center,
                             ),
-                            label: Text(
-                              'Gallery',
-                              style: TextStyle(color: Colors.white),
-                            )),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(40)),
+                          ),
+                        )
                       ],
                     ),
-                  )
 
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //         child: Padding(
-                  //       padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-                  //       child: Text(
-                  //         '$userName $rt $rw',
-                  //         style: TextStyle(
-                  //           color: Colors.teal,
-                  //           fontWeight: FontWeight.w700,
-                  //         ),
-                  //         maxLines: 2,
-                  //       ),
-                  //     ))
-                  //   ],
-                  // )
-                ],
-              ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Divider(
+                        color: Colors.white,
+                        thickness: 1,
+                        indent: 20,
+                        endIndent: 20,
+                      ),
+                    ),
+
+                    IntrinsicHeight(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FlatButton.icon(
+                              onPressed: () {
+                                getImage(ImageSource.camera).then((value) =>
+                                    showModalBottomStatus(
+                                        context, imageFile, isVisible));
+                              },
+                              icon: Icon(
+                                FontAwesomeIcons.camera,
+                                color: Colors.white,
+                              ),
+                              label: Text(
+                                'Camera',
+                                style: TextStyle(color: Colors.white),
+                              )),
+                          VerticalDivider(
+                            color: Colors.white,
+                            width: 50,
+                            thickness: 1,
+                            indent: 15,
+                            endIndent: 10,
+                          ),
+                          FlatButton.icon(
+                              onPressed: () {
+                                getImage(ImageSource.gallery).then((value) =>
+                                    showModalBottomStatus(
+                                        context, imageFile, isVisible));
+                              },
+                              icon: Icon(
+                                FontAwesomeIcons.solidImage,
+                                color: Colors.white,
+                                size: 32,
+                              ),
+                              label: Text(
+                                'Gallery',
+                                style: TextStyle(color: Colors.white),
+                              )),
+                        ],
+                      ),
+                    )
+
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //         child: Padding(
+                    //       padding: EdgeInsets.only(left: 20, right: 20, top: 15),
+                    //       child: Text(
+                    //         '$userName $rt $rw',
+                    //         style: TextStyle(
+                    //           color: Colors.teal,
+                    //           fontWeight: FontWeight.w700,
+                    //         ),
+                    //         maxLines: 2,
+                    //       ),
+                    //     ))
+                    //   ],
+                    // )
+                  ],
+                ),
+              ]),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future showModalBottomStatus(
+      BuildContext context, PickedFile imageFile, bool isVisible) {
+    return showModalBottomSheet(
+        isScrollControlled: true,
+        context: context,
+        builder: (builder) => TempatTulisStatus(
+              fotoProfile: fotoProfile,
+              nama: userName,
+              rt: rt,
+              rw: rw,
+              mediaSizeHeightParent: mediaSizeHeight,
+              imageFile: _imageFile,
+              isVisible: isVisible,
+            ));
   }
 
   /**
@@ -503,5 +528,15 @@ class _HomePageScreenState extends State<HomePageScreen> {
     }
 
     return cardStatus;
+  }
+
+  Future getImage(ImageSource source) async {
+    final pickedFile = await _picker.getImage(source: source);
+    setState(() {
+      if (pickedFile != null) {
+        _imageFile = pickedFile;
+        isVisible = true;
+      }
+    });
   }
 }
