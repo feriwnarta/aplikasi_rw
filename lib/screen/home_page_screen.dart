@@ -1,3 +1,4 @@
+import 'package:aplikasi_rw/model/status_user_model.dart';
 import 'package:aplikasi_rw/screen/tempat_tulis_status.dart';
 import 'package:aplikasi_rw/status_item_warga/status_warga.dart';
 import 'package:flutter/material.dart';
@@ -36,9 +37,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   double mediaSizeHeight;
 
-  // boolean untuk mengecek apakah keyboard terbuka atau tidak
-  bool isKeyboardOpen;
-  double keyboardOpenHeight;
+  // boolean status untuk mengecek image picker sudah memilih / memfoto gambar apa belum
+  bool statusPicker = false;
+  
 
   // untuk image picker
   PickedFile _imageFile;
@@ -47,14 +48,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool isVisible;
   PickedFile imageFile;
 
+  // Status user model untuk data dari database yang akan dipasang di list view builder
+
   @override
   Widget build(BuildContext context) {
-    keyboardOpenHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-
-    // boolean untuk mengecek apakah keyboard terbuka atau tidak
-    isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
-
     mediaSizeHeight =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     final mediaSizeWidth = MediaQuery.of(context).size.width;
@@ -67,35 +64,44 @@ class _HomePageScreenState extends State<HomePageScreen> {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
 
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                Stack(children: [
-                  // Rounded circle background
-                  roundedCircleBackground(mediaSizeWidth),
+      // sebelumnya ada container yang membukus list view
+      body: ListView(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              Stack(children: [
+                // Rounded circle background
+                headerBackground(mediaSizeWidth),
+              ]),
+            ],
+          ),
 
-                  /**
-                   * card status berisi avatar, container untuk membuat status
-                   * dan informasi nama user serta rt rw
-                   */
+          ListView.builder(
+            physics: ScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: StatusUserModel.getAllStatus.length,
+            itemBuilder: (context, index) {
+              return StatusWarga(
+                namaUser: StatusUserModel.getAllStatus[index].userName,
+                fotoProfile: StatusUserModel.getAllStatus[index].urlProfile,
+                urlFotoStatus:
+                    StatusUserModel.getAllStatus[index].urlFotoStatus,
+                caption: StatusUserModel.getAllStatus[index].caption,
+                lamaUpload: StatusUserModel.getAllStatus[index].lamaUpload,
+                jumlahKomen: StatusUserModel.getAllStatus[index].jumlahKomen,
+                jumlahLike: StatusUserModel.getAllStatus[index].jumlahLike,
+              );
+            },
+          )
 
-                  // cardStatus(context)
-                ]),
-              ],
-            ),
-
-            // status dari warga
-            Column(children: listStatus),
-          ],
-        ),
+          // status dari warga
+          // Column(children: listStatus),
+        ],
       ),
     );
   }
 
-  Container roundedCircleBackground(double mediaSizeWidth) {
+  Container headerBackground(double mediaSizeWidth) {
     return Container(
         width: mediaSizeWidth,
         // height: heightBackgroundRounded,
@@ -274,9 +280,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         children: [
                           FlatButton.icon(
                               onPressed: () {
-                                getImage(ImageSource.camera).then((value) =>
-                                    showModalBottomStatus(
-                                        context, imageFile, isVisible));
+                                getImage(ImageSource.camera).then((value) {
+                                  if(statusPicker) showModalBottomStatus(context, imageFile, isVisible);
+                                });
                               },
                               icon: Icon(
                                 FontAwesomeIcons.camera,
@@ -295,9 +301,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           ),
                           FlatButton.icon(
                               onPressed: () {
-                                getImage(ImageSource.gallery).then((value) =>
-                                    showModalBottomStatus(
-                                        context, imageFile, isVisible));
+                                getImage(ImageSource.gallery).then((value) {
+                                  if(statusPicker) showModalBottomStatus(context, imageFile, isVisible);
+                                });
+                                    
                               },
                               icon: Icon(
                                 FontAwesomeIcons.solidImage,
@@ -352,6 +359,71 @@ class _HomePageScreenState extends State<HomePageScreen> {
               imageFile: _imageFile,
               isVisible: isVisible,
             ));
+  }
+
+  // list berisi status warga
+  // setiap data didatabase akan disimpan dalam template container yang sudah dibikin
+  // List<Widget> listStatus = [
+  //   // data url
+  //   // String namaUser, rw, waktuUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
+
+  //   StatusWarga(
+  //     namaUser: 'Siti',
+  //     lamaUpload: '15 menit',
+  //     urlFotoStatus:
+  //         'https://lovelybogor.com/wp-content/uploads/2016/02/Pedagang-Kumang-Di-Bogor-Fotografi-Jalanan-01.jpg',
+  //     fotoProfile:
+  //         'https://media.suara.com/pictures/653x366/2021/09/18/26068-jung-ho-yeong.jpg',
+  //     caption:
+  //         'pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT',
+  //     jumlahKomen: '12',
+  //     jumlahLike: '19',
+  //   ),
+  //   StatusWarga(
+  //     namaUser: 'Joko',
+  //     lamaUpload: '30 menit',
+  //     urlFotoStatus:
+  //         'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
+  //     fotoProfile:
+  //         'https://akcdn.detik.net.id/visual/2022/02/04/ainun-najib-1_169.jpeg?w=650',
+  //     caption: 'Jalanan rusak di RT 07 ',
+  //     jumlahKomen: '15',
+  //     jumlahLike: '21',
+  //   ),
+
+  //   StatusWarga(
+  //       namaUser: 'Susanto',
+  //       lamaUpload: '1 jam',
+  //       urlFotoStatus:
+  //           'https://cdn-2.tstatic.net/kaltim/foto/bank/images/jalan-asmawarman1_20160202_133513.jpg',
+  //       fotoProfile:
+  //           'https://disk.mediaindonesia.com/thumbs/600x400/news/2020/10/fe8644c762c90d7b7ff16ed49786cd96.jpg',
+  //       caption: 'Lampu jalanan kurang penerangan',
+  //       jumlahKomen: '11',
+  //       jumlahLike: '19'),
+
+  //   StatusWarga(
+  //       namaUser: 'Yani',
+  //       lamaUpload: '2 jam yang lalu',
+  //       urlFotoStatus:
+  //           'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
+  //       fotoProfile:
+  //           'https://www.superprof.co.id/gambar/guru/rumah-guru-saya-orang-indonesia-asli-menawarkan-belajar-bahasa-indonesia-simple-untuk-orang-asing.jpg',
+  //       caption: 'Dijual tanaman hias hubungi saya segera..',
+  //       jumlahKomen: '19',
+  //       jumlahLike: '25'),
+  //   // StatusWarga(),
+  // ];
+
+  Future getImage(ImageSource source) async {
+    final pickedFile = await _picker.getImage(source: source);
+    setState(() {
+      if (pickedFile != null) {
+        _imageFile = pickedFile;
+        isVisible = true;
+        statusPicker = true;
+      }
+    });
   }
 
   /**
@@ -458,85 +530,4 @@ class _HomePageScreenState extends State<HomePageScreen> {
   //   );
   // }
 
-  // list berisi status warga
-  // setiap data didatabase akan disimpan dalam template container yang sudah dibikin
-  List<Widget> listStatus = [
-    // data url
-    // String namaUser, rw, waktuUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
-
-    StatusWarga(
-      namaUser: 'Siti',
-      rw: 'RW 07',
-      waktuUpload: '15 menit',
-      urlFotoStatus:
-          'https://lovelybogor.com/wp-content/uploads/2016/02/Pedagang-Kumang-Di-Bogor-Fotografi-Jalanan-01.jpg',
-      fotoProfile:
-          'https://media.suara.com/pictures/653x366/2021/09/18/26068-jung-ho-yeong.jpg',
-      caption:
-          'pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT',
-      jumlahKomen: '12',
-      jumlahLike: '19',
-    ),
-    StatusWarga(
-      namaUser: 'Joko',
-      rw: 'RW 07',
-      waktuUpload: '30 menit',
-      urlFotoStatus:
-          'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
-      fotoProfile:
-          'https://akcdn.detik.net.id/visual/2022/02/04/ainun-najib-1_169.jpeg?w=650',
-      caption: 'Jalanan rusak di RT 07 ',
-      jumlahKomen: '15',
-      jumlahLike: '21',
-    ),
-
-    StatusWarga(
-        namaUser: 'Susanto',
-        rw: 'RW 07',
-        waktuUpload: '1 jam',
-        urlFotoStatus:
-            'https://cdn-2.tstatic.net/kaltim/foto/bank/images/jalan-asmawarman1_20160202_133513.jpg',
-        fotoProfile:
-            'https://disk.mediaindonesia.com/thumbs/600x400/news/2020/10/fe8644c762c90d7b7ff16ed49786cd96.jpg',
-        caption: 'Lampu jalanan kurang penerangan',
-        jumlahKomen: '11',
-        jumlahLike: '19'),
-
-    StatusWarga(
-        namaUser: 'Yani',
-        rw: 'RW 07',
-        waktuUpload: '2 jam yang lalu',
-        urlFotoStatus:
-            'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
-        fotoProfile:
-            'https://www.superprof.co.id/gambar/guru/rumah-guru-saya-orang-indonesia-asli-menawarkan-belajar-bahasa-indonesia-simple-untuk-orang-asing.jpg',
-        caption: 'Dijual tanaman hias hubungi saya segera..',
-        jumlahKomen: '19',
-        jumlahLike: '25'),
-    // StatusWarga(),
-  ];
-
-  List<Widget> cardStatusWarga(List<Widget> isiStatus) {
-    List<Widget> cardStatus = [];
-
-    for (var item in isiStatus) {
-      var data = Card(
-        color: Colors.red,
-        child: item,
-      );
-      cardStatus.add(data);
-    }
-
-    return cardStatus;
-  }
-
-  Future getImage(ImageSource source) async {
-    final pickedFile = await _picker.getImage(source: source);
-    setState(() {
-      if (pickedFile != null) {
-        _imageFile = pickedFile;
-        isVisible = true;
-      }
-    });
-  }
 }

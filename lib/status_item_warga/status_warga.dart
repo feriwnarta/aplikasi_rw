@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class StatusWarga extends StatefulWidget {
   String namaUser,
-      rw,
-      waktuUpload,
+      lamaUpload,
       urlFotoStatus,
       fotoProfile,
       caption,
@@ -13,8 +12,7 @@ class StatusWarga extends StatefulWidget {
   // Constructor untuk menerima data
   StatusWarga(
       {this.namaUser,
-      this.rw,
-      this.waktuUpload,
+      this.lamaUpload,
       this.urlFotoStatus,
       this.fotoProfile,
       this.caption,
@@ -24,8 +22,7 @@ class StatusWarga extends StatefulWidget {
   @override
   State<StatusWarga> createState() => _StatusWargaState(
         namaUser: namaUser,
-        rw: rw,
-        waktuUpload: waktuUpload,
+        lamaUpload: lamaUpload,
         urlFotoStatus: urlFotoStatus,
         fotoProfile: fotoProfile,
         caption: caption,
@@ -40,8 +37,7 @@ class _StatusWargaState extends State<StatusWarga> {
   // Container untuk data
   _StatusWargaState({
     this.namaUser,
-    this.rw,
-    this.waktuUpload,
+    this.lamaUpload,
     this.urlFotoStatus,
     this.fotoProfile,
     this.caption,
@@ -50,17 +46,7 @@ class _StatusWargaState extends State<StatusWarga> {
   });
 
   // sampel data untuk status warga
-  String namaUser = 'Siska';
-  String rw = 'RW 01';
-  String waktuUpload = '1 jam yang lalu';
-  String urlFotoStatus =
-      'https://i.pinimg.com/originals/ce/16/b9/ce16b9ea78dc83667937dfcc509d66a2.jpg';
-  String fotoProfile =
-      'https://img.idxchannel.com/media/700/images/idx/2022/03/08/Kekayaan_Orang_Tua_Sisca_Kohl.jpg';
-  String caption =
-      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-  String jumlahLike = '21';
-  String jumlahKomen = '20';
+  String namaUser, lamaUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
 
   @override
   Widget build(BuildContext context) {
@@ -83,25 +69,15 @@ class _StatusWargaState extends State<StatusWarga> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(left: 10),
+              margin: EdgeInsets.only(left: 10, top: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(namaUser),
-                  Row(
-                    children: [
-                      Text(
-                        '$waktuUpload',
-                        style: TextStyle(fontSize: 9),
-                      ),
-                      Container(
-                        width: 5,
-                      ),
-                      Text(
-                        '$rw',
-                        style: TextStyle(fontSize: 9, color: Colors.lightBlue),
-                      ),
-                    ],
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 3),
+                    child: Text(namaUser),
+                  ),
+                  Text('$lamaUpload',style: TextStyle(fontSize: 9),
                   )
                 ],
               ),

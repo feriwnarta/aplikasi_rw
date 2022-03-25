@@ -1,6 +1,5 @@
 import 'package:aplikasi_rw/screen/home_page_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
@@ -59,15 +58,21 @@ class _TemplateScreenState extends State<TemplateScreen> {
   // var colorTabBar = Color(0xff8CBBF1);
   var colorTabBar = Color(0xff2196F3);
 
+  // padding tinggi dan lebar bottom menu Gnav
+  double heightPaddingGnav, widthPaddingGnav;
+
+
+
   @override
   Widget build(BuildContext context) {
+
+    heightPaddingGnav = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+    widthPaddingGnav = MediaQuery.of(context).size.width;
     
 
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     //   statusBarColor: Colors.lightBlue
     // ));
-
-    heightTabBar = MediaQuery.of(context).size.height * 0.2;
 
     return Scaffold(
       // resizeToAvoidBottomInset: false,
@@ -107,7 +112,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
             // tabShadow: [BoxShadow(color: Colors.grey.withOpacity(0.5), blurRadius: 8)],
             //tabBackgroundColor: Colors.lightBlue.withOpacity(0.8), // background color
             tabBackgroundColor: Color(0xff2297F4).withOpacity(0.9),
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),  
+            padding: EdgeInsets.symmetric(vertical: heightPaddingGnav * 0.019, horizontal: widthPaddingGnav * 0.04),  
             tabs: [
               GButton(
                 icon: FontAwesomeIcons.home,

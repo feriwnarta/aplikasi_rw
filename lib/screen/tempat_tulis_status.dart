@@ -42,21 +42,14 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
       this.isVisible});
 
   /**
-     * field untuk menyimpan image picker
-     */
+   * field untuk menyimpan image picker
+   */
   PickedFile imageFile;
   final _picker = ImagePicker();
   String imagePath;
 
   // app bar disimpan ke variabel untuk diambil tingginya
-  var appBar = AppBar(
-    backgroundColor: Colors.lightBlue,
-    title: Text('Buat Postingan',
-        style: TextStyle(
-            fontSize: 21,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'saira condensed')),
-  );
+  AppBar appBar;
 
   // field untuk data user
   String fotoProfile, nama, rt, rw;
@@ -73,6 +66,29 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
 
   @override
   Widget build(BuildContext context) {
+    appBar = AppBar(
+      leading: IconButton(
+        icon: Icon(
+          Icons.clear_rounded,
+          color: Colors.white,
+          size: 30,
+        ),
+        onPressed: () {
+          setState(() {
+            !isDelete;
+            isVisible = false;
+          });
+          Navigator.of(context).pop();
+        },
+      ),
+      backgroundColor: Colors.lightBlue,
+      title: Text('Buat Postingan',
+          style: TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'saira condensed')),
+    );
+
     // media query hanya body saja
     final mediaSizeHeight = MediaQuery.of(context).size.height -
         appBar.preferredSize.height -
