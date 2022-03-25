@@ -137,6 +137,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       fontFamily: 'poppins',
                     ),
                   ),
+                  //Image(
+                  //   image: AssetImage('assets/img/logo.png'),
+                  //   fit: BoxFit.cover,
+                  //   repeat: ImageRepeat.noRepeat,
+                  // )
                 )
               ],
             ),
@@ -277,7 +282,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               'Camera',
                               style: TextStyle(color: Colors.white),
                             )),
-
                         VerticalDivider(
                           color: Colors.white,
                           width: 50,

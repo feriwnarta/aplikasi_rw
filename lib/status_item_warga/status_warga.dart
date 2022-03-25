@@ -8,24 +8,30 @@ class StatusWarga extends StatefulWidget {
       fotoProfile,
       caption,
       jumlahLike,
-      jumlahKomen;  
+      jumlahKomen;
 
   // Constructor untuk menerima data
-  StatusWarga({this.namaUser, this.rw, this.waktuUpload, this.urlFotoStatus,
-      this.fotoProfile, this.caption, this.jumlahLike, this.jumlahKomen});
+  StatusWarga(
+      {this.namaUser,
+      this.rw,
+      this.waktuUpload,
+      this.urlFotoStatus,
+      this.fotoProfile,
+      this.caption,
+      this.jumlahLike,
+      this.jumlahKomen});
 
   @override
   State<StatusWarga> createState() => _StatusWargaState(
-    namaUser: namaUser,
-    rw: rw,
-    waktuUpload: waktuUpload,
-    urlFotoStatus: urlFotoStatus,
-    fotoProfile: fotoProfile,
-    caption: caption,
-    jumlahLike: jumlahLike,
-    jumlahKomen: jumlahKomen,
-  );
-      
+        namaUser: namaUser,
+        rw: rw,
+        waktuUpload: waktuUpload,
+        urlFotoStatus: urlFotoStatus,
+        fotoProfile: fotoProfile,
+        caption: caption,
+        jumlahLike: jumlahLike,
+        jumlahKomen: jumlahKomen,
+      );
 }
 
 class _StatusWargaState extends State<StatusWarga> {
@@ -33,15 +39,15 @@ class _StatusWargaState extends State<StatusWarga> {
 
   // Container untuk data
   _StatusWargaState({
-      this.namaUser,
-      this.rw,
-      this.waktuUpload,
-      this.urlFotoStatus,
-      this.fotoProfile,
-      this.caption,
-      this.jumlahLike,
-      this.jumlahKomen,
-      });
+    this.namaUser,
+    this.rw,
+    this.waktuUpload,
+    this.urlFotoStatus,
+    this.fotoProfile,
+    this.caption,
+    this.jumlahLike,
+    this.jumlahKomen,
+  });
 
   // sampel data untuk status warga
   String namaUser = 'Siska';
@@ -60,120 +66,117 @@ class _StatusWargaState extends State<StatusWarga> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey,
-            blurRadius: 2 
-          )
-        ]
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 2)]),
+
+      // top : 10, left: 10, right: 10
       margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-      child: Padding(
-        padding: EdgeInsets.only(left: 20, right: 10, top: 20),
-        child: Column(
-          children: [
-            Row(children: [
-              CircleAvatar(
+      child: Column(
+        children: [
+          Row(children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 10, top: 10),
+              child: CircleAvatar(
                 radius: 20,
                 backgroundImage: NetworkImage(fotoProfile),
               ),
-              Container(
-                margin: EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(namaUser),
-                    Row(
-                      children: [
-                        Text(
-                          '$waktuUpload',
-                          style: TextStyle(fontSize: 9),
-                        ),
-                        Container(
-                          width: 5,
-                        ),
-                        Text(
-                          '$rw',
-                          style:
-                              TextStyle(fontSize: 9, color: Colors.lightBlue),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              )
-            ]),
-
-            // bagian caption
-            Padding(
-              padding: EdgeInsets.only(top: 5, bottom: 10, right: 5),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Text(
-                    caption,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      height: 1.4
-                    ),
-                    maxLines: 10,
-                  ))
-                ],
-              ),
             ),
-
-            // Bagian foto
-            Row(
-              children: [
-                Container(
-                  child: Image(
-                    width: MediaQuery.of(context).size.width * 0.85,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    alignment: Alignment.bottomLeft,
-                    fit: BoxFit.fill,
-                    repeat: ImageRepeat.noRepeat,
-                    image: NetworkImage(urlFotoStatus),
-                  ),
-                )
-              ],
-            ),
-
-            // Like Dan comment
-            Padding(
-              // padding tambahahan karena row pembungus padding kanannya dikurangin 10
-              // jadi total 20
-              padding: EdgeInsets.only(right: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(namaUser),
                   Row(
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.thumb_up_alt_outlined,
-                            color: Colors.black),
-                        onPressed: () {},
+                      Text(
+                        '$waktuUpload',
+                        style: TextStyle(fontSize: 9),
                       ),
-                      Text(jumlahLike)
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.comment_outlined, color: Colors.black,),
-                        onPressed: () {
-                          
-                        },
+                      Container(
+                        width: 5,
                       ),
-                      Text(jumlahKomen)
+                      Text(
+                        '$rw',
+                        style: TextStyle(fontSize: 9, color: Colors.lightBlue),
+                      ),
                     ],
                   )
                 ],
               ),
             )
-          ],
-        ),
+          ]),
+
+          // bagian caption
+          Padding(
+            padding: EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 10),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text(
+                  caption,
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(height: 1.4),
+                  maxLines: 10,
+                ))
+              ],
+            ),
+          ),
+
+          // Bagian foto
+          Row(
+            children: [
+              Container(
+                child: Expanded(
+                  flex: 1,
+                  child: Image(
+                    // width: MediaQuery.of(context).size.width * 0.949,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    alignment: Alignment.bottomLeft,
+                    fit: BoxFit.cover,
+                    repeat: ImageRepeat.noRepeat,
+                    image: NetworkImage(urlFotoStatus),
+                  ),
+                ),
+              )
+            ],
+          ),
+
+          // Like Dan comment
+          Padding(
+            // padding tambahahan karena row pembungus padding kanannya dikurangin 10
+            // jadi total 20
+            padding: EdgeInsets.only(right: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.thumb_up_alt_outlined,
+                          color: Colors.black),
+                      onPressed: () {},
+                    ),
+                    Text(jumlahLike)
+                  ],
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.comment_outlined,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {},
+                    ),
+                    Text(jumlahKomen)
+                  ],
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
