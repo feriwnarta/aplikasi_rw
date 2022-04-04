@@ -1,9 +1,12 @@
+import 'package:aplikasi_rw/model/card_news.dart';
 import 'package:aplikasi_rw/model/status_user_model.dart';
 import 'package:aplikasi_rw/screen/tempat_tulis_status.dart';
 import 'package:aplikasi_rw/status_item_warga/status_warga.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomePageScreen extends StatefulWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
@@ -39,7 +42,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   // boolean status untuk mengecek image picker sudah memilih / memfoto gambar apa belum
   bool statusPicker = false;
-  
 
   // untuk image picker
   PickedFile _imageFile;
@@ -48,7 +50,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
   bool isVisible;
   PickedFile imageFile;
 
-  // Status user model untuk data dari database yang akan dipasang di list view builder
+  // index active untuk indicator news
+  int _activeIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -68,30 +71,192 @@ class _HomePageScreenState extends State<HomePageScreen> {
       body: ListView(
         children: <Widget>[
           Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Stack(children: [
-                // Rounded circle background
+                // header app
                 headerBackground(mediaSizeWidth),
               ]),
             ],
           ),
 
-          ListView.builder(
-            physics: ScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: StatusUserModel.getAllStatus.length,
-            itemBuilder: (context, index) {
-              return StatusWarga(
-                namaUser: StatusUserModel.getAllStatus[index].userName,
-                fotoProfile: StatusUserModel.getAllStatus[index].urlProfile,
-                urlFotoStatus:
-                    StatusUserModel.getAllStatus[index].urlFotoStatus,
-                caption: StatusUserModel.getAllStatus[index].caption,
-                lamaUpload: StatusUserModel.getAllStatus[index].lamaUpload,
-                jumlahKomen: StatusUserModel.getAllStatus[index].jumlahKomen,
-                jumlahLike: StatusUserModel.getAllStatus[index].jumlahLike,
-              );
-            },
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+                child: Text(
+                  'News',
+                  style: TextStyle(fontFamily: 'poppins', fontSize: 15),
+                ),
+              ),
+              CarouselSlider.builder(
+                options: CarouselOptions(
+                    // height: 180,
+                    height: mediaSizeHeight * 0.24,
+                    enlargeCenterPage: true,
+                    disableCenter: false,
+                    viewportFraction: 0.6,
+                    onPageChanged: (index, _) =>
+                        setState(() => _activeIndex = index)),
+                itemCount: CardNews.getCardNews.length,
+                itemBuilder: (context, index, realIndex) {
+                  return ListView(children: [
+                    Card(
+                      color: Colors.blue[50],
+                      elevation: 1.5,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      margin: EdgeInsets.only(right: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                              height: mediaSizeHeight * 0.17,
+                              width: mediaSizeWidth * 0.6,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15),
+                                    topRight: Radius.circular(15)),
+                                child: Image(
+                                  fit: BoxFit.cover,
+                                  repeat: ImageRepeat.noRepeat,
+                                  image: NetworkImage(
+                                      CardNews.getCardNews[index].urlImageNews),
+                                ),
+                              )),
+                          Container(
+                            padding:
+                                EdgeInsets.only(left: 10, top: 5, bottom: 10),
+                            // margin: EdgeInsets.only(left: 10, top: 5),
+                            width: 220,
+                            child: Text(
+                              CardNews.getCardNews[index].caption,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              style: TextStyle(
+                                  fontFamily: 'poppins', fontSize: 12),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ]);
+                },
+              ),
+              SizedBox(
+                height: 17,
+              ),
+              Center(
+                child: AnimatedSmoothIndicator(
+                  activeIndex: _activeIndex,
+                  count: CardNews.getCardNews.length,
+                  effect: ExpandingDotsEffect(
+                      dotWidth: 10,
+                      dotHeight: 10,
+                      activeDotColor: Colors.lightBlue,
+                      dotColor: Colors.grey[350]),
+                ),
+              )
+            ],
+          ),
+
+          // Column(
+          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.only(left: 15, top: 5),
+          //       child: Text(
+          //         'News',
+          //         style: TextStyle(fontFamily: 'poppins', fontSize: 15),
+          //       ),
+          //     ),
+          //     Container(
+          //       margin: EdgeInsets.only(top: 10, left: 10),
+          //       height: 180,
+          //       child: ListView.builder(
+          //         physics: ScrollPhysics(),
+          //         scrollDirection: Axis.horizontal,
+          //         shrinkWrap: true,
+          //         itemCount: CardNews.getCardNews.length,
+          //         itemBuilder: (context, index) {
+          //           return Card(
+          //             color: Colors.blue[50],
+          //             elevation: 0,
+          //             shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(15)),
+          //             margin: EdgeInsets.only(right: 10),
+          //             child: Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: [
+          //                 Container(
+          //                     height: 130,
+          //                     width: 220,
+          //                     child: ClipRRect(
+          //                       borderRadius: BorderRadius.only(
+          //                           topLeft: Radius.circular(15),
+          //                           topRight: Radius.circular(15)),
+          //                       child: Image(
+          //                         width: 200,
+          //                         fit: BoxFit.cover,
+          //                         repeat: ImageRepeat.noRepeat,
+          //                         image: NetworkImage(
+          //                             CardNews.getCardNews[index].urlImageNews),
+          //                       ),
+          //                     )),
+          //                 Container(
+          //                   padding: EdgeInsets.only(left: 10, top: 2),
+          //                   // margin: EdgeInsets.only(left: 10, top: 5),
+          //                   width: 220,
+          //                   child: Text(
+          //                     CardNews.getCardNews[index].caption,
+          //                     maxLines: 2,
+          //                     overflow: TextOverflow.ellipsis,
+          //                     softWrap: true,
+          //                     style: TextStyle(
+          //                         fontFamily: 'poppins', fontSize: 12),
+          //                   ),
+          //                 )
+          //               ],
+          //             ),
+          //           );
+          //         },
+          //       ),
+          //     ),
+          //   ],
+          // ),
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15, top: 10),
+                child: Text(
+                  "Today's Status",
+                  style: TextStyle(fontFamily: 'poppins', fontSize: 15),
+                ),
+              ),
+              ListView.builder(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: StatusUserModel.getAllStatus.length,
+                itemBuilder: (context, index) {
+                  return StatusWarga(
+                    namaUser: StatusUserModel.getAllStatus[index].userName,
+                    fotoProfile: StatusUserModel.getAllStatus[index].urlProfile,
+                    urlFotoStatus:
+                        StatusUserModel.getAllStatus[index].urlFotoStatus,
+                    caption: StatusUserModel.getAllStatus[index].caption,
+                    lamaUpload: StatusUserModel.getAllStatus[index].lamaUpload,
+                    jumlahKomen:
+                        StatusUserModel.getAllStatus[index].jumlahKomen,
+                    jumlahLike: StatusUserModel.getAllStatus[index].jumlahLike,
+                  );
+                },
+              ),
+            ],
           )
 
           // status dari warga
@@ -175,13 +340,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
               ],
             ),
             cardStatus(context),
-            Padding(
-              padding: const EdgeInsets.only(left: 15, top: 10),
-              child: Text(
-                'Kabar Hari ini',
-                style: TextStyle(fontFamily: 'poppins', fontSize: 15),
-              ),
-            ),
           ],
         ));
   }
@@ -263,7 +421,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         )
                       ],
                     ),
-
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Divider(
@@ -273,7 +430,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         endIndent: 20,
                       ),
                     ),
-
                     IntrinsicHeight(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -281,7 +437,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           FlatButton.icon(
                               onPressed: () {
                                 getImage(ImageSource.camera).then((value) {
-                                  if(statusPicker) showModalBottomStatus(context, imageFile, isVisible);
+                                  if (statusPicker)
+                                    showModalBottomStatus(
+                                        context, imageFile, isVisible);
                                 });
                               },
                               icon: Icon(
@@ -302,9 +460,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                           FlatButton.icon(
                               onPressed: () {
                                 getImage(ImageSource.gallery).then((value) {
-                                  if(statusPicker) showModalBottomStatus(context, imageFile, isVisible);
+                                  if (statusPicker)
+                                    showModalBottomStatus(
+                                        context, imageFile, isVisible);
                                 });
-                                    
                               },
                               icon: Icon(
                                 FontAwesomeIcons.solidImage,
@@ -318,23 +477,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         ],
                       ),
                     )
-
-                    // Row(
-                    //   children: [
-                    //     Expanded(
-                    //         child: Padding(
-                    //       padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-                    //       child: Text(
-                    //         '$userName $rt $rw',
-                    //         style: TextStyle(
-                    //           color: Colors.teal,
-                    //           fontWeight: FontWeight.w700,
-                    //         ),
-                    //         maxLines: 2,
-                    //       ),
-                    //     ))
-                    //   ],
-                    // )
                   ],
                 ),
               ]),
@@ -360,60 +502,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
               isVisible: isVisible,
             ));
   }
-
-  // list berisi status warga
-  // setiap data didatabase akan disimpan dalam template container yang sudah dibikin
-  // List<Widget> listStatus = [
-  //   // data url
-  //   // String namaUser, rw, waktuUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
-
-  //   StatusWarga(
-  //     namaUser: 'Siti',
-  //     lamaUpload: '15 menit',
-  //     urlFotoStatus:
-  //         'https://lovelybogor.com/wp-content/uploads/2016/02/Pedagang-Kumang-Di-Bogor-Fotografi-Jalanan-01.jpg',
-  //     fotoProfile:
-  //         'https://media.suara.com/pictures/653x366/2021/09/18/26068-jung-ho-yeong.jpg',
-  //     caption:
-  //         'pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT',
-  //     jumlahKomen: '12',
-  //     jumlahLike: '19',
-  //   ),
-  //   StatusWarga(
-  //     namaUser: 'Joko',
-  //     lamaUpload: '30 menit',
-  //     urlFotoStatus:
-  //         'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
-  //     fotoProfile:
-  //         'https://akcdn.detik.net.id/visual/2022/02/04/ainun-najib-1_169.jpeg?w=650',
-  //     caption: 'Jalanan rusak di RT 07 ',
-  //     jumlahKomen: '15',
-  //     jumlahLike: '21',
-  //   ),
-
-  //   StatusWarga(
-  //       namaUser: 'Susanto',
-  //       lamaUpload: '1 jam',
-  //       urlFotoStatus:
-  //           'https://cdn-2.tstatic.net/kaltim/foto/bank/images/jalan-asmawarman1_20160202_133513.jpg',
-  //       fotoProfile:
-  //           'https://disk.mediaindonesia.com/thumbs/600x400/news/2020/10/fe8644c762c90d7b7ff16ed49786cd96.jpg',
-  //       caption: 'Lampu jalanan kurang penerangan',
-  //       jumlahKomen: '11',
-  //       jumlahLike: '19'),
-
-  //   StatusWarga(
-  //       namaUser: 'Yani',
-  //       lamaUpload: '2 jam yang lalu',
-  //       urlFotoStatus:
-  //           'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
-  //       fotoProfile:
-  //           'https://www.superprof.co.id/gambar/guru/rumah-guru-saya-orang-indonesia-asli-menawarkan-belajar-bahasa-indonesia-simple-untuk-orang-asing.jpg',
-  //       caption: 'Dijual tanaman hias hubungi saya segera..',
-  //       jumlahKomen: '19',
-  //       jumlahLike: '25'),
-  //   // StatusWarga(),
-  // ];
 
   Future getImage(ImageSource source) async {
     final pickedFile = await _picker.getImage(source: source);
