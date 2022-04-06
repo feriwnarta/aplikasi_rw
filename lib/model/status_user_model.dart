@@ -21,7 +21,7 @@ class StatusUserModel {
         userName: 'Siti',
         lamaUpload: '15 menit',
         urlProfile: 'https://media.suara.com/pictures/653x366/2021/09/18/26068-jung-ho-yeong.jpg',
-        urlFotoStatus: 'https://lovelybogor.com/wp-content/uploads/2016/02/Pedagang-Kumang-Di-Bogor-Fotografi-Jalanan-01.jpg',
+        urlFotoStatus: 'https://adekinan.files.wordpress.com/2015/02/wpid-wp-1424086946141.jpeg',
         caption:'pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT',
         jumlahKomen: '12',
         jumlahLike: '19'        
@@ -50,7 +50,7 @@ class StatusUserModel {
   StatusUserModel(
     userName: 'Yani',
     lamaUpload: '2 jam',
-    urlProfile: 'https://www.superprof.co.id/gambar/guru/rumah-guru-saya-orang-indonesia-asli-menawarkan-belajar-bahasa-indonesia-simple-untuk-orang-asing.jpg',
+    urlProfile: 'https://cdn0-production-images-kly.akamaized.net/CZ4JB-nS0u8xiMTfTEPaGuaRWAw=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/2715477/original/040195000_1548741244-Dx95B_oUUAANtWV.jpg',
     urlFotoStatus: 'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
     caption: 'Dijual tanaman hias hubungi saya segera..',
     jumlahKomen: '19',

@@ -1,3 +1,4 @@
+import 'package:aplikasi_rw/screen/home_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -83,6 +84,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
         // membuat sidebar dan drawer
         drawer: drawerSideBar(),
         body: ReportScreen(scaffoldKey),
+        // body: HomeScreen(scaffoldKey),
 
         // bottom navigation bar
         bottomNavigationBar: Container(

@@ -1,4 +1,5 @@
 import 'package:aplikasi_rw/model/card_laporan_warga_model.dart';
+import 'package:aplikasi_rw/screen/create_report_screen.dart';
 import 'package:aplikasi_rw/support_screen/card_laporan_warga.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -86,7 +87,9 @@ class ReportScreeneState extends State<ReportScreen> {
                                       Padding(
                                         padding: EdgeInsets.only(right: 10),
                                         child: Text(
-                                          '4',
+                                          CardLaporanWargaModel
+                                              .getAllLaporan.length
+                                              .toString(),
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 18),
@@ -160,7 +163,7 @@ class ReportScreeneState extends State<ReportScreen> {
           )
         ],
       ),
-      floatingActionButton: buildSizeBoxFloatingActionButton(),
+      floatingActionButton: buildSizeBoxFloatingActionButton(context),
     );
   }
 
@@ -278,7 +281,7 @@ class ReportScreeneState extends State<ReportScreen> {
     );
   }
 
-  SizedBox buildSizeBoxFloatingActionButton() {
+  SizedBox buildSizeBoxFloatingActionButton(BuildContext context) {
     return SizedBox(
       height: 50,
       child: FittedBox(
@@ -289,7 +292,20 @@ class ReportScreeneState extends State<ReportScreen> {
           ),
           backgroundColor: Colors.lightBlue,
           splashColor: Colors.indigo,
-          onPressed: () {},
+          onPressed: () {
+            // Navigator.of(context).push(MaterialPageRoute(
+            //   builder: (context) {
+            //     return CreateReportScreen();
+            //   },
+            // ));
+
+            showModalBottomSheet(
+              isScrollControlled: true,
+              context: context, 
+              builder: (context) {
+                return CreateReportScreen();
+              },);
+          },
         ),
       ),
     );

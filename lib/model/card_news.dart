@@ -5,7 +5,7 @@ class CardNews {
 
   static List<CardNews> getCardNews = [
       CardNews(
-        urlImageNews: 'https://cms.depok.go.id/upload/c98ba2e10dde03333b150ab4cd514823.jpeg',
+        urlImageNews: 'https://dinkes.acehprov.go.id/uploads/Flyer_Vaksinasi_Dosis_Lanjutan_atau_Booster.jpg',
         caption: 'Vaksin booster Pfizer terbaru, Daftar segeraa'
       ),
       CardNews(
