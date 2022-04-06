@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+//ignore: must_be_immutable
 class CardLaporanWarga extends StatefulWidget {
   String noTicket, judul, status;
 
@@ -18,7 +19,7 @@ class _CardLaporanWargaState extends State<CardLaporanWarga> {
   Color colorStatusCheck() {
     return (status.toLowerCase() == 'listed') 
     ? Colors.grey : (status.toLowerCase() == 'noticed' 
-    ? Colors.yellow : Colors.green);
+    ? Colors.yellow[700] : Colors.green);
   }
 
   @override

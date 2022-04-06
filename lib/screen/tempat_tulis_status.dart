@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+//ignore: must_be_immutable
 class TempatTulisStatus extends StatefulWidget {
   // field untuk data user
   String fotoProfile, nama, rt, rw, imagePath;

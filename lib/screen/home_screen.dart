@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+//ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   HomeScreen(this.scaffoldKey);
