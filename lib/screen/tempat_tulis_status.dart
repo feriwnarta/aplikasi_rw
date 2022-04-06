@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class TempatTulisStatus extends StatefulWidget {
@@ -41,7 +40,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
       this.imageFile,
       this.isVisible});
 
-  /**
+  /*
    * field untuk menyimpan image picker
    */
   PickedFile imageFile;

@@ -1,24 +1,25 @@
 import 'package:aplikasi_rw/model/card_news.dart';
 import 'package:aplikasi_rw/model/status_user_model.dart';
 import 'package:aplikasi_rw/screen/tempat_tulis_status.dart';
-import 'package:aplikasi_rw/status_item_warga/status_warga.dart';
+import 'package:aplikasi_rw/support_screen/status_warga.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class HomePageScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  HomePageScreen(this.scaffoldKey);
+  HomeScreen(this.scaffoldKey);
 
   @override
-  State<HomePageScreen> createState() => _HomePageScreenState(this.scaffoldKey);
+  State<HomeScreen> createState() => _HomeScreenState(this.scaffoldKey);
 }
 
-class _HomePageScreenState extends State<HomePageScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  _HomePageScreenState(this.scaffoldKey);
+  _HomeScreenState(this.scaffoldKey);
 
   // tinggi utuk app bar
   double heightBackgroundRounded;
@@ -67,7 +68,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
 
-      // sebelumnya ada container yang membukus list view
+      // container yang membukus list view
       body: ListView(
         children: <Widget>[
           Column(
@@ -115,16 +116,20 @@ class _HomePageScreenState extends State<HomePageScreen> {
                               height: mediaSizeHeight * 0.17,
                               width: mediaSizeWidth * 0.6,
                               child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15),
-                                    topRight: Radius.circular(15)),
-                                child: Image(
-                                  fit: BoxFit.cover,
-                                  repeat: ImageRepeat.noRepeat,
-                                  image: NetworkImage(
-                                      CardNews.getCardNews[index].urlImageNews),
-                                ),
-                              )),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15)),
+                                  child: CachedNetworkImage(
+                                    imageUrl: CardNews.getCardNews[index].urlImageNews,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, _) => Container(
+                                      color: Colors.grey,
+                                    ),
+                                    errorWidget: (context, url, _) => Container(
+                                      color: Colors.grey,
+                                      child: Icon(Icons.error, color: Colors.red,),
+                                    ),
+                                  ))),
                           Container(
                             padding:
                                 EdgeInsets.only(left: 10, top: 5, bottom: 10),

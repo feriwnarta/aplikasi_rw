@@ -1,4 +1,5 @@
-import 'package:aplikasi_rw/screen/home_page_screen.dart';
+import 'package:aplikasi_rw/screen/home_screen.dart';
+import 'package:aplikasi_rw/screen/report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -82,7 +83,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
 
         // membuat sidebar dan drawer
         drawer: drawerSideBar(),
-        body: HomePageScreen(scaffoldKey),
+        body: ReportScreen(scaffoldKey),
 
         // bottom navigation bar
         bottomNavigationBar: Container(

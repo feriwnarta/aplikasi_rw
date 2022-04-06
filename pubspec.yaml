@@ -35,6 +35,8 @@ dependencies:
   carousel_slider: ^3.0.0
   #indicator news
   smooth_page_indicator: ^0.2.3
+  # cache untuk image
+  cached_network_image: ^2.5.1
 
 
   # The following adds the Cupertino Icons font to your application.
