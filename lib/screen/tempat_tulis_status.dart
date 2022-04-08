@@ -75,7 +75,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
         ),
         onPressed: () {
           setState(() {
-            !isDelete;
+            // !isDelete;
             isVisible = false;
           });
           Navigator.of(context).pop();
@@ -100,8 +100,10 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
         appBar.preferredSize.height -
         MediaQuery.of(context).padding.top;
 
+    //height: mediaSizeHeightParent * 0.66,
+    
     return Container(
-      height: mediaSizeHeightParent * 0.7,
+      height: (isVisible) ? mediaSizeHeightParent * 0.66 : mediaSizeHeightParent * 0.6,
       child: Scaffold(
           // resizeToAvoidBottomInset: false,
           // resizeToAvoidBottomPadding: false,

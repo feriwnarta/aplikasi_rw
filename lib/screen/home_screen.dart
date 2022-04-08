@@ -92,65 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontFamily: 'poppins', fontSize: 15),
                 ),
               ),
-              CarouselSlider.builder(
-                options: CarouselOptions(
-                    // height: 180,
-                    height: mediaSizeHeight * 0.24,
-                    enlargeCenterPage: true,
-                    disableCenter: false,
-                    viewportFraction: 0.6,
-                    onPageChanged: (index, _) =>
-                        setState(() => _activeIndex = index)),
-                itemCount: CardNews.getCardNews.length,
-                itemBuilder: (context, index, realIndex) {
-                  return ListView(children: [
-                    Card(
-                      color: Colors.blue[50],
-                      elevation: 1.5,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      margin: EdgeInsets.only(right: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                              height: mediaSizeHeight * 0.17,
-                              width: mediaSizeWidth * 0.6,
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      topRight: Radius.circular(15)),
-                                  child: CachedNetworkImage(
-                                    imageUrl: CardNews.getCardNews[index].urlImageNews,
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, _) => Container(
-                                      color: Colors.grey,
-                                    ),
-                                    errorWidget: (context, url, _) => Container(
-                                      color: Colors.grey,
-                                      child: Icon(Icons.error, color: Colors.red,),
-                                    ),
-                                  ))),
-                          Container(
-                            padding:
-                                EdgeInsets.only(left: 10, top: 5, bottom: 10),
-                            // margin: EdgeInsets.only(left: 10, top: 5),
-                            width: 220,
-                            child: Text(
-                              CardNews.getCardNews[index].caption,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              style: TextStyle(
-                                  fontFamily: 'poppins', fontSize: 12),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ]);
-                },
-              ),
+              buildCarouselSliderNews(mediaSizeWidth),
               SizedBox(
                 height: 17,
               ),
@@ -167,72 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             ],
           ),
-
-          // Column(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Padding(
-          //       padding: const EdgeInsets.only(left: 15, top: 5),
-          //       child: Text(
-          //         'News',
-          //         style: TextStyle(fontFamily: 'poppins', fontSize: 15),
-          //       ),
-          //     ),
-          //     Container(
-          //       margin: EdgeInsets.only(top: 10, left: 10),
-          //       height: 180,
-          //       child: ListView.builder(
-          //         physics: ScrollPhysics(),
-          //         scrollDirection: Axis.horizontal,
-          //         shrinkWrap: true,
-          //         itemCount: CardNews.getCardNews.length,
-          //         itemBuilder: (context, index) {
-          //           return Card(
-          //             color: Colors.blue[50],
-          //             elevation: 0,
-          //             shape: RoundedRectangleBorder(
-          //                 borderRadius: BorderRadius.circular(15)),
-          //             margin: EdgeInsets.only(right: 10),
-          //             child: Column(
-          //               crossAxisAlignment: CrossAxisAlignment.start,
-          //               children: [
-          //                 Container(
-          //                     height: 130,
-          //                     width: 220,
-          //                     child: ClipRRect(
-          //                       borderRadius: BorderRadius.only(
-          //                           topLeft: Radius.circular(15),
-          //                           topRight: Radius.circular(15)),
-          //                       child: Image(
-          //                         width: 200,
-          //                         fit: BoxFit.cover,
-          //                         repeat: ImageRepeat.noRepeat,
-          //                         image: NetworkImage(
-          //                             CardNews.getCardNews[index].urlImageNews),
-          //                       ),
-          //                     )),
-          //                 Container(
-          //                   padding: EdgeInsets.only(left: 10, top: 2),
-          //                   // margin: EdgeInsets.only(left: 10, top: 5),
-          //                   width: 220,
-          //                   child: Text(
-          //                     CardNews.getCardNews[index].caption,
-          //                     maxLines: 2,
-          //                     overflow: TextOverflow.ellipsis,
-          //                     softWrap: true,
-          //                     style: TextStyle(
-          //                         fontFamily: 'poppins', fontSize: 12),
-          //                   ),
-          //                 )
-          //               ],
-          //             ),
-          //           );
-          //         },
-          //       ),
-          //     ),
-          //   ],
-          // ),
 
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,6 +145,68 @@ class _HomeScreenState extends State<HomeScreen> {
           // Column(children: listStatus),
         ],
       ),
+    );
+  }
+
+  CarouselSlider buildCarouselSliderNews(double mediaSizeWidth) {
+    return CarouselSlider.builder(
+      options: CarouselOptions(
+          // height: 180,
+          height: mediaSizeHeight * 0.24,
+          enlargeCenterPage: true,
+          // disableCenter: true,
+          viewportFraction: 0.6,
+          onPageChanged: (index, _) => setState(() => _activeIndex = index)),
+      itemCount: CardNews.getCardNews.length,
+      itemBuilder: (context, index, realIndex) {
+        return SingleChildScrollView(
+          child: Card(
+            color: Colors.blue[50],
+            elevation: 1.5,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            margin: EdgeInsets.only(right: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                    height: mediaSizeHeight * 0.17,
+                    width: mediaSizeWidth * 0.6,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
+                        child: CachedNetworkImage(
+                          imageUrl: CardNews.getCardNews[index].urlImageNews,
+                          fit: BoxFit.cover,
+                          placeholder: (context, _) => Container(
+                            color: Colors.grey,
+                          ),
+                          errorWidget: (context, url, _) => Container(
+                            color: Colors.grey,
+                            child: Icon(
+                              Icons.error,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ))),
+                Container(
+                  padding: EdgeInsets.only(left: 10, top: 5, bottom: 10),
+                  // margin: EdgeInsets.only(left: 10, top: 5),
+                  width: 220,
+                  child: Text(
+                    CardNews.getCardNews[index].caption,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: TextStyle(fontFamily: 'poppins', fontSize: 12),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -374,8 +312,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(25),
                   gradient: LinearGradient(
                       colors: [Color(0xff2297F4), Color(0xff3ABBFD)])),
-              child: ListView(children: [
-                Column(
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
                     /**
                      * bagian dalam card status yang isinya dapat berubah
@@ -397,14 +335,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         // gesture detector jika tulis status diklik
                         GestureDetector(
                           onTap: () {
-                            // Navigator.of(context).push(MaterialPageRoute(
-                            //     builder: (context) => TempatTulisStatus(
-                            //           fotoProfile: fotoProfile,
-                            //           nama: userName,
-                            //           rt: rt,
-                            //           rw: rw,
-                            //         )));
-
                             showModalBottomStatus(context, _imageFile, false);
                           },
                           child: Container(
@@ -485,7 +415,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                   ],
                 ),
-              ]),
+              ),
             ),
           ),
         ),

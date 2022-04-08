@@ -39,7 +39,7 @@ class ReportScreeneState extends State<ReportScreen> {
                   Padding(
                     padding: EdgeInsets.only(left: 20, top: 20),
                     child: Text(
-                      'Laporan',
+                      'Report',
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'poppins',
@@ -76,7 +76,7 @@ class ReportScreeneState extends State<ReportScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Laporan Saya',
+                                'My Report',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16),
                               ),
@@ -265,7 +265,7 @@ class ReportScreeneState extends State<ReportScreen> {
               Column(
                 children: [
                   Text(
-                    'Ini adalah bagian untuk membuat laporan, silahkan klik tombol add (+) masukan judul, dan isi laporan beserta gambar kemudian laporan akan segera kami proses.',
+                    'Ini adalah bagian untuk membuat laporan, silahkan klik tombol (+) masukan judul, dan isi laporan beserta gambar kemudian laporan akan segera kami proses.',
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.w600),
                   ),
@@ -273,7 +273,7 @@ class ReportScreeneState extends State<ReportScreen> {
                     height: 10,
                   )
                 ],
-              )
+              ),
             ],
           ),
         ),

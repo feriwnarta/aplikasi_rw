@@ -1,3 +1,4 @@
+import 'package:aplikasi_rw/support_screen/card_laporan_warga_edit.dart';
 import 'package:flutter/material.dart';
 
 //ignore: must_be_immutable
@@ -17,9 +18,11 @@ class _CardLaporanWargaState extends State<CardLaporanWarga> {
   _CardLaporanWargaState({this.noTicket, this.judul, this.status});
 
   Color colorStatusCheck() {
-    return (status.toLowerCase() == 'listed') 
-    ? Colors.grey : (status.toLowerCase() == 'noticed' 
-    ? Colors.yellow[700] : Colors.green);
+    return (status.toLowerCase() == 'listed')
+        ? Colors.grey
+        : (status.toLowerCase() == 'noticed'
+            ? Colors.yellow[700]
+            : Colors.green);
   }
 
   @override
@@ -27,26 +30,42 @@ class _CardLaporanWargaState extends State<CardLaporanWarga> {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 2,
-      child: ListTile(
-        contentPadding: EdgeInsets.only(left: 20, right: 20),
-        leading: Padding(
-          padding: EdgeInsets.only(top: 3),
-          child: Text(
-            noTicket,
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.indigo),
+      child: Material(
+        color: Colors.transparent,
+        elevation: 0,
+        child: InkWell(
+          splashColor: Colors.indigo,
+          borderRadius: BorderRadius.circular(20),
+          child: ListTile(
+            contentPadding: EdgeInsets.only(left: 20, right: 20),
+            leading: Padding(
+              padding: EdgeInsets.only(top: 3),
+              child: Text(
+                noTicket,
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo),
+              ),
+            ),
+            title: Text(
+              // 36 kata
+              judul,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+            ),
+            trailing: Text(
+              status,
+              style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: colorStatusCheck()),
+            ),
           ),
-        ),
-        title: Text(
-          // 36 kata
-          judul,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-        ),
-        trailing: Text(
-          status,
-          style: TextStyle(
-              fontSize: 13, fontWeight: FontWeight.bold, color: colorStatusCheck()),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardLaporanWargaEdit(noTickets: noTicket,)));
+          },
         ),
       ),
     );
