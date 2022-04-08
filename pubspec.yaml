@@ -24,8 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   
-  # navigasi bar bawah curvved tanpa null safety
-  curved_navigation_bar: ^0.3.4
+  # navigasi google
   google_nav_bar: ^4.0.2
   #font awes
   font_awesome_flutter: ^8.12.0
@@ -37,6 +36,8 @@ dependencies:
   smooth_page_indicator: ^0.2.3
   # cache untuk image
   cached_network_image: ^2.5.1
+  # page transition animations
+  animations: ^1.1.2
 
 
   # The following adds the Cupertino Icons font to your application.

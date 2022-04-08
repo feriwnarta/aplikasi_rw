@@ -78,7 +78,7 @@ class ReportScreeneState extends State<ReportScreen> {
                               Text(
                                 'My Report',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
+                                    color: Colors.white, fontSize: 16, fontFamily: 'poppins'),
                               ),
                               Row(
                                 children: [

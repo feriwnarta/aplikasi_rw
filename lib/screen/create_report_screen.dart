@@ -33,7 +33,12 @@ class _CreateReportScreenState extends State<CreateReportScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text('Add Report'),
+          title: Text(
+            'Add Report',
+            style: TextStyle(
+              fontFamily: 'poppins' 
+            ),
+            ),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(

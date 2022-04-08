@@ -1,4 +1,5 @@
 import 'package:aplikasi_rw/support_screen/card_laporan_warga_edit.dart';
+import 'package:aplikasi_rw/transition_screen/slide_transition.dart';
 import 'package:flutter/material.dart';
 
 //ignore: must_be_immutable
@@ -64,7 +65,12 @@ class _CardLaporanWargaState extends State<CardLaporanWarga> {
             ),
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CardLaporanWargaEdit(noTickets: noTicket,)));
+            Navigator.of(context).push(
+              SlideTranstionRoute(
+                child: CardLaporanWargaEdit(noTickets: noTicket,),
+                direction: AxisDirection.right
+              )
+            );
           },
         ),
       ),

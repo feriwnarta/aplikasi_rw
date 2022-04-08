@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:aplikasi_rw/screen/home_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen.dart';
 import 'package:flutter/material.dart';
@@ -67,8 +68,6 @@ class _TemplateScreenState extends State<TemplateScreen> {
         children: screens,
         index: _index,
       ),
-      // body: ReportScreen(scaffoldKey),
-      // body: HomeScreen(scaffoldKey),
 
       // bottom navigation bar
       bottomNavigationBar: Container(
@@ -96,27 +95,27 @@ class _TemplateScreenState extends State<TemplateScreen> {
           padding: EdgeInsets.symmetric(
               vertical: heightPaddingGnav * 0.019,
               horizontal: widthPaddingGnav * 0.04),
-          tabs: [
+          tabs: <GButton>[
             GButton(
               icon: FontAwesomeIcons.home,
-              text: 'Home',
+              // text: 'Home',
               // iconSize: 25,
             ),
             GButton(
               icon: FontAwesomeIcons.clipboardList,
-              text: 'Report',
+              // text: 'Report',
             ),
             GButton(
               icon: FontAwesomeIcons.wallet,
-              text: 'Payment',
+              // text: 'Payment',
             ),
             GButton(
               icon: FontAwesomeIcons.fileInvoiceDollar,
-              text: 'Bills',
+              // text: 'Bills',
             ),
             GButton(
               icon: Icons.thumb_up,
-              text: 'Recommen',
+              // text: 'Recommen',
             )
           ],
           selectedIndex: _index,
