@@ -1,22 +1,12 @@
-import 'package:aplikasi_rw/support_screen/card_laporan_warga_edit.dart';
-import 'package:aplikasi_rw/transition_screen/slide_transition.dart';
+import 'package:aplikasi_rw/screen/support_screen/card_laporan_warga_edit.dart';
+import 'package:aplikasi_rw/screen/transition_screen/slide_transition.dart';
 import 'package:flutter/material.dart';
 
 //ignore: must_be_immutable
-class CardLaporanWarga extends StatefulWidget {
+class CardLaporanWarga extends StatelessWidget {
   String noTicket, judul, status;
 
   CardLaporanWarga({this.noTicket, this.judul, this.status});
-
-  @override
-  State<CardLaporanWarga> createState() =>
-      _CardLaporanWargaState(noTicket: noTicket, judul: judul, status: status);
-}
-
-class _CardLaporanWargaState extends State<CardLaporanWarga> {
-  String noTicket, judul, status;
-
-  _CardLaporanWargaState({this.noTicket, this.judul, this.status});
 
   Color colorStatusCheck() {
     return (status.toLowerCase() == 'listed')
@@ -65,12 +55,13 @@ class _CardLaporanWargaState extends State<CardLaporanWarga> {
             ),
           ),
           onTap: () {
-            Navigator.of(context).push(
-              SlideTranstionRoute(
-                child: CardLaporanWargaEdit(noTickets: noTicket,),
-                direction: AxisDirection.right
-              )
-            );
+            if (status.toLowerCase() == 'listed') {
+              Navigator.of(context).push(SlideTranstionRoute(
+                  child: CardLaporanWargaEdit(
+                    noTickects: noTicket,
+                  ),
+                  direction: AxisDirection.right));
+            }
           },
         ),
       ),

@@ -1,52 +1,24 @@
 import 'dart:io';
 
+import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 //ignore: must_be_immutable
-class TempatTulisStatus extends StatefulWidget {
-  // field untuk data user
-  String fotoProfile, nama, rt, rw, imagePath;
-  double mediaSizeHeightParent;
-  PickedFile imageFile;
-  bool isVisible;
-
+class TempatTulisStatus extends StatelessWidget {
   TempatTulisStatus(
       {this.fotoProfile,
       this.nama,
       this.rt,
       this.rw,
       this.mediaSizeHeightParent,
-      this.imageFile,
-      this.isVisible});
-
-  @override
-  State<TempatTulisStatus> createState() => _TempatTulisStatusState(
-      fotoProfile: fotoProfile,
-      nama: this.nama,
-      rt: this.rt,
-      rw: this.rw,
-      mediaSizeHeightParent: mediaSizeHeightParent,
-      imageFile: imageFile,
-      isVisible: isVisible);
-}
-
-class _TempatTulisStatusState extends State<TempatTulisStatus> {
-  _TempatTulisStatusState(
-      {this.fotoProfile,
-      this.nama,
-      this.rt,
-      this.rw,
-      this.mediaSizeHeightParent,
-      this.imageFile,
-      this.isVisible});
+      });
 
   /*
    * field untuk menyimpan image picker
    */
-  PickedFile imageFile;
   final _picker = ImagePicker();
-  String imagePath;
 
   // app bar disimpan ke variabel untuk diambil tingginya
   AppBar appBar;
@@ -57,15 +29,14 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
   // height bottom image picker
   double heightBottomImagePicker;
 
-  // field untuk visibility container hapus gambar
-  bool isVisible = false;
-  bool isDelete = false;
-
   // media query tinggi dari parent nya
   double mediaSizeHeightParent;
 
-  @override
+  TempatTulisStatusBloc bloc;
+
   Widget build(BuildContext context) {
+    bloc = BlocProvider.of<TempatTulisStatusBloc>(context);
+
     appBar = AppBar(
       leading: IconButton(
         icon: Icon(
@@ -74,10 +45,11 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
           size: 30,
         ),
         onPressed: () {
-          setState(() {
-            // !isDelete;
-            isVisible = false;
-          });
+          // setState(() {
+          //   isVisible = false;
+          //   imageFile = null;
+          // });
+          bloc.add(TulisStatusEvent(imageFile: null, isVisibility: false));
           Navigator.of(context).pop();
         },
       ),
@@ -101,98 +73,102 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
         MediaQuery.of(context).padding.top;
 
     //height: mediaSizeHeightParent * 0.66,
-    
-    return Container(
-      height: (isVisible) ? mediaSizeHeightParent * 0.66 : mediaSizeHeightParent * 0.6,
-      child: Scaffold(
-          // resizeToAvoidBottomInset: false,
-          // resizeToAvoidBottomPadding: false,
-          appBar: appBar,
-          body: ListView(children: [
-            Column(
-              children: [
-                // header informasi user
-                SizedBox(
-                  width: mediaSizeWidth,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                            top: BorderSide(color: Colors.grey[200]),
-                            bottom: BorderSide(color: Colors.grey[200]))),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              // avatar
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundImage: NetworkImage(fotoProfile),
-                              ),
-                              headerName(),
-                              Material(
-                                color: Colors.transparent,
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.image,
-                                    color: Colors.green[400],
-                                  ),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) =>
-                                            bottomImagePicker(context));
-                                  },
+
+    return BlocBuilder<TempatTulisStatusBloc, TempatTulisStatusState>(
+      builder: (context, state) => Container(
+        height: (state.isVisible)
+            ? mediaSizeHeightParent * 0.66
+            : mediaSizeHeightParent * 0.6,
+        child: Scaffold(
+            // resizeToAvoidBottomInset: false,
+            // resizeToAvoidBottomPadding: false,
+            appBar: appBar,
+            body: ListView(children: [
+              Column(
+                children: [
+                  // header informasi user
+                  SizedBox(
+                    width: mediaSizeWidth,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                              top: BorderSide(color: Colors.grey[200]),
+                              bottom: BorderSide(color: Colors.grey[200]))),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                // avatar
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage: NetworkImage(fotoProfile),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                headerName(),
+                                Material(
+                                  color: Colors.transparent,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.image,
+                                      color: Colors.green[400],
+                                    ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) =>
+                                              bottomImagePicker(context));
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                textFieldTulisStatus(mediaSizeHeight),
+                  textFieldTulisStatus(mediaSizeHeight),
 
-                // SizedBox(
-                //   height: mediaSizeHeight * 0.4,
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //         color: Colors.white,
-                //         border: Border(
-                //             bottom: BorderSide(color: Colors.grey[200]))),
-                //     child: Padding(
-                //       padding: EdgeInsets.only(left: 10),
-                //       child: TextField(
-                //         maxLines: 9,
-                //         decoration: InputDecoration(
-                //             border: InputBorder.none,
-                //             hintText: 'Apa yang anda pikirkan ?'),
-                //         onTap: () => print(MediaQuery.of(context).viewInsets.bottom)
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                  // SizedBox(
+                  //   height: mediaSizeHeight * 0.4,
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //         color: Colors.white,
+                  //         border: Border(
+                  //             bottom: BorderSide(color: Colors.grey[200]))),
+                  //     child: Padding(
+                  //       padding: EdgeInsets.only(left: 10),
+                  //       child: TextField(
+                  //         maxLines: 9,
+                  //         decoration: InputDecoration(
+                  //             border: InputBorder.none,
+                  //             hintText: 'Apa yang anda pikirkan ?'),
+                  //         onTap: () => print(MediaQuery.of(context).viewInsets.bottom)
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
 
-                // gambar jika diupload
-                gambarUploadStatus(mediaSizeWidth, mediaSizeHeight),
+                  // gambar jika diupload
+                  gambarUploadStatus(mediaSizeWidth, mediaSizeHeight),
 
-                // divider untuk memberikan batas antara container gambar yg di upload dengan button bawahnya
-                Divider(
-                  height: 2,
-                ),
+                  // divider untuk memberikan batas antara container gambar yg di upload dengan button bawahnya
+                  Divider(
+                    height: 2,
+                  ),
 
-                // button untuk upload gambar / pilih gambar
-                buttonPilihGambar(mediaSizeHeight, context),
+                  // button untuk upload gambar / pilih gambar
+                  buttonPilihGambar(mediaSizeHeight, context),
 
-                // button untuk kirim posting status
-                buttonPosting(mediaSizeHeight)
-              ],
-            ),
-          ])),
+                  // button untuk kirim posting status
+                  buttonPosting(mediaSizeHeight)
+                ],
+              ),
+            ])),
+      ),
     );
   }
 
@@ -244,57 +220,59 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
         showModalBottomSheet(
             context: context,
             builder: ((builder) => bottomImagePicker(context)));
-        // untuk menguabh is delete menjadi false, sehingga gambar akan kembali muncul
-        // saat dipilih ulang
-        if (isDelete) isDelete = !isDelete;
       },
     );
   }
 
-  Visibility gambarUploadStatus(double mediaSizeWidth, double mediaSizeHeight) {
-    return Visibility(
-      visible: isVisible,
-      child: Container(
-        width: mediaSizeWidth,
-        color: Colors.white,
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: Image(
-                alignment: Alignment.topLeft,
-                repeat: ImageRepeat.noRepeat,
-                image: (imageFile != null && !isDelete)
-                    ? FileImage(File(imageFile.path))
-                    : AssetImage(''),
-                // image: (imageFile != null)
-                //     ? FileImage(File(imageFile.path))
-                //     : AssetImage(''),
-                height: mediaSizeHeight * 0.08,
-                width: mediaSizeWidth * 0.2,
+  BlocBuilder gambarUploadStatus(
+      double mediaSizeWidth, double mediaSizeHeight) {
+    return BlocBuilder<TempatTulisStatusBloc, TempatTulisStatusState>(
+      builder: (context, state) => Visibility(
+        visible: state.isVisible,
+        child: Container(
+          width: mediaSizeWidth,
+          color: Colors.white,
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Image(
+                  alignment: Alignment.topLeft,
+                  repeat: ImageRepeat.noRepeat,
+                  image: (state.imageFile != null)
+                      ? FileImage(File(state.imageFile.path))
+                      : AssetImage(''),
+                  // image: (imageFile != null)
+                  //     ? FileImage(File(imageFile.path))
+                  //     : AssetImage(''),
+                  height: mediaSizeHeight * 0.08,
+                  width: mediaSizeWidth * 0.2,
+                ),
               ),
-            ),
 
-            //  button hapus gambar
-            Padding(
-              padding: const EdgeInsets.only(left: 15),
-              child: RaisedButton(
-                  elevation: 0,
-                  color: Colors.blueGrey[100],
-                  child: Text(
-                    'Hapus',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  onPressed: () {
-                    // url foto dari container foto status dikosongin
-                    // widget container ini akan di hide
-                    setState(() {
-                      isVisible = false;
-                      isDelete = !isDelete;
-                    });
-                  }),
-            ),
-          ],
+              //  button hapus gambar
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: RaisedButton(
+                    elevation: 0,
+                    color: Colors.blueGrey[100],
+                    child: Text(
+                      'Hapus',
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    onPressed: () {
+                      // url foto dari container foto status dikosongin
+                      // widget container ini akan di hide
+                      // setState(() {
+                      //   isVisible = false;
+                      //   imageFile = null;
+                      // });
+                      bloc.add(TulisStatusEvent(
+                          imageFile: null, isVisibility: false));
+                    }),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -401,12 +379,15 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
 
   void getImage(ImageSource source) async {
     final pickedFile = await _picker.getImage(source: source);
-    setState(() {
-      if (pickedFile != null) {
-        imageFile = pickedFile;
-        isVisible = true;
-        imagePath = imageFile.path;
-      }
-    });
+    // setState(() {
+    //   if (pickedFile != null) {
+    //     imageFile = pickedFile;
+    //     isVisible = true;
+    //   }
+    // });
+
+    if (pickedFile != null) {
+      bloc.add(TulisStatusEvent(imageFile: pickedFile, isVisibility: true));
+    }
   }
 }

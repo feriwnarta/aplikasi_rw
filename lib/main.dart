@@ -1,10 +1,15 @@
-import 'package:animations/animations.dart';
+import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
+import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
+import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
+import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
+
+import 'bloc/status_user_bloc.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,11 +18,29 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // debug banner
-      debugShowCheckedModeBanner: false,
-      home: TemplateScreen(),
-      theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CarouselBloc>(
+          create: (context) => CarouselBloc(0),
+        ),
+        BlocProvider<TempatTulisStatusBloc>(
+          create: (context) => TempatTulisStatusBloc(
+              TempatTulisStatusState(imageFile: null, isVisible: false)),
+        ),
+        BlocProvider<StatusUserBloc>(
+          create: (context) =>
+              StatusUserBloc(StatusUserUnitialized())..add(StatusUserEvent()),
+        ), // fungsi ..add akan langusung menjalankan blocnya
+        BlocProvider<ReportScreenBloc>(
+          create: (context) => ReportScreenBloc(ReportState()),
+        )
+      ],
+      child: MaterialApp(
+        // debug banner
+        debugShowCheckedModeBanner: false,
+        home: TemplateScreen(),
+        theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+      ),
     );
   }
 }
@@ -45,7 +68,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    screens = [HomeScreen(scaffoldKey), ReportScreen(scaffoldKey)];
+    screens = [HomeScreen(scaffoldKey), ReportScreen(scaffoldKey), BillsScreen()];
 
     heightPaddingGnav =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
@@ -69,82 +92,98 @@ class _TemplateScreenState extends State<TemplateScreen> {
         index: _index,
       ),
 
-      // bottom navigation bar
       bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-        margin: EdgeInsets.symmetric(vertical: 2),
         decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 5,
-              )
-            ]),
-        child: GNav(
-          curve: Curves.easeIn,
-          duration: Duration(microseconds: 50),
-          iconSize: 24,
-          gap: 8,
-          color: Colors.blueGrey
-              .withOpacity(0.6), // warna icon dan text yang tidak aktif
-          activeColor: Colors.white, // warna icon dan text jika aktif
-          tabBackgroundColor: Color(0xff2297F4).withOpacity(0.9),
-          padding: EdgeInsets.symmetric(
-              vertical: heightPaddingGnav * 0.019,
-              horizontal: widthPaddingGnav * 0.04),
-          tabs: <GButton>[
-            GButton(
-              icon: FontAwesomeIcons.home,
-              // text: 'Home',
-              // iconSize: 25,
-            ),
-            GButton(
-              icon: FontAwesomeIcons.clipboardList,
-              // text: 'Report',
-            ),
-            GButton(
-              icon: FontAwesomeIcons.wallet,
-              // text: 'Payment',
-            ),
-            GButton(
-              icon: FontAwesomeIcons.fileInvoiceDollar,
-              // text: 'Bills',
-            ),
-            GButton(
-              icon: Icons.thumb_up,
-              // text: 'Recommen',
-            )
-          ],
-          selectedIndex: _index,
-          onTabChange: (index) {
+            boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5)]),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          iconSize: 25,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.black54,
+          currentIndex: _index,
+          onTap: (index) {
             setState(() {
               _index = index;
             });
           },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.clipboardList), label: 'Report'),
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.fileInvoiceDollar), label: 'Bills'),
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.wallet), label: 'Payment'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.thumb_up), label: 'Recomendation'),
+          ],
         ),
       ),
+
+      // bottom navigation bar
+      // bottomNavigationBar: Container(
+      //   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      //   margin: EdgeInsets.symmetric(vertical: 2),
+      //   decoration: BoxDecoration(
+      //       color: Colors.white,
+      //       borderRadius: BorderRadius.only(
+      //           topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+      //       boxShadow: [
+      //         BoxShadow(
+      //           color: Colors.grey,
+      //           blurRadius: 5,
+      //         )
+      //       ]),
+      //   child: GNav(
+      //     curve: Curves.easeIn,
+      //     duration: Duration(microseconds: 50),
+      //     iconSize: 24,
+      //     gap: 8,
+      //     color: Colors.blueGrey
+      //         .withOpacity(0.6), // warna icon dan text yang tidak aktif
+      //     activeColor: Colors.white, // warna icon dan text jika aktif
+      //     tabBackgroundColor: Color(0xff2297F4).withOpacity(0.9),
+      //     padding: EdgeInsets.symmetric(
+      //         vertical: heightPaddingGnav * 0.019,
+      //         horizontal: widthPaddingGnav * 0.04),
+      //     tabs: <GButton>[
+      //       GButton(
+      //         icon: FontAwesomeIcons.home,
+      //         // text: 'Home',
+      //         // iconSize: 25,
+      //       ),
+      //       GButton(
+      //         icon: FontAwesomeIcons.clipboardList,
+      //         // text: 'Report',
+      //       ),
+      //       GButton(
+      //         icon: FontAwesomeIcons.wallet,
+      //         // text: 'Payment',
+      //       ),
+      //       GButton(
+      //         icon: FontAwesomeIcons.fileInvoiceDollar,
+      //         // text: 'Bills',
+      //       ),
+      //       GButton(
+      //         icon: Icons.thumb_up,
+      //         // text: 'Recommen',
+      //       )
+      //     ],
+      //     selectedIndex: _index,
+      //     onTabChange: (index) {
+      //       setState(() {
+      //         _index = index;
+      //       });
+      //     },
+      //   ),
+      // ),
     );
   }
-
-  // Theme bottomNavigationBarCurved(BuildContext context) {
-  //   return Theme(
-  //       data: Theme.of(context).copyWith(
-  //         iconTheme: IconThemeData(color: Colors.white),
-  //       ),
-  //       child: CurvedNavigationBar(
-  //         height: MediaQuery.of(context).size.height * 0.1 / 1.7,
-  //         items: itemsTabBottomBar,
-  //         color: Colors.blue[400],
-  //         // color: Colors.blueGrey,
-  //         buttonBackgroundColor: Colors.blueAccent[200],
-  //         backgroundColor: Colors.transparent,
-  //         animationDuration: Duration(milliseconds: 300),
-  //       ),
-  //     );
-  // }
 
   Drawer drawerSideBar() {
     return Drawer(

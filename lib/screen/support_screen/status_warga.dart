@@ -1,42 +1,11 @@
 import 'package:flutter/material.dart';
 
 //ignore: must_be_immutable
-class StatusWarga extends StatefulWidget {
-  String namaUser,
-      lamaUpload,
-      urlFotoStatus,
-      fotoProfile,
-      caption,
-      jumlahLike,
-      jumlahKomen;
-
-  // Constructor untuk menerima data
-  StatusWarga(
-      {this.namaUser,
-      this.lamaUpload,
-      this.urlFotoStatus,
-      this.fotoProfile,
-      this.caption,
-      this.jumlahLike,
-      this.jumlahKomen});
-
-  @override
-  State<StatusWarga> createState() => _StatusWargaState(
-        namaUser: namaUser,
-        lamaUpload: lamaUpload,
-        urlFotoStatus: urlFotoStatus,
-        fotoProfile: fotoProfile,
-        caption: caption,
-        jumlahLike: jumlahLike,
-        jumlahKomen: jumlahKomen,
-      );
-}
-
-class _StatusWargaState extends State<StatusWarga> {
+class StatusWarga extends StatelessWidget {
   // String namaUser, rw, waktuUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
 
   // Container untuk data
-  _StatusWargaState({
+  StatusWarga({
     this.namaUser,
     this.lamaUpload,
     this.urlFotoStatus,

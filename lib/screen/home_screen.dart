@@ -1,26 +1,21 @@
+import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
+import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
+import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/card_news.dart';
-import 'package:aplikasi_rw/model/status_user_model.dart';
+import 'package:aplikasi_rw/screen/support_screen/status_warga.dart';
 import 'package:aplikasi_rw/screen/tempat_tulis_status.dart';
-import 'package:aplikasi_rw/support_screen/status_warga.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 //ignore: must_be_immutable
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   HomeScreen(this.scaffoldKey);
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState(this.scaffoldKey);
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  var scaffoldKey = GlobalKey<ScaffoldState>();
-  _HomeScreenState(this.scaffoldKey);
 
   // tinggi utuk app bar
   double heightBackgroundRounded;
@@ -46,17 +41,32 @@ class _HomeScreenState extends State<HomeScreen> {
   bool statusPicker = false;
 
   // untuk image picker
-  PickedFile _imageFile;
   final _picker = ImagePicker();
   String imagePath = '';
-  bool isVisible;
   PickedFile imageFile;
 
-  // index active untuk indicator news
-  int _activeIndex = 0;
+  // bloc
+  CarouselBloc blocColor;
+  TempatTulisStatusBloc blocTulisStatus;
+  StatusUserBloc blocStatusUser;
+
+  // scroll controller
+  ScrollController controller = ScrollController();
+
+  void onScroll() {
+    if (controller.position.maxScrollExtent == controller.position.pixels) {
+      blocStatusUser.add(StatusUserEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    blocColor = BlocProvider.of<CarouselBloc>(context);
+    blocTulisStatus = BlocProvider.of<TempatTulisStatusBloc>(context);
+    blocStatusUser = BlocProvider.of<StatusUserBloc>(context);
+
+    controller.addListener(onScroll);
+
     mediaSizeHeight =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     final mediaSizeWidth = MediaQuery.of(context).size.width;
@@ -71,13 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // container yang membukus list view
       body: ListView(
+        controller: controller,
         children: <Widget>[
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Stack(children: [
                 // header app
-                headerBackground(mediaSizeWidth),
+                headerBackground(mediaSizeWidth, context),
               ]),
             ],
           ),
@@ -97,14 +108,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 17,
               ),
               Center(
-                child: AnimatedSmoothIndicator(
-                  activeIndex: _activeIndex,
-                  count: CardNews.getCardNews.length,
-                  effect: ExpandingDotsEffect(
-                      dotWidth: 10,
-                      dotHeight: 10,
-                      activeDotColor: Colors.lightBlue,
-                      dotColor: Colors.grey[350]),
+                child: BlocBuilder<CarouselBloc, int>(
+                  builder: (context, index) => AnimatedSmoothIndicator(
+                    activeIndex: index,
+                    count: CardNews.getCardNews.length,
+                    effect: ExpandingDotsEffect(
+                        dotWidth: 10,
+                        dotHeight: 10,
+                        activeDotColor: Colors.lightBlue,
+                        dotColor: Colors.grey[350]),
+                  ),
                 ),
               )
             ],
@@ -120,24 +133,56 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontFamily: 'poppins', fontSize: 15),
                 ),
               ),
-              ListView.builder(
-                physics: ScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: StatusUserModel.getAllStatus.length,
-                itemBuilder: (context, index) {
-                  return StatusWarga(
-                    namaUser: StatusUserModel.getAllStatus[index].userName,
-                    fotoProfile: StatusUserModel.getAllStatus[index].urlProfile,
-                    urlFotoStatus:
-                        StatusUserModel.getAllStatus[index].urlFotoStatus,
-                    caption: StatusUserModel.getAllStatus[index].caption,
-                    lamaUpload: StatusUserModel.getAllStatus[index].lamaUpload,
-                    jumlahKomen:
-                        StatusUserModel.getAllStatus[index].jumlahKomen,
-                    jumlahLike: StatusUserModel.getAllStatus[index].jumlahLike,
-                  );
+              BlocBuilder<StatusUserBloc, StatusUserState>(
+                builder: (context, state) {
+                  if (state is StatusUserUnitialized) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: SizedBox(
+                          width: 30,
+                          height: 30,
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  } else {
+                    StatusUserLoaded statusLoaded = state as StatusUserLoaded;
+                    return ListView.builder(
+                      physics: ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: (statusLoaded.isMaxReached)
+                          ? statusLoaded.listStatusUser.length
+                          : statusLoaded.listStatusUser.length + 1,
+                      itemBuilder: (context, index) => (index <
+                              statusLoaded.listStatusUser.length)
+                          ? StatusWarga(
+                              namaUser:
+                                  statusLoaded.listStatusUser[index].userName,
+                              caption:
+                                  statusLoaded.listStatusUser[index].caption,
+                              fotoProfile:
+                                  'https://akcdn.detik.net.id/visual/2022/02/04/ainun-najib-1_169.jpeg?w=650',
+                              urlFotoStatus:
+                                  'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
+                              jumlahKomen: '12',
+                              lamaUpload: '12 menit',
+                              jumlahLike: '10',
+                            )
+                          : Container(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            ),
+                    );
+                  }
                 },
-              ),
+              )
             ],
           )
 
@@ -156,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
           enlargeCenterPage: true,
           // disableCenter: true,
           viewportFraction: 0.6,
-          onPageChanged: (index, _) => setState(() => _activeIndex = index)),
+          onPageChanged: (index, _) => blocColor.add(index)),
       itemCount: CardNews.getCardNews.length,
       itemBuilder: (context, index, realIndex) {
         return SingleChildScrollView(
@@ -210,25 +255,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Container headerBackground(double mediaSizeWidth) {
+  Container headerBackground(double mediaSizeWidth, BuildContext context) {
     return Container(
         width: mediaSizeWidth,
         // height: heightBackgroundRounded,
         color: Colors.white,
-        // decoration: BoxDecoration(
-        //     gradient: LinearGradient(
-        //         colors: [Color(0xff2196F3), Colors.lightBlueAccent],
-        //         begin: Alignment.topLeft,
-        //         end: Alignment.topRight),
-
-        //     // color: Color(0xff2196F3),
-        //     // shadow untuk belakang rounded circle
-        //     // boxShadow: [
-        //     //   BoxShadow(color: Colors.lightBlue, blurRadius: 20)
-        //     // ],
-        //     borderRadius: BorderRadius.only(
-        //       bottomLeft: Radius.circular(20),
-        //     )),
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,9 +324,6 @@ class _HomeScreenState extends State<HomeScreen> {
     double paddingHeightCard =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
 
-    //height: heightCardStatus,
-    //width: MediaQuery.of(context).size.width * 0.95,
-
     return Padding(
       padding: EdgeInsets.only(top: paddingHeightCard * 0.02),
       child: Align(
@@ -325,9 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: EdgeInsets.only(left: 20, top: 20),
                           child: CircleAvatar(
                             radius: 35,
-                            backgroundImage: NetworkImage(
-                                // gambar profile user
-                                fotoProfile),
+                            backgroundImage: CachedNetworkImageProvider(fotoProfile),
                           ),
                         ),
 
@@ -335,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         // gesture detector jika tulis status diklik
                         GestureDetector(
                           onTap: () {
-                            showModalBottomStatus(context, _imageFile, false);
+                            showModalBottomStatus(context);
                           },
                           child: Container(
                             margin: EdgeInsets.only(top: 20, left: 10),
@@ -374,8 +400,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () {
                                 getImage(ImageSource.camera).then((value) {
                                   if (statusPicker)
-                                    showModalBottomStatus(
-                                        context, imageFile, isVisible);
+                                    showModalBottomStatus(context);
                                 });
                               },
                               icon: Icon(
@@ -397,8 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () {
                                 getImage(ImageSource.gallery).then((value) {
                                   if (statusPicker)
-                                    showModalBottomStatus(
-                                        context, imageFile, isVisible);
+                                    showModalBottomStatus(context);
                                 });
                               },
                               icon: Icon(
@@ -423,8 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future showModalBottomStatus(
-      BuildContext context, PickedFile imageFile, bool isVisible) {
+  Future showModalBottomStatus(BuildContext context) {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
@@ -434,124 +457,15 @@ class _HomeScreenState extends State<HomeScreen> {
               rt: rt,
               rw: rw,
               mediaSizeHeightParent: mediaSizeHeight,
-              imageFile: _imageFile,
-              isVisible: isVisible,
             ));
   }
 
   Future getImage(ImageSource source) async {
     final pickedFile = await _picker.getImage(source: source);
-    setState(() {
-      if (pickedFile != null) {
-        _imageFile = pickedFile;
-        isVisible = true;
-        statusPicker = true;
-      }
-    });
+    if (pickedFile != null) {
+      blocTulisStatus
+          .add(TulisStatusEvent(imageFile: pickedFile, isVisibility: true));
+      statusPicker = true;
+    }
   }
-
-  /**
-   * versi Sebelumnya
-   */
-
-  // Padding cardStatus(BuildContext context) {
-  //   return Padding(
-  //     padding: EdgeInsets.only(top: positionedCardStatus),
-  //     child: Align(
-  //       alignment: Alignment.center,
-  //       child: Stack(children: [
-  //         SizedBox(
-  //           height: heightCardStatus,
-  //           width: MediaQuery.of(context).size.width * 0.95,
-  //           child: Card(
-  //             elevation: 10,
-  //             color: Colors.white,
-  //             shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(20)),
-  //             child: Column(
-  //               children: [
-  //                 /**
-  //                            * bagian dalam card status yang isinya dapat berubah
-  //                            * mulai dari avatar, nama user, dan rw user
-  //                            */
-  //                 Row(
-  //                   children: [
-  //                     Padding(
-  //                       padding: EdgeInsets.only(left: 20, top: 20),
-  //                       child: CircleAvatar(
-  //                         radius: 35,
-  //                         backgroundImage: NetworkImage(
-  //                             // gambar profile user
-  //                             fotoProfile),
-  //                       ),
-  //                     ),
-
-  //                     // container ini berisi tempat menulis status
-  //                     // gesture detector jika tulis status diklik
-  //                     GestureDetector(
-  //                       onTap: () {
-  //                         // Navigator.of(context).push(MaterialPageRoute(
-  //                         //     builder: (context) => TempatTulisStatus(
-  //                         //           fotoProfile: fotoProfile,
-  //                         //           nama: userName,
-  //                         //           rt: rt,
-  //                         //           rw: rw,
-  //                         //         )));
-
-  //                         showModalBottomSheet(
-  //                             isScrollControlled: true,
-  //                             context: context,
-  //                             builder: (builder) => TempatTulisStatus(
-  //                                   fotoProfile: fotoProfile,
-  //                                   nama: userName,
-  //                                   rt: rt,
-  //                                   rw: rw,
-  //                                   mediaSizeHeightParent: mediaSizeHeight,
-  //                                 ));
-  //                       },
-  //                       child: Container(
-  //                         margin: EdgeInsets.only(top: 20, left: 10),
-  //                         padding: EdgeInsets.only(top: 10),
-  //                         height: 40,
-  //                         width: MediaQuery.of(context).size.width * 0.58,
-  //                         child: Text(
-  //                           'Apa yang anda sedang pikirkan ?',
-  //                           style: TextStyle(
-  //                               color: Colors.black,
-  //                               fontSize:
-  //                                   MediaQuery.of(context).size.width * 0.035),
-  //                           textAlign: TextAlign.center,
-  //                         ),
-  //                         decoration: BoxDecoration(
-  //                             color: Colors.grey[200],
-  //                             borderRadius: BorderRadius.circular(40)),
-  //                       ),
-  //                     )
-  //                   ],
-  //                 ),
-  //                 Row(
-  //                   children: [
-  //                     Expanded(
-  //                         child: Padding(
-  //                       padding: EdgeInsets.only(left: 20, right: 20, top: 15),
-  //                       child: Text(
-  //                         '$userName $rt $rw',
-  //                         style: TextStyle(
-  //                           color: Colors.teal,
-  //                           fontWeight: FontWeight.w700,
-  //                         ),
-  //                         maxLines: 2,
-  //                       ),
-  //                     ))
-  //                   ],
-  //                 )
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ]),
-  //     ),
-  //   );
-  // }
-
 }
