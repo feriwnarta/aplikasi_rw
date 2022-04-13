@@ -1,6 +1,9 @@
+import 'package:aplikasi_rw/bloc/bills_reguler_screen_bloc.dart';
+import 'package:aplikasi_rw/bloc/bills_tab_bloc.dart';
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
+import 'package:aplikasi_rw/model/bills_history_model.dart';
 import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen.dart';
@@ -33,13 +36,20 @@ class MyApp extends StatelessWidget {
         ), // fungsi ..add akan langusung menjalankan blocnya
         BlocProvider<ReportScreenBloc>(
           create: (context) => ReportScreenBloc(ReportState()),
-        )
+        ),
+        BlocProvider<BillTabColorBloc>(
+          create: (context) => BillTabColorBloc(Colors.red),
+        ),
+        BlocProvider<BillRegulerBloc>(
+          create: (context) =>
+              BillRegulerBloc(BillsHistoryModel.getBillsHistory()),
+        ),
       ],
       child: MaterialApp(
         // debug banner
         debugShowCheckedModeBanner: false,
         home: TemplateScreen(),
-        theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+        theme: ThemeData(scaffoldBackgroundColor: Colors.white), // set background color theme
       ),
     );
   }
@@ -68,14 +78,18 @@ class _TemplateScreenState extends State<TemplateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    screens = [HomeScreen(scaffoldKey), ReportScreen(scaffoldKey), BillsScreen()];
+    screens = [
+      HomeScreen(scaffoldKey),
+      ReportScreen(scaffoldKey),
+      BillScreen()
+    ];
 
     heightPaddingGnav =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     widthPaddingGnav = MediaQuery.of(context).size.width;
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
+      statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
 
