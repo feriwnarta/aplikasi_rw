@@ -1,7 +1,7 @@
 import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
 import 'package:aplikasi_rw/model/card_laporan_warga_model.dart';
-import 'package:aplikasi_rw/screen/support_screen/create_report_screen.dart';
-import 'package:aplikasi_rw/screen/support_screen/card_laporan_warga.dart';
+import 'package:aplikasi_rw/screen/report_screen/create_report_screen.dart';
+import 'package:aplikasi_rw/screen/home_screen/card_laporan_warga.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

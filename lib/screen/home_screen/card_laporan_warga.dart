@@ -1,4 +1,4 @@
-import 'package:aplikasi_rw/screen/support_screen/card_laporan_warga_edit.dart';
+import 'package:aplikasi_rw/screen/home_screen/card_laporan_warga_edit.dart';
 import 'package:aplikasi_rw/screen/transition_screen/slide_transition.dart';
 import 'package:flutter/material.dart';
 

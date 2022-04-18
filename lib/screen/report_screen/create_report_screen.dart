@@ -37,7 +37,7 @@ class CreateReportScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               'Add Report',
-              style: TextStyle(fontFamily: 'poppins'),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
             leading: IconButton(

@@ -1,12 +1,14 @@
 import 'package:aplikasi_rw/bloc/bills_reguler_screen_bloc.dart';
 import 'package:aplikasi_rw/bloc/bills_tab_bloc.dart';
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
+import 'package:aplikasi_rw/bloc/payment_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/bills_history_model.dart';
 import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
-import 'package:aplikasi_rw/screen/home_screen.dart';
-import 'package:aplikasi_rw/screen/report_screen.dart';
+import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
+import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
+import 'package:aplikasi_rw/screen/report_screen/report_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,18 +40,24 @@ class MyApp extends StatelessWidget {
           create: (context) => ReportScreenBloc(ReportState()),
         ),
         BlocProvider<BillTabColorBloc>(
-          create: (context) => BillTabColorBloc(Colors.red),
+          create: (context) => BillTabColorBloc(TabState())..add(0),
         ),
         BlocProvider<BillRegulerBloc>(
           create: (context) =>
               BillRegulerBloc(BillsHistoryModel.getBillsHistory()),
+        ),
+        BlocProvider<PaymentBloc>(
+          create: (context) => PaymentBloc(true),
         ),
       ],
       child: MaterialApp(
         // debug banner
         debugShowCheckedModeBanner: false,
         home: TemplateScreen(),
-        theme: ThemeData(scaffoldBackgroundColor: Colors.white), // set background color theme
+        theme: ThemeData(
+            fontFamily: 'open sans',
+            scaffoldBackgroundColor:
+                Colors.white), // set background color theme
       ),
     );
   }
@@ -81,7 +89,8 @@ class _TemplateScreenState extends State<TemplateScreen> {
     screens = [
       HomeScreen(scaffoldKey),
       ReportScreen(scaffoldKey),
-      BillScreen()
+      BillScreen(),
+      PaymentScreen()
     ];
 
     heightPaddingGnav =

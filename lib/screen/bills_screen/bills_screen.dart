@@ -1,6 +1,5 @@
 import 'package:aplikasi_rw/bloc/bills_tab_bloc.dart';
 import 'package:aplikasi_rw/model/bills_tab_model.dart';
-import 'package:aplikasi_rw/screen/bills_screen/bills_reguler_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +20,7 @@ class _BillScreenState extends State<BillScreen>
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: BillTabModel.tabs().length, vsync: this);
+    controller = TabController(length: BillTabModel.tabs().length, vsync: this,);
     bloc = BlocProvider.of<BillTabColorBloc>(context);
     controller.addListener(() {
       bloc.add(controller.index);
@@ -33,19 +32,20 @@ class _BillScreenState extends State<BillScreen>
     controller.dispose();
     super.dispose();
   }
+  
 
   @override
   Widget build(BuildContext context) {
     mediaSizeHeight =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
 
-    return BlocBuilder<BillTabColorBloc, Color>(
+    return BlocBuilder<BillTabColorBloc, TabState>(
       builder: (context, state) => Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(mediaSizeHeight * 0.18),
             child: AppBar(
               brightness: Brightness.light,
-              backgroundColor: state,
+              backgroundColor: state.colorAppBar,
               flexibleSpace: Container(
                 padding: EdgeInsets.only(bottom: 25),
                 child: Column(
@@ -60,14 +60,14 @@ class _BillScreenState extends State<BillScreen>
                             Text(
                               'Bills',
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: state.colorsText,
                                   fontSize: 32,
                                   fontFamily: 'poppins'),
                             ),
                             Text(
                               'citizen dues',
                               style: TextStyle(
-                                  color: Colors.blue[900],
+                                  color: state.colorsText,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -79,9 +79,10 @@ class _BillScreenState extends State<BillScreen>
                   ],
                 ),
               ),
-              bottom: TabBar(
+              bottom: TabBar(                
+                  labelPadding: EdgeInsets.symmetric(horizontal: 10),
                   controller: controller,
-                  labelColor: Colors.black,
+                  labelColor: state.colorsText,
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),
                   tabs: BillTabModel.tabs().map<Widget>((e) => e.tab).toList()),
             ),

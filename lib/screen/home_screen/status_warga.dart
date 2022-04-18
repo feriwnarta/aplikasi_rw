@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 
 //ignore: must_be_immutable
 class StatusWarga extends StatelessWidget {
@@ -60,12 +61,21 @@ class StatusWarga extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                    child: Text(
-                  caption,
-                  textAlign: TextAlign.justify,
-                  style: TextStyle(height: 1.4),
-                  maxLines: 10,
-                ))
+                  // child: Text(
+                  // caption,
+                  // textAlign: TextAlign.justify,
+                  // style: TextStyle(height: 1.4),
+                  // maxLines: 10,
+                  // )
+                  child: ReadMoreText(
+                    caption,
+                    trimLines: 3,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: 'Read More',
+                    trimExpandedText: 'Read Less',
+                    textAlign: TextAlign.justify,
+                  ),
+                )
               ],
             ),
           ),
