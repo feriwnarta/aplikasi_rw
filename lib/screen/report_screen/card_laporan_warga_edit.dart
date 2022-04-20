@@ -240,7 +240,8 @@ class CardLaporanWargaEdit extends StatelessWidget {
       // imageFile = pickedFile;
       // isVisible = true;
       bloc.add(TulisStatusEvent(imageFile: pickedFile, isVisibility: true));
-      isVisibility = !isVisibility;
+      // isVisibility = bloc.state.isVisible;
+      isVisibility = true;
     }
   }
 }

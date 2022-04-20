@@ -1,6 +1,7 @@
 import 'package:aplikasi_rw/bloc/bills_reguler_screen_bloc.dart';
 import 'package:aplikasi_rw/bloc/bills_tab_bloc.dart';
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
+import 'package:aplikasi_rw/bloc/comment_bloc.dart';
 import 'package:aplikasi_rw/bloc/payment_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
@@ -49,6 +50,10 @@ class MyApp extends StatelessWidget {
         BlocProvider<PaymentBloc>(
           create: (context) => PaymentBloc(true),
         ),
+        BlocProvider<CommentBloc>(
+          create: (context) =>
+              CommentBloc(CommentBlocUnitialized())..add(CommentBlocEvent()),
+        ),
       ],
       child: MaterialApp(
         // debug banner
@@ -58,6 +63,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'open sans',
             scaffoldBackgroundColor:
                 Colors.white), // set background color theme
+        // ),
       ),
     );
   }

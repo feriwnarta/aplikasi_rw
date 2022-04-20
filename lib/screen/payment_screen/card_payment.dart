@@ -1,4 +1,4 @@
-
+import 'package:aplikasi_rw/screen/payment_screen/edit_payment_screen.dart';
 import 'package:aplikasi_rw/screen/transition_screen/slide_transition.dart';
 import 'package:flutter/material.dart';
 
@@ -9,9 +9,7 @@ class CardPayment extends StatelessWidget {
   CardPayment({this.noPayment, this.title, this.status});
 
   Color colorStatusCheck() {
-    return (status.toLowerCase() == 'listed')
-        ? Colors.grey
-        : Colors.green[800];
+    return (status.toLowerCase() == 'listed') ? Colors.grey : Colors.green[800];
   }
 
   @override
@@ -54,7 +52,9 @@ class CardPayment extends StatelessWidget {
           ),
           onTap: () {
             if (status.toLowerCase() == 'listed') {
-              
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => EditPaymentScreen(noPayment: noPayment),
+              ));
             }
           },
         ),

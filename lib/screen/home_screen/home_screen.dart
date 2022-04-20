@@ -3,10 +3,11 @@ import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/card_news.dart';
 import 'package:aplikasi_rw/screen/home_screen/status_warga.dart';
-import 'package:aplikasi_rw/screen/home_screen/tempat_tulis_status.dart';
+import 'package:aplikasi_rw/screen/home_screen/tempat_tulis_status_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -80,115 +81,121 @@ class HomeScreen extends StatelessWidget {
       // resizeToAvoidBottomInset: false,
 
       // container yang membukus list view
-      body: ListView(
+      body: SingleChildScrollView(
         controller: controller,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Stack(children: [
-                // header app
-                headerBackground(mediaSizeWidth, context),
-              ]),
-            ],
-          ),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
-                child: Text(
-                  'News',
-                  style: TextStyle(fontFamily: 'poppins', fontSize: 15),
-                ),
-              ),
-              buildCarouselSliderNews(mediaSizeWidth),
-              SizedBox(
-                height: 17,
-              ),
-              Center(
-                child: BlocBuilder<CarouselBloc, int>(
-                  builder: (context, index) => AnimatedSmoothIndicator(
-                    activeIndex: index,
-                    count: CardNews.getCardNews.length,
-                    effect: ExpandingDotsEffect(
-                        dotWidth: 10,
-                        dotHeight: 10,
-                        activeDotColor: Colors.lightBlue,
-                        dotColor: Colors.grey[350]),
+        child: Column(
+          children: <Widget>[
+            Stack(children: [
+              // Container(
+              //   height: mediaSizeHeight * 0.3,
+              //   width: mediaSizeWidth,
+              //   decoration: BoxDecoration(
+              //     color: Colors.blue[100].withOpacity(0.4),
+              //     borderRadius: BorderRadius.circular(20),
+              //   ),
+              // ),
+              headerBackground(mediaSizeWidth, context)
+            ]),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 10, bottom: 10),
+                  child: Text(
+                    'News',
+                    style: TextStyle(fontFamily: 'poppins', fontSize: 15),
                   ),
                 ),
-              )
-            ],
-          ),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15, top: 10),
-                child: Text(
-                  "Today's Status",
-                  style: TextStyle(fontFamily: 'poppins', fontSize: 15),
+                buildCarouselSliderNews(mediaSizeWidth),
+                SizedBox(
+                  height: 17,
                 ),
-              ),
-              BlocBuilder<StatusUserBloc, StatusUserState>(
-                builder: (context, state) {
-                  if (state is StatusUserUnitialized) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: SizedBox(
-                          width: 30,
-                          height: 30,
-                          child: CircularProgressIndicator(),
+                Center(
+                  child: BlocBuilder<CarouselBloc, int>(
+                    builder: (context, index) => AnimatedSmoothIndicator(
+                      activeIndex: index,
+                      count: CardNews.getCardNews.length,
+                      effect: ExpandingDotsEffect(
+                          dotWidth: 10,
+                          dotHeight: 10,
+                          activeDotColor: Colors.lightBlue,
+                          dotColor: Colors.grey[350]),
+                    ),
+                  ),
+                )
+              ],
+            ),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 10),
+                  child: Text(
+                    "Today's Status",
+                    style: TextStyle(
+                      fontFamily: 'poppins',
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+                BlocBuilder<StatusUserBloc, StatusUserState>(
+                  builder: (context, state) {
+                    if (state is StatusUserUnitialized) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: SizedBox(
+                            width: 30,
+                            height: 30,
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
-                      ),
-                    );
-                  } else {
-                    StatusUserLoaded statusLoaded = state as StatusUserLoaded;
-                    return ListView.builder(
-                      physics: ScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: (statusLoaded.isMaxReached)
-                          ? statusLoaded.listStatusUser.length
-                          : statusLoaded.listStatusUser.length + 1,
-                      itemBuilder: (context, index) => (index <
-                              statusLoaded.listStatusUser.length)
-                          ? StatusWarga(
-                              namaUser:
-                                  statusLoaded.listStatusUser[index].userName,
-                              caption:
-                                  statusLoaded.listStatusUser[index].caption,
-                              fotoProfile:
-                                  'https://akcdn.detik.net.id/visual/2022/02/04/ainun-najib-1_169.jpeg?w=650',
-                              urlFotoStatus:
-                                  'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
-                              jumlahKomen: '12',
-                              lamaUpload: '12 menit',
-                              jumlahLike: '10',
-                            )
-                          : Container(
-                              margin: EdgeInsets.symmetric(vertical: 10),
-                              child: Center(
-                                child: SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      StatusUserLoaded statusLoaded = state as StatusUserLoaded;
+                      return ListView.builder(
+                        physics: ScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: (statusLoaded.isMaxReached)
+                            ? statusLoaded.listStatusUser.length
+                            : statusLoaded.listStatusUser.length + 1,
+                        itemBuilder: (context, index) => (index <
+                                statusLoaded.listStatusUser.length)
+                            ? StatusWarga(
+                                namaUser:
+                                    statusLoaded.listStatusUser[index].userName,
+                                caption:
+                                    statusLoaded.listStatusUser[index].caption,
+                                fotoProfile: statusLoaded
+                                    .listStatusUser[index].urlProfile,
+                                urlFotoStatus: statusLoaded
+                                    .listStatusUser[index].urlFotoStatus,
+                                jumlahKomen: '12',
+                                lamaUpload: '12 menit',
+                                jumlahLike: '10',
+                              )
+                            : Container(
+                                margin: EdgeInsets.symmetric(vertical: 10),
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 30,
+                                    height: 30,
+                                    child: CircularProgressIndicator(),
+                                  ),
                                 ),
                               ),
-                            ),
-                    );
-                  }
-                },
-              )
-            ],
-          )
+                      );
+                    }
+                  },
+                )
+              ],
+            )
 
-          // status dari warga
-          // Column(children: listStatus),
-        ],
+            // status dari warga
+            // Column(children: listStatus),
+          ],
+        ),
       ),
     );
   }
@@ -199,8 +206,10 @@ class HomeScreen extends StatelessWidget {
           // height: 180,
           height: mediaSizeHeight * 0.24,
           enlargeCenterPage: true,
-          // disableCenter: true,
+          disableCenter: true,
           viewportFraction: 0.6,
+          autoPlay: true,
+          autoPlayInterval: Duration(seconds: 2),
           onPageChanged: (index, _) => blocColor.add(index)),
       itemCount: CardNews.getCardNews.length,
       itemBuilder: (context, index, realIndex) {
@@ -259,11 +268,14 @@ class HomeScreen extends StatelessWidget {
     return Container(
         width: mediaSizeWidth,
         // height: heightBackgroundRounded,
-        color: Colors.white,
+
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(
+              height: mediaSizeHeight * 0.03,
+            ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -282,21 +294,22 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 25, top: 15),
-                  child: Text(
-                    'NEXT G - RW',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 19,
-                      fontFamily: 'poppins',
-                    ),
-                  ),
-                  //Image(
-                  //   image: AssetImage('assets/img/logo.png'),
-                  //   fit: BoxFit.cover,
-                  //   repeat: ImageRepeat.noRepeat,
-                  // )
-                )
+                    padding: const EdgeInsets.only(right: 25, top: 15),
+                    child:
+                        // Text(
+                        //   'NEXT G - RW',
+                        //   style: TextStyle(
+                        //     color: Colors.black,
+                        //     fontSize: 19,
+                        //     fontFamily: 'poppins',
+                        //   ),
+                        // ),
+                        Image(
+                      width: mediaSizeWidth * 0.2,
+                      image: AssetImage('assets/img/logo.png'),
+                      fit: BoxFit.cover,
+                      repeat: ImageRepeat.noRepeat,
+                    ))
               ],
             ),
             Column(
@@ -307,6 +320,7 @@ class HomeScreen extends StatelessWidget {
                   child: Text(
                     '$userName, BLOK XY 9 NO 21',
                     style: TextStyle(
+                      color: Colors.black,
                       fontSize: 19,
                       fontFamily: 'poppins',
                     ),
@@ -353,7 +367,8 @@ class HomeScreen extends StatelessWidget {
                           padding: EdgeInsets.only(left: 20, top: 20),
                           child: CircleAvatar(
                             radius: 35,
-                            backgroundImage: CachedNetworkImageProvider(fotoProfile),
+                            backgroundImage:
+                                CachedNetworkImageProvider(fotoProfile),
                           ),
                         ),
 

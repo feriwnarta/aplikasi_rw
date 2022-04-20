@@ -1,3 +1,4 @@
+import 'package:aplikasi_rw/screen/home_screen/comment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 
@@ -17,7 +18,13 @@ class StatusWarga extends StatelessWidget {
   });
 
   // sampel data untuk status warga
-  String namaUser, lamaUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
+  String namaUser,
+      lamaUpload,
+      urlFotoStatus,
+      fotoProfile,
+      caption,
+      jumlahLike,
+      jumlahKomen;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +55,9 @@ class StatusWarga extends StatelessWidget {
                     padding: EdgeInsets.only(bottom: 3),
                     child: Text(namaUser),
                   ),
-                  Text('$lamaUpload',style: TextStyle(fontSize: 9),
+                  Text(
+                    '$lamaUpload',
+                    style: TextStyle(fontSize: 9),
                   )
                 ],
               ),
@@ -101,30 +110,50 @@ class StatusWarga extends StatelessWidget {
 
           // Like Dan comment
           Padding(
-            // padding tambahahan karena row pembungus padding kanannya dikurangin 10
-            // jadi total 20
             padding: EdgeInsets.only(right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(Icons.thumb_up_alt_outlined,
-                          color: Colors.black),
-                      onPressed: () {},
+                    Material(
+                      color: Colors.transparent,
+                      child: IconButton(
+                        splashColor: Colors.transparent,
+                        icon: Icon(Icons.thumb_up_alt_outlined,
+                            color: Colors.black),
+                        onPressed: () {},
+                      ),
                     ),
                     Text(jumlahLike)
                   ],
                 ),
                 Row(
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.comment_outlined,
-                        color: Colors.black,
+                    Material(
+                      color: Colors.transparent,
+                      child: IconButton(
+                        splashColor: Colors.transparent,
+                        icon: Icon(
+                          Icons.comment_outlined,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            barrierColor: Colors.white.withOpacity(0.4),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                topRight: Radius.circular(16),
+                              ),
+                            ),
+                            isScrollControlled: true,
+                            context: context,
+                            // push id comment
+                            builder: (context) => CommentScreen(),
+                          );
+                        },
                       ),
-                      onPressed: () {},
                     ),
                     Text(jumlahKomen)
                   ],

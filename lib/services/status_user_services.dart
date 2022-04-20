@@ -4,22 +4,26 @@ import 'dart:convert';
 
 class StatusUserServices extends StatusUserModel{
     
-  factory StatusUserServices.create(Map<String, dynamic> object) {
+  factory StatusUserServices.create(Map<String, dynamic> item) {
     return StatusUserModel(
-      userName: object['id'].toString(),
-      caption: object['body']
-    ) as StatusUserServices;
+      userName: item['id'].toString(),
+      urlFotoStatus: item['thumbnailUrl'],
+      urlProfile: item['url'],
+      caption: item['title']
+    ) as StatusUserModel;
   }
 
   static Future<List<StatusUserModel>> getDataApi(int start, int limit) async {
-    String apiUrl = 'https://jsonplaceholder.typicode.com/posts?_start=$start&_limit=$limit';
+    String apiUrl = 'https://jsonplaceholder.typicode.com/photos?_start=$start&_limit=$limit';
     // ambil data dari api
     var apiResult = await http.get(apiUrl);
     // ubah jadi json dan casting ke list
     var jsonObject =  json.decode(apiResult.body) as List;
     return jsonObject.map<StatusUserModel>((item) => StatusUserModel(
       userName: item['id'].toString(),
-      caption: item['body']
+      urlFotoStatus: item['thumbnailUrl'],
+      urlProfile: item['url'],
+      caption: item['title']
     )).toList();
   }
 

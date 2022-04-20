@@ -47,6 +47,10 @@ class CreateReportScreen extends StatelessWidget {
                 size: 30,
               ),
               onPressed: () {
+                imageFile = null;
+                bloc.add(TulisStatusEvent(
+                  imageFile: null
+                ));
                 Navigator.of(context).pop();
               },
             ),

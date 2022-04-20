@@ -1,9 +1,10 @@
 import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
 import 'package:aplikasi_rw/model/card_laporan_warga_model.dart';
 import 'package:aplikasi_rw/screen/report_screen/create_report_screen.dart';
-import 'package:aplikasi_rw/screen/home_screen/card_laporan_warga.dart';
+import 'package:aplikasi_rw/screen/report_screen/card_laporan_warga.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 //ignore: must_be_immutable
@@ -196,14 +197,47 @@ class ReportScreen extends StatelessWidget {
           reverse: true,
           itemCount: CardLaporanWargaModel.getAllLaporan.length,
           itemBuilder: (context, index) {
-            return CardLaporanWarga(
-              // 7 digit kode
-              noTicket: CardLaporanWargaModel.getAllLaporan[index].noTicket,
-              judul: CardLaporanWargaModel.getAllLaporan[index].judul,
-              status: CardLaporanWargaModel.getAllLaporan[index].status,
-            );
+            return (CardLaporanWargaModel.getAllLaporan[index].status
+                        .toLowerCase() ==
+                    'listed')
+                ? buildSlidableCardLaporanWarga(index, context)
+                : CardLaporanWarga(
+                    // 7 digit kode
+                    noTicket:
+                        CardLaporanWargaModel.getAllLaporan[index].noTicket,
+                    judul: CardLaporanWargaModel.getAllLaporan[index].judul,
+                    status: CardLaporanWargaModel.getAllLaporan[index].status,
+                  );
           },
         ),
+      ),
+    );
+  }
+
+  Slidable buildSlidableCardLaporanWarga(int index, BuildContext context) {
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      secondaryActions: [
+        IconSlideAction(
+          caption: 'delete',
+          color: Colors.blue,
+          icon: Icons.delete_forever_outlined,
+          onTap: () {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.blue,
+              content: Text(
+                '${CardLaporanWargaModel.getAllLaporan[index].noTicket} delete',
+                textAlign: TextAlign.center,
+              ),
+            ));
+          },
+        )
+      ],
+      child: CardLaporanWarga(
+        // 7 digit kode
+        noTicket: CardLaporanWargaModel.getAllLaporan[index].noTicket,
+        judul: CardLaporanWargaModel.getAllLaporan[index].judul,
+        status: CardLaporanWargaModel.getAllLaporan[index].status,
       ),
     );
   }
@@ -308,6 +342,7 @@ class ReportScreen extends StatelessWidget {
       height: 50,
       child: FittedBox(
         child: FloatingActionButton(
+          heroTag: 'btn1',
           child: Icon(
             Icons.add,
             size: 32,

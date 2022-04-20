@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class EventBillScrenn extends StatelessWidget {
@@ -7,7 +8,11 @@ class EventBillScrenn extends StatelessWidget {
   final String urlHeroImage, titleEvent, price, dueDate;
 
   EventBillScrenn(
-      {this.urlHeroImage, this.titleEvent, this.price, this.dueDate, this.background});
+      {this.urlHeroImage,
+      this.titleEvent,
+      this.price,
+      this.dueDate,
+      this.background});
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +28,19 @@ class EventBillScrenn extends StatelessWidget {
             color: background, borderRadius: BorderRadius.vertical()),
         child: Column(
           children: [
-            Container(
-              child: Image(
-                width: mediaSizeWidth,
-                height: mediaSizeHeight * 0.3,
-                fit: BoxFit.cover,
-                repeat: ImageRepeat.noRepeat,
-                image: NetworkImage(urlHeroImage),
-              ),
+            CachedNetworkImage(
+              width: mediaSizeWidth,
+              height: mediaSizeHeight * 0.3,
+              fit: BoxFit.cover,
+              repeat: ImageRepeat.noRepeat,
+              imageUrl: urlHeroImage,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
             ),
             SizedBox(height: 20),
             Center(
-              child: Text(titleEvent,
+              child: Text(
+                titleEvent,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,

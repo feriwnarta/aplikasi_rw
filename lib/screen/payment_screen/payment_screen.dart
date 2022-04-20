@@ -1,4 +1,8 @@
 import 'package:aplikasi_rw/bloc/payment_bloc.dart';
+import 'package:aplikasi_rw/model/card_payment_model.dart';
+import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
+import 'package:aplikasi_rw/screen/bills_screen/details_bill_screen.dart';
+import 'package:aplikasi_rw/screen/payment_screen/add_payment.dart';
 import 'package:aplikasi_rw/screen/payment_screen/card_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,7 +73,11 @@ class PaymentScreen extends StatelessWidget {
                                 size: 31,
                                 color: Colors.blue[900],
                               ),
-                              onPressed: () {}),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => AddPayment())
+                                );
+                              }),
                           Text(
                             'Pay Now',
                             style: TextStyle(
@@ -86,7 +94,19 @@ class PaymentScreen extends StatelessWidget {
                           IconButton(
                               icon: Icon(Icons.list_alt_rounded,
                                   size: 31, color: Colors.blue[900]),
-                              onPressed: () {}),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                    backgroundColor: Colors.white,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(16),
+                                        topRight: Radius.circular(16),
+                                      ),
+                                    ),
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (context) => DetailsBillScreen());
+                              }),
                           Text(
                             'Bill Details',
                             style: TextStyle(
@@ -136,11 +156,13 @@ class PaymentScreen extends StatelessWidget {
                   visible: state,
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: 3,
+                    itemCount: CardPaymentModel.getPaymentHistory().length,
                     itemBuilder: (context, index) => CardPayment(
-                      noPayment: '${index + 1}',
-                      status: 'confirmed',
-                      title: 'bayar uang keamanan',
+                      noPayment:
+                          CardPaymentModel.getPaymentHistory()[index].noPayment,
+                      status:
+                          CardPaymentModel.getPaymentHistory()[index].status,
+                      title: CardPaymentModel.getPaymentHistory()[index].title,
                     ),
                   ),
                 ),
@@ -152,8 +174,13 @@ class PaymentScreen extends StatelessWidget {
       floatingActionButton: SizedBox(
         height: 50,
         child: FloatingActionButton(
+          heroTag: 'btn2',
           onPressed: () {
-
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddPayment(),
+                ));
           },
           child: Icon(Icons.add),
         ),
@@ -223,7 +250,7 @@ class PaymentScreen extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(right: 10),
                           child: Text(
-                            '12',
+                            '${CardPaymentModel.getPaymentHistory().length}',
                             style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                         ),
