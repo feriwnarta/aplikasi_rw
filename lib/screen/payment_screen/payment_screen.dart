@@ -6,6 +6,7 @@ import 'package:aplikasi_rw/screen/payment_screen/add_payment.dart';
 import 'package:aplikasi_rw/screen/payment_screen/card_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
@@ -74,9 +75,8 @@ class PaymentScreen extends StatelessWidget {
                                 color: Colors.blue[900],
                               ),
                               onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => AddPayment())
-                                );
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AddPayment()));
                               }),
                           Text(
                             'Pay Now',
@@ -135,7 +135,7 @@ class PaymentScreen extends StatelessWidget {
                             style: TextStyle(
                                 fontFamily: 'pt sans narrow',
                                 fontSize: 16,
-                                color: Colors.blue[900]),
+                                color: Colors.blue[200].withOpacity(0.5)),
                           )
                         ],
                       )
@@ -157,13 +157,50 @@ class PaymentScreen extends StatelessWidget {
                   child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: CardPaymentModel.getPaymentHistory().length,
-                    itemBuilder: (context, index) => CardPayment(
-                      noPayment:
-                          CardPaymentModel.getPaymentHistory()[index].noPayment,
-                      status:
-                          CardPaymentModel.getPaymentHistory()[index].status,
-                      title: CardPaymentModel.getPaymentHistory()[index].title,
-                    ),
+                    itemBuilder: (context, index) => (CardPaymentModel
+                                    .getPaymentHistory()[index]
+                                .status
+                                .toLowerCase() ==
+                            'listed')
+                        ? Slidable(
+                            actionPane: SlidableDrawerActionPane(),
+                            secondaryActions: [
+                              IconSlideAction(
+                                caption: 'delete',
+                                color: Colors.blue[200].withOpacity(0.5),
+                                icon: Icons.delete_forever_outlined,
+                                foregroundColor: Colors.blue[900],
+                                onTap: () {
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    backgroundColor: Colors.blue[900],
+                                    content: Text(
+                                      '${CardPaymentModel.getPaymentHistory()[index].noPayment} delete',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ));
+                                },
+                              )
+                            ],
+                            child: CardPayment(
+                              noPayment:
+                                  CardPaymentModel.getPaymentHistory()[index]
+                                      .noPayment,
+                              status:
+                                  CardPaymentModel.getPaymentHistory()[index]
+                                      .status,
+                              title: CardPaymentModel.getPaymentHistory()[index]
+                                  .title,
+                            ),
+                          )
+                        : CardPayment(
+                            noPayment:
+                                CardPaymentModel.getPaymentHistory()[index]
+                                    .noPayment,
+                            status: CardPaymentModel.getPaymentHistory()[index]
+                                .status,
+                            title: CardPaymentModel.getPaymentHistory()[index]
+                                .title,
+                          ),
                   ),
                 ),
               )
@@ -174,6 +211,7 @@ class PaymentScreen extends StatelessWidget {
       floatingActionButton: SizedBox(
         height: 50,
         child: FloatingActionButton(
+          backgroundColor: Colors.blue[900],
           heroTag: 'btn2',
           onPressed: () {
             Navigator.push(
