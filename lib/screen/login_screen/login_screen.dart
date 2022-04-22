@@ -1,3 +1,4 @@
+import 'package:aplikasi_rw/screen/login_screen/register_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
   final _formKeyLogin = GlobalKey<FormState>();
   double mediaSizeHeight, mediaSizeWidth;
   bool _isObscure = true;
+  bool formLoginOrRegister = true;
+
+  Color buttonLoginRegister = Colors.lightBlue[400];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
           Center(
             child: SingleChildScrollView(
               child: SizedBox(
-                height: mediaSizeHeight * 0.6,
+                // height: mediaSizeHeight * 0.6,
                 width: mediaSizeWidth * 0.9,
                 child: Card(
                   elevation: 5,
@@ -62,24 +66,33 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
                                 FlatButton(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {
+                                      formLoginOrRegister = true;
+                                    });
+                                  },
                                   child: Text(
                                     'Login',
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(color: (formLoginOrRegister) ? Colors.white : Colors.blue),
                                   ),
-                                  color: Colors.lightBlue[400],
+                                  color: (formLoginOrRegister) ? Colors.lightBlue[400] : Colors.white,
                                   padding: EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 30),
                                 ),
                                 FlatButton(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) => RegisterScreen(), )
+                                    );
+                                  },
                                   child: Text(
                                     'Register',
                                     style:
-                                        TextStyle(color: Colors.lightBlue[400]),
+                                        TextStyle(color: (formLoginOrRegister) ? Colors.lightBlue[400] : Colors.white),
                                   ),
+                                  color: (!formLoginOrRegister) ? Colors.lightBlue[400] : Colors.white,
                                   padding: EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 30),
                                 )
@@ -88,61 +101,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
                           ),
                         ],
                       ),
-                      Form(
-                        key: _formKeyLogin,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.all(25),
-                              child: TextFormField(
-                                keyboardType: TextInputType.emailAddress,
-                                decoration: InputDecoration(
-                                    icon: Icon(Icons.person),
-                                    hintText: 'Insert email or username',
-                                    border: UnderlineInputBorder()),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(25),
-                              child: Column(
-                                children: [
-                                  TextFormField(
-                                    keyboardType: TextInputType.visiblePassword,
-                                    obscureText: _isObscure,
-                                    decoration: InputDecoration(
-                                        icon: Icon(
-                                          FontAwesomeIcons.key,
-                                          size: 17,
-                                        ),
-                                        suffixIcon: IconButton(
-                                          icon: Icon((_isObscure)
-                                              ? Icons.visibility_off_outlined
-                                              : Icons.visibility),
-                                          onPressed: () {
-                                            setState(() {
-                                              _isObscure = !_isObscure;
-                                            });
-                                          },
-                                        ),
-                                        hintText: 'Password',
-                                        border: UnderlineInputBorder()),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(
-                                        child: Text('Forgot Password ?'),
-                                        onPressed: () {},
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // (formLoginOrRegister)
+                          buildFormLogin(),
+                          // : buildFormRegister(),
                       FlatButton(
                         child: Text(
                           'Log in',
@@ -175,17 +136,160 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
                                     ),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        print('test');
+                                        setState(() {
+                                          formLoginOrRegister = false;
+                                        });
                                       })
                               ]))
                         ],
-                      )
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Form buildFormLogin() {
+    return Form(
+      key: _formKeyLogin,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(25),
+            child: TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  icon: Icon(Icons.person),
+                  hintText: 'Insert email or username',
+                  border: UnderlineInputBorder()),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(25),
+            child: Column(
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: _isObscure,
+                  decoration: InputDecoration(
+                      icon: Icon(
+                        FontAwesomeIcons.key,
+                        size: 17,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon((_isObscure)
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            _isObscure = !_isObscure;
+                          });
+                        },
+                      ),
+                      hintText: 'Password',
+                      border: UnderlineInputBorder()),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      child: Text('Forgot Password ?'),
+                      onPressed: () {},
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Form buildFormRegister() {
+    return Form(
+      key: _formKeyLogin,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+            child: TextFormField(
+              keyboardType: TextInputType.name,
+              decoration: InputDecoration(
+                  icon: Icon(Icons.person_outline_sharp),
+                  hintText: 'Full name',
+                  border: UnderlineInputBorder()),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+            child: TextFormField(
+              keyboardType: TextInputType.name,
+              decoration: InputDecoration(
+                  icon: Icon(Icons.location_on_outlined),
+                  hintText: 'Address',
+                  border: UnderlineInputBorder()),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                  icon: Icon(Icons.contact_phone_outlined),
+                  hintText: 'No Telp',
+                  border: UnderlineInputBorder()),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+            child: TextFormField(
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  icon: Icon(Icons.contact_phone_outlined),
+                  hintText: 'Email',
+                  border: UnderlineInputBorder()),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+            child: Column(
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: _isObscure,
+                  decoration: InputDecoration(
+                      icon: Icon(
+                        FontAwesomeIcons.key,
+                        size: 17,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon((_isObscure)
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            _isObscure = !_isObscure;
+                          });
+                        },
+                      ),
+                      hintText: 'Password',
+                      border: UnderlineInputBorder()),
+                ),
+                SizedBox(height: 20)
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:aplikasi_rw/screen/payment_screen/edit_payment_screen.dart';
-import 'package:aplikasi_rw/screen/transition_screen/slide_transition.dart';
 import 'package:flutter/material.dart';
 
 //ignore: must_be_immutable
