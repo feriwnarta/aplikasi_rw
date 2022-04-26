@@ -8,18 +8,21 @@ import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/bills_history_model.dart';
 import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
-import 'package:aplikasi_rw/screen/login_screen/onboarding/onboarding_screen.dart';
 import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen/report_screen.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sizer/sizer.dart';
 
 import 'bloc/status_user_bloc.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -56,17 +59,24 @@ class MyApp extends StatelessWidget {
               CommentBloc(CommentBlocUnitialized())..add(CommentBlocEvent()),
         ),
       ],
-      child: MaterialApp(
-        // debug banner
-        debugShowCheckedModeBanner: false,
-        // home: TemplateScreen(),
-        home: OnboardingScreen(),
-        theme: ThemeData(
-            fontFamily: 'open sans',
-            scaffoldBackgroundColor:
-                Colors.white), // set background color theme
-        // ),
-      ),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return OrientationBuilder(builder: (context, orientation) {
+          SizerUtil().init(constraints, orientation);
+          return MaterialApp(
+            // locale: DevicePreview.locale(context),
+            // builder: DevicePreview.appBuilder,
+            // debug banner
+            debugShowCheckedModeBanner: false,
+            home: TemplateScreen(),
+            // home: OnboardingScreen(),
+            theme: ThemeData(
+                fontFamily: 'open sans',
+                scaffoldBackgroundColor:
+                    Colors.white), // set background color theme
+            // ),
+          );
+        });
+      }),
     );
   }
 }
@@ -128,7 +138,7 @@ class _TemplateScreenState extends State<TemplateScreen> {
             boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 5)]),
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          iconSize: 25,
+          iconSize: 6.0.w,
           showSelectedLabels: false,
           showUnselectedLabels: false,
           selectedItemColor: Colors.blue,
@@ -155,64 +165,6 @@ class _TemplateScreenState extends State<TemplateScreen> {
           ],
         ),
       ),
-
-      // bottom navigation bar
-      // bottomNavigationBar: Container(
-      //   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      //   margin: EdgeInsets.symmetric(vertical: 2),
-      //   decoration: BoxDecoration(
-      //       color: Colors.white,
-      //       borderRadius: BorderRadius.only(
-      //           topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-      //       boxShadow: [
-      //         BoxShadow(
-      //           color: Colors.grey,
-      //           blurRadius: 5,
-      //         )
-      //       ]),
-      //   child: GNav(
-      //     curve: Curves.easeIn,
-      //     duration: Duration(microseconds: 50),
-      //     iconSize: 24,
-      //     gap: 8,
-      //     color: Colors.blueGrey
-      //         .withOpacity(0.6), // warna icon dan text yang tidak aktif
-      //     activeColor: Colors.white, // warna icon dan text jika aktif
-      //     tabBackgroundColor: Color(0xff2297F4).withOpacity(0.9),
-      //     padding: EdgeInsets.symmetric(
-      //         vertical: heightPaddingGnav * 0.019,
-      //         horizontal: widthPaddingGnav * 0.04),
-      //     tabs: <GButton>[
-      //       GButton(
-      //         icon: FontAwesomeIcons.home,
-      //         // text: 'Home',
-      //         // iconSize: 25,
-      //       ),
-      //       GButton(
-      //         icon: FontAwesomeIcons.clipboardList,
-      //         // text: 'Report',
-      //       ),
-      //       GButton(
-      //         icon: FontAwesomeIcons.wallet,
-      //         // text: 'Payment',
-      //       ),
-      //       GButton(
-      //         icon: FontAwesomeIcons.fileInvoiceDollar,
-      //         // text: 'Bills',
-      //       ),
-      //       GButton(
-      //         icon: Icons.thumb_up,
-      //         // text: 'Recommen',
-      //       )
-      //     ],
-      //     selectedIndex: _index,
-      //     onTabChange: (index) {
-      //       setState(() {
-      //         _index = index;
-      //       });
-      //     },
-      //   ),
-      // ),
     );
   }
 

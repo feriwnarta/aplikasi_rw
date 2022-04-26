@@ -4,6 +4,7 @@ import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
 class TempatTulisStatus extends StatelessWidget {
@@ -12,7 +13,6 @@ class TempatTulisStatus extends StatelessWidget {
       this.nama,
       this.rt,
       this.rw,
-      this.mediaSizeHeightParent,
       });
 
   /*
@@ -25,12 +25,7 @@ class TempatTulisStatus extends StatelessWidget {
 
   // field untuk data user
   String fotoProfile, nama, rt, rw;
-
-  // height bottom image picker
-  double heightBottomImagePicker;
-
-  // media query tinggi dari parent nya
-  double mediaSizeHeightParent;
+  
 
   TempatTulisStatusBloc bloc;
 
@@ -42,13 +37,9 @@ class TempatTulisStatus extends StatelessWidget {
         icon: Icon(
           Icons.clear_rounded,
           color: Colors.white,
-          size: 30,
+          size: 4.0.h,
         ),
         onPressed: () {
-          // setState(() {
-          //   isVisible = false;
-          //   imageFile = null;
-          // });
           bloc.add(TulisStatusEvent(imageFile: null, isVisibility: false));
           Navigator.of(context).pop();
         },
@@ -56,39 +47,22 @@ class TempatTulisStatus extends StatelessWidget {
       backgroundColor: Colors.lightBlue,
       title: Text('Buat Postingan',
           style: TextStyle(
-              fontSize: 21,
+              fontSize: 14.0.sp,
               fontWeight: FontWeight.bold,
               fontFamily: 'saira condensed')),
     );
 
-    // media query hanya body saja
-    final mediaSizeHeight = MediaQuery.of(context).size.height -
-        appBar.preferredSize.height -
-        MediaQuery.of(context).padding.top;
-
-    final mediaSizeWidth = MediaQuery.of(context).size.width;
-
-    heightBottomImagePicker = MediaQuery.of(context).size.height -
-        appBar.preferredSize.height -
-        MediaQuery.of(context).padding.top;
-
-    //height: mediaSizeHeightParent * 0.66,
-
     return BlocBuilder<TempatTulisStatusBloc, TempatTulisStatusState>(
       builder: (context, state) => Container(
         height: (state.isVisible)
-            ? mediaSizeHeightParent * 0.66
-            : mediaSizeHeightParent * 0.6,
+            ? 70.0.h
+            : 62.0.h,
         child: Scaffold(
-            // resizeToAvoidBottomInset: false,
-            // resizeToAvoidBottomPadding: false,
             appBar: appBar,
             body: ListView(children: [
               Column(
                 children: [
-                  // header informasi user
                   SizedBox(
-                    width: mediaSizeWidth,
                     child: Container(
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -96,14 +70,14 @@ class TempatTulisStatus extends StatelessWidget {
                               top: BorderSide(color: Colors.grey[200]),
                               bottom: BorderSide(color: Colors.grey[200]))),
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        padding: EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                         child: Column(
                           children: [
                             Row(
                               children: [
                                 // avatar
                                 CircleAvatar(
-                                  radius: 30,
+                                  radius: 4.0.h,
                                   backgroundImage: NetworkImage(fotoProfile),
                                 ),
                                 headerName(),
@@ -112,6 +86,7 @@ class TempatTulisStatus extends StatelessWidget {
                                   child: IconButton(
                                     icon: Icon(
                                       Icons.image,
+                                      size: 4.0.h,
                                       color: Colors.green[400],
                                     ),
                                     onPressed: () {
@@ -130,30 +105,10 @@ class TempatTulisStatus extends StatelessWidget {
                     ),
                   ),
 
-                  textFieldTulisStatus(mediaSizeHeight),
-
-                  // SizedBox(
-                  //   height: mediaSizeHeight * 0.4,
-                  //   child: Container(
-                  //     decoration: BoxDecoration(
-                  //         color: Colors.white,
-                  //         border: Border(
-                  //             bottom: BorderSide(color: Colors.grey[200]))),
-                  //     child: Padding(
-                  //       padding: EdgeInsets.only(left: 10),
-                  //       child: TextField(
-                  //         maxLines: 9,
-                  //         decoration: InputDecoration(
-                  //             border: InputBorder.none,
-                  //             hintText: 'Apa yang anda pikirkan ?'),
-                  //         onTap: () => print(MediaQuery.of(context).viewInsets.bottom)
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+                  textFieldTulisStatus(),                  
 
                   // gambar jika diupload
-                  gambarUploadStatus(mediaSizeWidth, mediaSizeHeight),
+                  gambarUploadStatus(),
 
                   // divider untuk memberikan batas antara container gambar yg di upload dengan button bawahnya
                   Divider(
@@ -161,10 +116,10 @@ class TempatTulisStatus extends StatelessWidget {
                   ),
 
                   // button untuk upload gambar / pilih gambar
-                  buttonPilihGambar(mediaSizeHeight, context),
+                  buttonPilihGambar(context),
 
                   // button untuk kirim posting status
-                  buttonPosting(mediaSizeHeight)
+                  buttonPosting()
                 ],
               ),
             ])),
@@ -172,13 +127,13 @@ class TempatTulisStatus extends StatelessWidget {
     );
   }
 
-  ElevatedButton buttonPosting(double mediaSizeHeight) {
+  ElevatedButton buttonPosting() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          minimumSize: Size.fromHeight(mediaSizeHeight * 0.08),
+          minimumSize: Size.fromHeight(7.0.h),
           primary: Colors.lightBlue,
           onPrimary: Colors.white,
-          textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          textStyle: TextStyle(fontSize: 13.0.sp, fontWeight: FontWeight.bold)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -192,11 +147,10 @@ class TempatTulisStatus extends StatelessWidget {
     );
   }
 
-  ElevatedButton buttonPilihGambar(
-      double mediaSizeHeight, BuildContext context) {
+  ElevatedButton buttonPilihGambar(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          minimumSize: Size.fromHeight(mediaSizeHeight * 0.07),
+          minimumSize: Size.fromHeight(6.0.h),
           primary: Colors.white,
           onPrimary: Colors.green // splash color
           ),
@@ -208,10 +162,10 @@ class TempatTulisStatus extends StatelessWidget {
             color: Colors.green[700],
           ),
           Padding(
-            padding: EdgeInsets.only(left: 10),
+            padding: EdgeInsets.only(left: 1.0.w),
             child: Text(
               'Pilih gambar',
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: Colors.grey[600], fontSize: 11.0.sp),
             ),
           )
         ],
@@ -224,18 +178,17 @@ class TempatTulisStatus extends StatelessWidget {
     );
   }
 
-  BlocBuilder gambarUploadStatus(
-      double mediaSizeWidth, double mediaSizeHeight) {
+  BlocBuilder gambarUploadStatus() {
     return BlocBuilder<TempatTulisStatusBloc, TempatTulisStatusState>(
       builder: (context, state) => Visibility(
         visible: state.isVisible,
         child: Container(
-          width: mediaSizeWidth,
+          // width: mediaSizeWidth,
           color: Colors.white,
           child: Row(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 20),
+                padding: EdgeInsets.only(left: 2.0.w),
                 child: Image(
                   alignment: Alignment.topLeft,
                   repeat: ImageRepeat.noRepeat,
@@ -245,20 +198,20 @@ class TempatTulisStatus extends StatelessWidget {
                   // image: (imageFile != null)
                   //     ? FileImage(File(imageFile.path))
                   //     : AssetImage(''),
-                  height: mediaSizeHeight * 0.08,
-                  width: mediaSizeWidth * 0.2,
+                  height: 8.0.h,
+                  width: 20.0.w,
                 ),
               ),
 
               //  button hapus gambar
               Padding(
-                padding: const EdgeInsets.only(left: 15),
+                padding: EdgeInsets.only(left: 1.5.w),
                 child: RaisedButton(
                     elevation: 0,
                     color: Colors.blueGrey[100],
                     child: Text(
                       'Hapus',
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 10.0.sp),
                     ),
                     onPressed: () {
                       // url foto dari container foto status dikosongin
@@ -279,17 +232,18 @@ class TempatTulisStatus extends StatelessWidget {
   }
 
   // sebelumnya pake sizebox
-  Container textFieldTulisStatus(double mediaSizeHeight) {
+  Container textFieldTulisStatus() {
     return Container(
+      height: 30.0.h,
       decoration: BoxDecoration(
           color: Colors.white,
           border: Border(bottom: BorderSide(color: Colors.grey[200]))),
       child: Padding(
-        padding: EdgeInsets.only(left: 10),
+        padding: EdgeInsets.only(left: 1.0.w),
         child: TextField(
           maxLines: 10,
           decoration: InputDecoration(
-              border: InputBorder.none, hintText: 'Apa yang anda pikirkan ?'),
+              border: InputBorder.none, hintText: 'Apa yang anda pikirkan ?', hintStyle: TextStyle(fontSize: 11.0.sp)),
         ),
       ),
     );
@@ -297,34 +251,26 @@ class TempatTulisStatus extends StatelessWidget {
 
   Padding headerName() {
     return Padding(
-      padding: const EdgeInsets.only(left: 15),
+      padding: EdgeInsets.only(left: 1.5.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
             children: [
-              // Icon(
-              //   Icons.person_sharp,
-              //   color: Colors.blueGrey,
-              // ),
               Text(
                 nama,
-                style: TextStyle(fontFamily: 'poppins'),
+                style: TextStyle(fontFamily: 'poppins', fontSize: 10.0.sp),
               ),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Icon(
-              //   Icons.home_filled,
-              //   color: Colors.blueGrey,
-              // ),
               Text(
                 '$rt $rw',
                 style:
-                    TextStyle(fontFamily: 'poppins', color: Colors.lightBlue),
+                    TextStyle(fontFamily: 'poppins', color: Colors.lightBlue, fontSize: 10.0.sp),
               )
             ],
           )
@@ -336,12 +282,12 @@ class TempatTulisStatus extends StatelessWidget {
   Widget bottomImagePicker(BuildContext context) => Container(
         margin: EdgeInsets.only(top: 20),
         width: MediaQuery.of(context).size.width,
-        height: heightBottomImagePicker * 0.18,
+        height: 18.0.h,
         child: Column(
           children: [
             Text(
               'Pilih gambar',
-              style: TextStyle(fontSize: 20, fontFamily: 'Pt Sans Narrow'),
+              style: TextStyle(fontSize: 13.0.sp, fontFamily: 'Pt Sans Narrow'),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -351,7 +297,7 @@ class TempatTulisStatus extends StatelessWidget {
                     label: Text(
                       'Kamera',
                       style:
-                          TextStyle(fontSize: 18, fontFamily: 'Pt Sans Narrow'),
+                          TextStyle(fontSize: 13.0.sp, fontFamily: 'Pt Sans Narrow'),
                     ),
                     onPressed: () {
                       getImage(ImageSource.camera);
@@ -363,7 +309,7 @@ class TempatTulisStatus extends StatelessWidget {
                   label: Text(
                     'Gallery',
                     style:
-                        TextStyle(fontSize: 18, fontFamily: 'Pt Sans Narrow'),
+                        TextStyle(fontSize: 13.0.sp, fontFamily: 'Pt Sans Narrow'),
                   ),
                   onPressed: () {
                     getImage(ImageSource.gallery);

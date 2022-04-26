@@ -1,5 +1,6 @@
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -12,6 +13,8 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   // key form
   final _formKeyAccount = GlobalKey<FormState>();
   final _formKeyContact = GlobalKey<FormState>();
+  final _formKeyIdentity = GlobalKey<FormState>();
+
   // checker visibility password
   bool _isObscureFirst = true;
   bool _isObscureSecond = true;
@@ -26,18 +29,35 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
 
   // textfield form controller contact
   TextEditingController controllerBirthDay = TextEditingController(text: '');
+  TextEditingController controllerFullName = TextEditingController();
+  TextEditingController controllerAdress = TextEditingController();
+  TextEditingController controllerCity = TextEditingController();
+  TextEditingController controllerPhone = TextEditingController();
+
+  // textfield form controller identity
+  TextEditingController controllerNoKtp = TextEditingController();
+  TextEditingController controllerNoKK = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Register'),
       ),
-      body: Stepper(
+      body: Stepper( 
+
           physics: ScrollPhysics(),
           type: StepperType.horizontal,
           currentStep: currentStep,
-          onStepTapped: (step) => setState(() => currentStep = step),
+          // onStepTapped: (step) => setState(() {
+          //       if (_formKeyAccount.currentState.validate() && step == 0) {
+          //         currentStep = step;
+          //       } else if (_formKeyContact.currentState.validate() &&
+          //           step == 1) {
+          //         currentStep = step;
+          //       }
+          //     }),
           controlsBuilder: (context, {onStepCancel, onStepContinue}) {
             return Row(
               children: [
@@ -70,6 +90,27 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                   }
                 });
               }
+            } else if (currentStep == 1) {
+              if (_formKeyContact.currentState.validate()) {
+                setState(() {
+                  if (isLastStep) {
+                    print('completed');
+                  } else {
+                    currentStep++;
+                  }
+                });
+              }
+            } else if (currentStep == 2) {
+              if (_formKeyIdentity.currentState.validate()) {
+                setState(() {
+                  if (isLastStep) {
+                    // cek nik dan ktp
+                    // kemudian kehalaman akhir
+                  } else {
+                    currentStep++;
+                  }
+                });
+              }
             }
           },
           onStepCancel: () {
@@ -80,11 +121,93 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   }
 
   List<Step> getSteps() {
-    return [
-      stepAccount(),
-      stepContact(),
-      Step(isActive: currentStep >= 2, title: Text('3'), content: Container()),
-    ];
+    return [stepAccount(), stepContact(), stepIdentity()];
+  }
+
+  Step stepCompleted() {
+    return Step(
+        isActive: currentStep >= 2,
+        state: currentStep > 2 ? StepState.complete : StepState.indexed,
+        title: Text('Identity'),
+        content: Form(
+          key: _formKeyIdentity,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: TextFormField(
+                  controller: controllerNoKtp,
+                  keyboardType: TextInputType.number,
+                  validator: (ktp) =>
+                      (ktp.isEmpty) ? 'No Ktp can\t be empty' : null,
+                  decoration: InputDecoration(
+                      icon: Icon(FontAwesomeIcons.idCard),
+                      hintText: 'No Ktp',
+                      border: UnderlineInputBorder()),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: TextFormField(
+                  controller: controllerNoKK,
+                  keyboardType: TextInputType.number,
+                  validator: (username) =>
+                      (username.isEmpty) ? 'No KK can\'t be empty' : null,
+                  decoration: InputDecoration(
+                      icon: Icon(FontAwesomeIcons.fileAlt),
+                      hintText: 'No KK',
+                      border: UnderlineInputBorder()),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              )
+            ],
+          ),
+        ));
+  }
+
+  Step stepIdentity() {
+    return Step(
+        isActive: currentStep >= 2,
+        state: currentStep > 2 ? StepState.complete : StepState.indexed,
+        title: Text('Identity'),
+        content: Form(
+          key: _formKeyIdentity,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: TextFormField(
+                  controller: controllerNoKtp,
+                  keyboardType: TextInputType.number,
+                  validator: (ktp) =>
+                      (ktp.isEmpty) ? 'No Ktp can\t be empty' : null,
+                  decoration: InputDecoration(
+                      icon: Icon(FontAwesomeIcons.idCard),
+                      hintText: 'No Ktp',
+                      border: UnderlineInputBorder()),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: TextFormField(
+                  controller: controllerNoKK,
+                  keyboardType: TextInputType.number,
+                  validator: (username) =>
+                      (username.isEmpty) ? 'No KK can\'t be empty' : null,
+                  decoration: InputDecoration(
+                      icon: Icon(FontAwesomeIcons.fileAlt),
+                      hintText: 'No KK',
+                      border: UnderlineInputBorder()),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              )
+            ],
+          ),
+        ));
   }
 
   Step stepContact() {
@@ -97,17 +220,20 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+                padding: EdgeInsets.all(5),
                 child: TextFormField(
+                  controller: controllerFullName,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
                       icon: Icon(Icons.person_outline_sharp),
                       hintText: 'Full name',
                       border: UnderlineInputBorder()),
+                  validator: (name) =>
+                      (name.isEmpty) ? 'full name can\'t be empty' : null,
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+                padding: EdgeInsets.all(5),
                 child: TextFormField(
                   controller: controllerBirthDay,
                   keyboardType: TextInputType.datetime,
@@ -121,21 +247,27 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                     pickDate(context).then((_) => controllerBirthDay.text =
                         '${date.day}/${date.month}/${date.year}');
                   },
+                  validator: (date) =>
+                      (date.isEmpty) ? 'date can\'t be empty' : null,
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+                padding: EdgeInsets.all(5),
                 child: TextFormField(
+                  controller: controllerAdress,
                   keyboardType: TextInputType.streetAddress,
                   decoration: InputDecoration(
                       icon: Icon(Icons.home_outlined),
                       hintText: 'Address',
                       border: UnderlineInputBorder()),
+                  validator: (address) =>
+                      (address.isEmpty) ? 'address can\'t be empty' : null,
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+                padding: EdgeInsets.all(5),
                 child: TextFormField(
+                  controller: controllerCity,
                   keyboardType: TextInputType.streetAddress,
                   decoration: InputDecoration(
                       icon: Icon(Icons.location_city_outlined),
@@ -144,8 +276,9 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 10, left: 25, right: 25),
+                padding: EdgeInsets.all(5),
                 child: TextFormField(
+                  controller: controllerPhone,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       icon: Icon(Icons.contact_phone_outlined),
@@ -188,8 +321,11 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 child: TextFormField(
                   controller: controllerUsername,
                   keyboardType: TextInputType.name,
-                  validator: (username) =>
-                      (username.isEmpty) ? 'username cannot be empty' : (username.length <= 6) ? 'username must be more than 6' : null,
+                  validator: (username) => (username.isEmpty)
+                      ? 'username cannot be empty'
+                      : (username.length <= 6)
+                          ? 'username must be more than 6'
+                          : null,
                   decoration: InputDecoration(
                       icon: Icon(Icons.person_outline_sharp),
                       hintText: 'Username',
@@ -204,8 +340,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                       controller: controllerFirstPassword,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: _isObscureFirst,
-                      validator: (password) => (
-                        !isValidPassword(password)
+                      validator: (password) => (!isValidPassword(password)
                           ? 'password not valid, Password must be more than 8 characters containing 1 uppercase letter, 1 lowercase letter, 1 number, and 1 unique characters, example (Myadmin1@, @MyAdm1n, my@dm1NN)'
                           : null),
                       decoration: InputDecoration(

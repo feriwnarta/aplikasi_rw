@@ -1,6 +1,7 @@
 import 'package:aplikasi_rw/screen/home_screen/comment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
+import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
 class StatusWarga extends StatelessWidget {
@@ -53,11 +54,11 @@ class StatusWarga extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(bottom: 3),
-                    child: Text(namaUser),
+                    child: Text(namaUser, style: TextStyle(fontSize: 9.0.sp),),
                   ),
                   Text(
                     '$lamaUpload',
-                    style: TextStyle(fontSize: 9),
+                    style: TextStyle(fontSize: 9.0.sp),
                   )
                 ],
               ),
@@ -70,12 +71,6 @@ class StatusWarga extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  // child: Text(
-                  // caption,
-                  // textAlign: TextAlign.justify,
-                  // style: TextStyle(height: 1.4),
-                  // maxLines: 10,
-                  // )
                   child: ReadMoreText(
                     caption,
                     trimLines: 3,
@@ -83,6 +78,9 @@ class StatusWarga extends StatelessWidget {
                     trimCollapsedText: 'Read More',
                     trimExpandedText: 'Read Less',
                     textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      fontSize: 11.0.sp
+                    ),
                   ),
                 )
               ],

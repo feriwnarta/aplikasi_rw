@@ -48,6 +48,9 @@ dependencies:
   flutter_slidable: ^0.5.7
   # introduction screen login
   introduction_screen: ^1.0.9
+  device_preview: ^0.5.5
+  sizer: ^1.1.8
+
   
 
 
@@ -78,6 +81,7 @@ flutter:
     - assets/img/image-onboarding/bg1.png
     - assets/img/image-onboarding/bg2.png
     - assets/img/image-onboarding/bg3.png
+    - assets/img/image-onboarding/succes-register.png
   #   - assets/img/background-pattern.png
   #   - images/a_dot_ham.jpeg
 
@@ -100,19 +104,24 @@ flutter:
   #         style: italic
     - family: Roboto
       fonts:
-        - asset: assets\fonts\Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Regular.ttf
 
     - family: Saira Condensed
       fonts:
-        - asset: assets\fonts\SairaCondensed-Regular.ttf
+        - asset: assets/fonts/SairaCondensed-Regular.ttf
 
     - family: PT Sans Narrow
       fonts:
-        - asset: assets\fonts\PTSansNarrow-Regular.ttf
-    
+        - asset: assets/fonts/PTSansNarrow-Regular.ttf
+
     - family: Montserrat 
       fonts:
-        - asset: assets\fonts\Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat-Regular.ttf
+
+    - family: NewsCycle 
+      fonts:
+        - asset: assets/fonts/NewsCycle-Regular.ttf
+
 
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
