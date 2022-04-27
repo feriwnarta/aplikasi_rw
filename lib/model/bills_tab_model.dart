@@ -17,7 +17,7 @@ class BillTabModel {
     return [
       BillTab(
         colorsAppBar: Colors.white,
-        tab: Tab(text: 'Reguler',),
+        tab: Tab(child: Text('Regulerr'),),
         screen: BillsRegulerScreen(),
         colorsText: Colors.black
       ),

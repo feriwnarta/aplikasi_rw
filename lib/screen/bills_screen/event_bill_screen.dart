@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class EventBillScrenn extends StatelessWidget {
   double mediaSizeHeight, mediaSizeWidth;
@@ -22,43 +23,43 @@ class EventBillScrenn extends StatelessWidget {
 
     return SingleChildScrollView(
       child: Container(
-        height: mediaSizeHeight * 0.6,
-        width: mediaSizeWidth,
+        height: 62.0.h,
+        width: 100.0.w,
         decoration: BoxDecoration(
             color: background, borderRadius: BorderRadius.vertical()),
         child: Column(
           children: [
             CachedNetworkImage(
-              width: mediaSizeWidth,
-              height: mediaSizeHeight * 0.3,
+              width: 100.0.w,
+              height: 35.0.h,
               fit: BoxFit.cover,
               repeat: ImageRepeat.noRepeat,
               imageUrl: urlHeroImage,
               placeholder: (context, url) => CircularProgressIndicator(),
               errorWidget: (context, url, error) => Icon(Icons.error),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 2.0.h),
             Center(
               child: Text(
                 titleEvent,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: 13.0.sp,
                     fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
             ),
             SizedBox(
-              height: 10,
+              height: 1.0.h,
             ),
             Material(
               borderRadius: BorderRadius.circular(20),
               elevation: 7,
               child: Container(
-                width: mediaSizeWidth * 0.8,
-                height: mediaSizeHeight * 0.15,
+                width: 80.0.w,
+                height: 15.0.h,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -72,13 +73,13 @@ class EventBillScrenn extends StatelessWidget {
                             topLeft: Radius.circular(20),
                             topRight: Radius.circular(20),
                           )),
-                      height: mediaSizeHeight * 0.075,
+                      height: 7.5.h,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Text(
                             'Contribution Amount',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.0.sp),
                           ),
                           VerticalDivider(
                             indent: 10,
@@ -91,24 +92,24 @@ class EventBillScrenn extends StatelessWidget {
                             children: [
                               Text('$price IDR',
                                   style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                                      TextStyle(fontWeight: FontWeight.bold, fontSize: 11.0.sp)),
                               Text(dueDate,
                                   style: TextStyle(
-                                      fontSize: 12, color: Colors.grey[700]))
+                                      fontSize: 9.0.sp, color: Colors.grey[700]))
                             ],
                           )
                         ],
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 1.0.h,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         SizedBox(
-                          width: mediaSizeWidth * 0.3,
-                          height: mediaSizeHeight * 0.04,
+                          width: 30.0.w,
+                          height: 4.0.h,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shadowColor: Colors.red,
@@ -121,14 +122,15 @@ class EventBillScrenn extends StatelessWidget {
                               'See Details',
                               style: TextStyle(
                                 color: background,
+                                fontSize: 11.0.sp
                               ),
                             ),
                             onPressed: () {},
                           ),
                         ),
                         SizedBox(
-                          width: mediaSizeWidth * 0.3,
-                          height: mediaSizeHeight * 0.04,
+                          width: 30.0.w,
+                          height: 4.0.h,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 elevation: 0,
@@ -138,7 +140,7 @@ class EventBillScrenn extends StatelessWidget {
                                 side: BorderSide(color: background)),
                             child: Text(
                               'Pay',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white, fontSize: 11.0.sp),
                             ),
                             onPressed: () {},
                           ),

@@ -3,6 +3,7 @@ import 'package:aplikasi_rw/model/bills_tab_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 
 class BillScreen extends StatefulWidget {
   @override
@@ -11,7 +12,6 @@ class BillScreen extends StatefulWidget {
 
 class _BillScreenState extends State<BillScreen>
     with SingleTickerProviderStateMixin {
-  double mediaSizeHeight;
   TabController controller;
 
   // bloc
@@ -36,24 +36,22 @@ class _BillScreenState extends State<BillScreen>
 
   @override
   Widget build(BuildContext context) {
-    mediaSizeHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
 
     return BlocBuilder<BillTabColorBloc, TabState>(
       builder: (context, state) => Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(mediaSizeHeight * 0.18),
+            preferredSize: Size.fromHeight(18.0.h),
             child: AppBar(
               brightness: Brightness.light,
               backgroundColor: state.colorAppBar,
               flexibleSpace: Container(
-                padding: EdgeInsets.only(bottom: 25),
+                padding: EdgeInsets.only(bottom: 2.5.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(left: 20, top: 10),
+                      margin: EdgeInsets.only(left: 5.0.w, bottom: 2.0.h),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -61,26 +59,23 @@ class _BillScreenState extends State<BillScreen>
                               'Bills',
                               style: TextStyle(
                                   color: state.colorsText,
-                                  fontSize: 32,
+                                  fontSize: 26.0.sp,
                                   fontFamily: 'poppins'),
                             ),
                             Text(
                               'citizen dues',
                               style: TextStyle(
                                   color: state.colorsText,
-                                  fontSize: 18,
+                                  fontSize: 12.0.sp,
                                   fontWeight: FontWeight.bold),
                             ),
                           ]),
                     ),
-                    Divider(
-                      thickness: 1,
-                    )
                   ],
                 ),
               ),
               bottom: TabBar(                
-                  labelPadding: EdgeInsets.symmetric(horizontal: 10),
+                  labelPadding: EdgeInsets.symmetric(horizontal: 1.0.w),
                   controller: controller,
                   labelColor: state.colorsText,
                   labelStyle: TextStyle(fontWeight: FontWeight.bold),

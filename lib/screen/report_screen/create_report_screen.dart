@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
 
 class CreateReportScreen extends StatelessWidget {
-  double mediaSizeHeight;
-  double mediaSizeWidth;
+
 
   PickedFile imageFile; // akan dikirim kedatabase
   final _picker = ImagePicker();
@@ -23,34 +23,27 @@ class CreateReportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<TempatTulisStatusBloc>(context);
 
-    mediaSizeHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    mediaSizeWidth = MediaQuery.of(context).size.width;
-
-    //mediaSizeHeight * 0.85
 
     return BlocBuilder<TempatTulisStatusBloc, TempatTulisStatusState>(
       builder: (context, state) => Container(
-        height: (state.isVisible) ? mediaSizeHeight * 0.85 : mediaSizeHeight * 0.75,
+        height: (state.isVisible) ? 78.0.h : 65.0.h,
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
             title: Text(
               'Add Report',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp),
             ),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(
                 Icons.clear_rounded,
                 color: Colors.white,
-                size: 30,
+                size: 4.0.h,
               ),
               onPressed: () {
                 imageFile = null;
-                bloc.add(TulisStatusEvent(
-                  imageFile: null
-                ));
+                bloc.add(TulisStatusEvent(imageFile: null));
                 Navigator.of(context).pop();
               },
             ),
@@ -61,46 +54,57 @@ class CreateReportScreen extends StatelessWidget {
                 children: [
                   // list tile data user
                   Container(
-                    margin: EdgeInsets.only(top: 5),
+                    
                     child: ListTile(
                       leading: CircleAvatar(
-                        radius: 35,
+                        radius: 3.5.h,
                         backgroundImage: NetworkImage(
                             'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg'),
                       ),
                       title: Text(
                         'Citra Susanti',
-                        style: TextStyle(fontFamily: 'poppins'),
+                        style:
+                            TextStyle(fontFamily: 'poppins', fontSize: 10.0.sp),
                       ),
-                      subtitle: Text('BLOK XY NO 21'),
+                      subtitle: Text('BLOK XY NO 21',
+                          style: TextStyle(fontSize: 8.0.sp)),
                     ),
                   ),
 
                   Divider(
                     thickness: 1,
+                    height: 1.0.h,
                   ),
 
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    child: TextField(
-                      controller: controllerTitle,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                              borderRadius: BorderRadius.circular(10)),
-                          hintText: 'title'),
+                    padding: EdgeInsets.symmetric(horizontal: 2.5.w).copyWith(top: 1.0.h),
+                    child: SizedBox(
+                      height: 6.5.h,
+                      child: TextField(
+                        controller: controllerTitle,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red),
+                                borderRadius: BorderRadius.circular(10)),
+                            hintText: 'title'),
+                        style: TextStyle(fontSize: 11.0.sp),
+                      ),
                     ),
                   ),
 
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    child: TextField(
-                      controller: controllerContent,
-                      maxLines: 10,
-                      decoration: InputDecoration(
-                          hintText: 'contents of the report',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10))),
+                    padding: EdgeInsets.symmetric(horizontal: 2.5.w).copyWith(top: 1.0.h),
+                    child: SizedBox(
+                      height: 23.0.h,
+                      child: TextField(
+                        controller: controllerContent,
+                        maxLines: 10,
+                        decoration: InputDecoration(
+                            hintText: 'contents of the report',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                        style: TextStyle(fontSize: 11.0.sp),
+                      ),
                     ),
                   ),
 
@@ -112,6 +116,7 @@ class CreateReportScreen extends StatelessWidget {
                             icon: Icon(
                               FontAwesomeIcons.camera,
                               color: Colors.blue,
+                              size: 3.5.h,
                             ),
                             label: Text(''),
                             onPressed: () {
@@ -119,7 +124,7 @@ class CreateReportScreen extends StatelessWidget {
                             }),
                         VerticalDivider(
                           color: Colors.grey,
-                          width: 50,
+                          width: 10.0.w,
                           thickness: 1,
                           indent: 15,
                           endIndent: 10,
@@ -128,6 +133,7 @@ class CreateReportScreen extends StatelessWidget {
                             icon: Icon(
                               FontAwesomeIcons.solidImage,
                               color: Colors.blue,
+                              size: 3.5.h,
                             ),
                             label: Text(''),
                             onPressed: () {
@@ -146,32 +152,33 @@ class CreateReportScreen extends StatelessWidget {
                           height: 5,
                         ),
                         Container(
-                          width: mediaSizeWidth,
+                          width: 100.0.w,
                           color: Colors.white,
                           child: Row(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 20),
+                                padding: EdgeInsets.only(left: 2.0.w),
                                 child: Image(
                                   alignment: Alignment.center,
                                   repeat: ImageRepeat.noRepeat,
                                   image: (state.imageFile != null)
                                       ? FileImage(File(state.imageFile.path))
                                       : AssetImage(''),
-                                  height: mediaSizeHeight * 0.08,
-                                  width: mediaSizeWidth * 0.2,
+                                  height: 10.0.h,
+                                  width: 22.0.w,
                                 ),
                               ),
 
                               //  button hapus gambar
                               Padding(
-                                padding: const EdgeInsets.only(left: 15),
+                                padding: EdgeInsets.only(left: 5.0.w),
                                 child: RaisedButton(
                                     elevation: 0,
                                     color: Colors.blueGrey[100],
                                     child: Text(
                                       'Hapus',
                                       style: TextStyle(
+                                        fontSize: 11.0.sp,
                                           fontWeight: FontWeight.w500),
                                     ),
                                     onPressed: () {
@@ -198,8 +205,8 @@ class CreateReportScreen extends StatelessWidget {
                   ),
 
                   SizedBox(
-                    width: mediaSizeWidth * 0.9,
-                    height: mediaSizeHeight * 0.06,
+                    width: 90.0.w,
+                    height: 6.5.h,
                     child: ElevatedButton(
                       style: ButtonStyle(
                           shape:

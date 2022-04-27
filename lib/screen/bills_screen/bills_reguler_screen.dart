@@ -4,10 +4,9 @@ import 'package:aplikasi_rw/screen/bills_screen/details_bill_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:sizer/sizer.dart';
 
 class BillsRegulerScreen extends StatelessWidget {
-  double mediaSizeHeight;
-  double mediaSizeWidth;
   bool isExpand = false;
 
   // bloc
@@ -17,32 +16,28 @@ class BillsRegulerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<BillRegulerBloc>(context);
 
-    mediaSizeHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    mediaSizeWidth = MediaQuery.of(context).size.width;
-
     return SingleChildScrollView(
       child: Column(
         children: [
           SizedBox(
-            height: 10,
+            height: 1.0.h,
           ),
           buildContainerCardBills(context),
           Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: EdgeInsets.only(top: 1.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(left: 15, bottom: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 5.0.w, vertical: 1.0.h),
                   child: Text(
                     'Previous Bill',
-                    style: TextStyle(fontSize: 18, fontFamily: 'poppins'),
+                    style: TextStyle(fontSize: 13.0.sp, fontFamily: 'poppins'),
                   ),
                 ),
                 Center(child: buildContainerPreviousBill()),
                 SizedBox(
-                  height: 10,
+                  height: 1.0.h,
                 ),
                 Container(
                   child: Column(
@@ -67,25 +62,26 @@ class BillsRegulerScreen extends StatelessWidget {
   ListTile buildListTileBottomStatus(
       IconData icon, String description, String status) {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 30),
+      contentPadding: EdgeInsets.symmetric(horizontal: 3.0.w),
       title: Row(
         children: [
           Icon(
             icon,
             color: Colors.black,
+            size: 20,
           ),
           SizedBox(
-            width: 10,
+            width: 1.0.w,
           ),
           Text(
             description,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.0.sp),
           ),
         ],
       ),
       trailing: Text(
         status,
-        style: TextStyle(color: Colors.grey),
+        style: TextStyle(color: Colors.grey, fontSize: 11.0.sp),
       ),
       onTap: () {},
     );
@@ -93,15 +89,15 @@ class BillsRegulerScreen extends StatelessWidget {
 
   Container buildContainerPreviousBill() {
     return Container(
-      width: mediaSizeWidth * 0.95,
-      height: mediaSizeHeight * 0.45,
+      width: 95.0.w,
+      height: 45.0.h,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           border: Border.all(color: Colors.grey[400])),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: Container(
-          margin: EdgeInsets.only(bottom: 10, left: 2, right: 2),
+          margin: EdgeInsets.only(bottom: 1.0.h, left: 0.2.w, right: 0.2.w),
           child: SingleChildScrollView(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
@@ -119,13 +115,13 @@ class BillsRegulerScreen extends StatelessWidget {
                                 title: Text(
                                   '${items.month} ${items.year}',
                                   style: TextStyle(
-                                    fontFamily: 'open sans',
-                                    fontSize: 16,
+                                    fontFamily: 'Roboto',
+                                    fontSize: 12.0.sp,
                                   ),
                                 ),
                                 subtitle: Text(
                                   '${items.total} IDR',
-                                  style: TextStyle(fontFamily: 'open sans'),
+                                  style: TextStyle(fontFamily: 'Roboto'),
                                 ),
                               ),
                           body: ListView.builder(
@@ -142,7 +138,7 @@ class BillsRegulerScreen extends StatelessWidget {
                                       '${items.billsHistoryBody[index].description}',
                                       style: TextStyle(
                                           fontFamily: 'saira condensed',
-                                          fontSize: 17,
+                                          fontSize: 13.0.sp,
                                           color: Colors.blue[800]),
                                     ),
                                     subtitle: Text(
@@ -156,7 +152,7 @@ class BillsRegulerScreen extends StatelessWidget {
                                       child: Text(
                                         '${items.billsHistoryBody[index].price} IDR',
                                         style:
-                                            TextStyle(color: Colors.green[900]),
+                                            TextStyle(color: Colors.green[900], fontSize: 10.0.sp),
                                       ),
                                     ),
                                   ),
@@ -180,8 +176,8 @@ class BillsRegulerScreen extends StatelessWidget {
 
   Container buildContainerCardBills(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
-      width: mediaSizeWidth * 0.95,
+      padding: EdgeInsets.symmetric(horizontal: 2.0.w, vertical: 2.0.h),
+      width: 95.0.w,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25),
           gradient: LinearGradient(
@@ -192,7 +188,7 @@ class BillsRegulerScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Container(
-            height: mediaSizeHeight * 0.055,
+            height: 6.0.h,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,11 +199,11 @@ class BillsRegulerScreen extends StatelessWidget {
                     Text('My bill',
                         style: TextStyle(
                             color: Colors.white,
-                            fontSize: 21,
+                            fontSize: 16.0.sp,
                             fontWeight: FontWeight.bold)),
                     Text(
                       'March 2022',
-                      style: TextStyle(color: Colors.white, fontSize: 12),
+                      style: TextStyle(color: Colors.white, fontSize: 10.0.sp),
                     )
                   ],
                 ),
@@ -219,7 +215,7 @@ class BillsRegulerScreen extends StatelessWidget {
                 ),
                 Text(
                   '3.500.000 IDR',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: TextStyle(color: Colors.white, fontSize: 16.0.sp),
                 )
               ],
             ),
@@ -229,13 +225,13 @@ class BillsRegulerScreen extends StatelessWidget {
             thickness: 1,
           ),
           Padding(
-            padding: EdgeInsets.only(top: 10),
+            padding: EdgeInsets.only(top: 1.0.h),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
-                  width: mediaSizeWidth * 0.4,
-                  height: mediaSizeHeight * 0.04,
+                  width: 40.0.w,
+                  height: 4.0.h,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         elevation: 0,
@@ -260,8 +256,8 @@ class BillsRegulerScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: mediaSizeWidth * 0.4,
-                  height: mediaSizeHeight * 0.04,
+                  width: 40.0.w,
+                  height: 4.0.h,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
