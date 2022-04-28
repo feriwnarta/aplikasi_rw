@@ -1,22 +1,18 @@
 import 'dart:io';
-
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
 
 class AddPayment extends StatelessWidget {
   PickedFile imageFile; // akan dikirim kedatabase
   final _picker = ImagePicker();
-  double mediaSizeHeight, mediaSizeWidth;
-
   TempatTulisStatusBloc bloc;
+
   @override
   Widget build(BuildContext context) {
-    mediaSizeHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    mediaSizeWidth = MediaQuery.of(context).size.width;
 
     bloc = BlocProvider.of<TempatTulisStatusBloc>(context);
 
@@ -29,30 +25,34 @@ class AddPayment extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                   child: TextField(
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
                             borderRadius: BorderRadius.circular(10)),
                         hintText: 'name payment'),
+                    style: TextStyle(fontSize: 11.0.sp),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                   child: TextField(
                     maxLines: 10,
                     decoration: InputDecoration(
                         hintText: 'description',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10))),
+                    style: TextStyle(fontSize: 11.0.sp),
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: 10),
+                  margin: EdgeInsets.only(left: 1.5.w),
                   child: Text(
                     'Upload proof of transfer',
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Colors.grey, fontSize: 11.0.sp),
                   ),
                 ),
                 Visibility(
@@ -64,33 +64,33 @@ class AddPayment extends StatelessWidget {
                         height: 5,
                       ),
                       Container(
-                        width: mediaSizeWidth,
+                        width: 100.0.w,
                         color: Colors.white,
                         child: Row(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(left: 20),
+                              padding: EdgeInsets.only(left: 2.0.w),
                               child: Image(
                                 alignment: Alignment.center,
                                 repeat: ImageRepeat.noRepeat,
                                 image: (state.imageFile != null)
                                     ? FileImage(File(state.imageFile.path))
                                     : AssetImage(''),
-                                height: mediaSizeHeight * 0.08,
-                                width: mediaSizeWidth * 0.2,
+                                height: 8.0.h,
+                                width: 20.0.w,
                               ),
                             ),
 
                             //  button hapus gambar
                             Padding(
-                              padding: const EdgeInsets.only(left: 15),
+                              padding: EdgeInsets.only(left: 1.5.w),
                               child: RaisedButton(
                                   elevation: 0,
                                   color: Colors.blueGrey[100],
                                   child: Text(
                                     'Hapus',
                                     style:
-                                        TextStyle(fontWeight: FontWeight.w500),
+                                        TextStyle(fontWeight: FontWeight.w500, fontSize: 11.0.sp),
                                   ),
                                   onPressed: () {
                                     // url foto dari container foto status dikosongin
@@ -146,12 +146,14 @@ class AddPayment extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: (state.isVisible) ? mediaSizeHeight * 0.2 : mediaSizeHeight * 0.3,
+                  height: (state.isVisible)
+                      ? 10.0.h
+                      : 20.0.h,
                 ),
                 Center(
                   child: SizedBox(
-                    width: mediaSizeWidth * 0.9,
-                    height: mediaSizeHeight * 0.06,
+                    width: 90.0.w,
+                    height: 6.0.h,
                     child: ElevatedButton(
                       style: ButtonStyle(
                           shape:
@@ -159,7 +161,7 @@ class AddPayment extends StatelessWidget {
                                   RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(10)))),
-                      child: Text('Post'),
+                      child: Text('Post', style: TextStyle(fontSize: 12.0.sp),),
                       onPressed: () {
                         // mengirim title report
                         // mengirim content report

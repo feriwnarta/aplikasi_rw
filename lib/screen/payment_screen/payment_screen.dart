@@ -9,9 +9,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
+import 'package:sizer/sizer.dart';
 
 class PaymentScreen extends StatelessWidget {
-  double mediaSizeHeight, mediaSizeWidth;
   bool isVisibility = false;
 
   PaymentBloc bloc;
@@ -19,44 +19,40 @@ class PaymentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<PaymentBloc>(context);
 
-    mediaSizeHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    mediaSizeWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(children: [
           Container(
-            height: mediaSizeHeight * 0.2,
+            height: 20.0.h,
             color: Colors.blue[200].withOpacity(0.5),
           ),
           Column(
             children: [
               SizedBox(
-                height: mediaSizeHeight * 0.015,
+                height: 1.5.h,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(left: 20, top: 20),
+                    padding: EdgeInsets.only(left: 3.0.w, top: 2.5.h),
                     child: Text(
                       'Payment',
                       style: TextStyle(
                           color: Colors.blue[900],
                           fontFamily: 'poppins',
-                          fontSize: 29),
+                          fontSize: 21.0.sp),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: mediaSizeHeight * 0.05),
+              SizedBox(height: 5.0.h),
               Material(
                 elevation: 5,
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
-                  height: mediaSizeHeight * 0.13,
-                  width: mediaSizeWidth * 0.9,
+                  height: 13.0.h,
+                  width: 90.0.w,
                   decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10)),
@@ -70,7 +66,7 @@ class PaymentScreen extends StatelessWidget {
                           IconButton(
                               icon: Icon(
                                 Icons.payment_outlined,
-                                size: 31,
+                                size: 5.5.h,
                                 color: Colors.blue[900],
                               ),
                               onPressed: () {
@@ -81,7 +77,7 @@ class PaymentScreen extends StatelessWidget {
                             'Pay Now',
                             style: TextStyle(
                                 fontFamily: 'pt sans narrow',
-                                fontSize: 16,
+                                fontSize: 12.0.sp,
                                 color: Colors.blue[900]),
                           )
                         ],
@@ -92,7 +88,7 @@ class PaymentScreen extends StatelessWidget {
                         children: [
                           IconButton(
                               icon: Icon(Icons.list_alt_rounded,
-                                  size: 31, color: Colors.blue[900]),
+                                  size: 5.5.h, color: Colors.blue[900]),
                               onPressed: () {
                                 showModalBottomSheet(
                                     backgroundColor: Colors.white,
@@ -110,7 +106,7 @@ class PaymentScreen extends StatelessWidget {
                             'Bill Details',
                             style: TextStyle(
                                 fontFamily: 'pt sans narrow',
-                                fontSize: 16,
+                                fontSize: 12.0.sp,
                                 color: Colors.blue[900]),
                           )
                         ],
@@ -123,7 +119,7 @@ class PaymentScreen extends StatelessWidget {
                               icon: ImageIcon(
                                 AssetImage(
                                     'assets/img/image-icons/call-center-worker-with-headset.png'),
-                                size: 31,
+                                size: 5.5.h,
                                 color: Colors.blue[900],
                               ),
                               onPressed: () {
@@ -133,8 +129,8 @@ class PaymentScreen extends StatelessWidget {
                             'Whatsapp Admin',
                             style: TextStyle(
                                 fontFamily: 'pt sans narrow',
-                                fontSize: 16,
-                                color: Colors.blue[200].withOpacity(0.5)),
+                                fontSize: 12.0.sp,
+                                color: Colors.blue[900]),
                           )
                         ],
                       )
@@ -143,44 +139,59 @@ class PaymentScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 1.5.h,
               ),
               buildMaterialMyPayment(),
               SizedBox(
-                height: 10,
+                height: 1.5.h,
               ),
               buildVisibilityHeaderText(),
               BlocBuilder<PaymentBloc, bool>(
                 builder: (context, state) => Visibility(
                   visible: state,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: CardPaymentModel.getPaymentHistory().length,
-                    itemBuilder: (context, index) => (CardPaymentModel
-                                    .getPaymentHistory()[index]
-                                .status
-                                .toLowerCase() ==
-                            'listed')
-                        ? Slidable(
-                            actionPane: SlidableDrawerActionPane(),
-                            secondaryActions: [
-                              IconSlideAction(
-                                caption: 'delete',
-                                color: Colors.blue[200].withOpacity(0.5),
-                                icon: Icons.delete_forever_outlined,
-                                foregroundColor: Colors.blue[900],
-                                onTap: () {
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                    backgroundColor: Colors.blue[900],
-                                    content: Text(
-                                      '${CardPaymentModel.getPaymentHistory()[index].noPayment} delete',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ));
-                                },
-                              )
-                            ],
-                            child: CardPayment(
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: CardPaymentModel.getPaymentHistory().length,
+                      itemBuilder: (context, index) => (CardPaymentModel
+                                      .getPaymentHistory()[index]
+                                  .status
+                                  .toLowerCase() ==
+                              'listed')
+                          ? Slidable(
+                              actionPane: SlidableDrawerActionPane(),
+                              secondaryActions: [
+                                IconSlideAction(
+                                  caption: 'delete',
+                                  color: Colors.blue[200].withOpacity(0.5),
+                                  icon: Icons.delete_forever_outlined,
+                                  foregroundColor: Colors.blue[900],
+                                  onTap: () {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      backgroundColor: Colors.blue[900],
+                                      content: Text(
+                                        '${CardPaymentModel.getPaymentHistory()[index].noPayment} delete',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ));
+                                  },
+                                )
+                              ],
+                              child: CardPayment(
+                                noPayment:
+                                    CardPaymentModel.getPaymentHistory()[index]
+                                        .noPayment,
+                                status:
+                                    CardPaymentModel.getPaymentHistory()[index]
+                                        .status,
+                                title:
+                                    CardPaymentModel.getPaymentHistory()[index]
+                                        .title,
+                              ),
+                            )
+                          : CardPayment(
                               noPayment:
                                   CardPaymentModel.getPaymentHistory()[index]
                                       .noPayment,
@@ -190,16 +201,7 @@ class PaymentScreen extends StatelessWidget {
                               title: CardPaymentModel.getPaymentHistory()[index]
                                   .title,
                             ),
-                          )
-                        : CardPayment(
-                            noPayment:
-                                CardPaymentModel.getPaymentHistory()[index]
-                                    .noPayment,
-                            status: CardPaymentModel.getPaymentHistory()[index]
-                                .status,
-                            title: CardPaymentModel.getPaymentHistory()[index]
-                                .title,
-                          ),
+                    ),
                   ),
                 ),
               )
@@ -208,9 +210,9 @@ class PaymentScreen extends StatelessWidget {
         ]),
       ),
       floatingActionButton: SizedBox(
-        height: 50,
+        height: 7.0.h,
         child: FloatingActionButton(
-          backgroundColor: Colors.blue[900],
+          backgroundColor: Colors.blue[800],
           heroTag: 'btn2',
           onPressed: () {
             Navigator.push(
@@ -229,7 +231,7 @@ class PaymentScreen extends StatelessWidget {
     return Visibility(
       visible: true,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 3.0.w),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -256,12 +258,12 @@ class PaymentScreen extends StatelessWidget {
       elevation: 5,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        padding: EdgeInsets.only(left: 15, right: 15),
-        width: mediaSizeWidth * 0.95,
-        height: mediaSizeHeight * 0.07,
+        padding: EdgeInsets.symmetric(horizontal: 3.0.w),
+        width: 95.0.w,
+        height: 7.5.h,
         decoration: BoxDecoration(
           color: Colors.blue[900].withOpacity(0.7),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(15),
         ),
         child: Material(
           color: Colors.transparent,
@@ -278,22 +280,25 @@ class PaymentScreen extends StatelessWidget {
                 Text(
                   'My Payment',
                   style: TextStyle(
-                      color: Colors.white, fontSize: 16, fontFamily: 'poppins'),
+                      color: Colors.white,
+                      fontSize: 13.0.sp,
+                      fontFamily: 'poppins'),
                 ),
                 Row(
                   children: [
                     Row(
                       children: [
                         Padding(
-                          padding: EdgeInsets.only(right: 10),
+                          padding: EdgeInsets.only(right: 1.0.w),
                           child: Text(
                             '${CardPaymentModel.getPaymentHistory().length}',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 14.0.sp),
                           ),
                         ),
                         Icon(
                           Icons.account_balance_wallet_rounded,
-                          size: 21,
+                          size: 3.0.h,
                           color: Colors.white,
                         )
                       ],
@@ -304,15 +309,15 @@ class PaymentScreen extends StatelessWidget {
                           color: Colors.white,
                           width: 50,
                           thickness: 1,
-                          indent: 17,
-                          endIndent: 17,
+                          indent: 2.0.h,
+                          endIndent: 2.0.h,
                         ),
                         BlocBuilder<PaymentBloc, bool>(
                           builder: (context, state) => Material(
                               color: Colors.transparent,
                               child: SizedBox(
-                                height: 50,
-                                width: mediaSizeWidth * 0.045,
+                                height: 5.0.h,
+                                width: 5.0.w,
                                 child: InkWell(
                                   splashColor: Colors.indigo,
                                   borderRadius: BorderRadius.circular(20),
@@ -322,10 +327,12 @@ class PaymentScreen extends StatelessWidget {
                                           ? Icon(
                                               FontAwesomeIcons.angleUp,
                                               color: Colors.white,
+                                              size: 4.0.h,
                                             )
                                           : Icon(
                                               FontAwesomeIcons.angleDown,
                                               color: Colors.white,
+                                              size: 4.0.h,
                                             )),
                                   onTap: () {
                                     isVisibility = !isVisibility;

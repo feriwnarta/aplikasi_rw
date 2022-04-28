@@ -22,12 +22,12 @@ class CardLaporanWargaModel {
     ),
     CardLaporanWargaModel(
       noTicket: '0522010',
-      judul: 'Sampah berantakan',
+      judul: 'Sampah berantakannnnnnnnnnn',
       status: 'Noticed',
     ),
     CardLaporanWargaModel(
       noTicket: '0522016',
-      judul: 'Selokan mampet',
+      judul: 'Selokan mampet diebony golf G2',
       status: 'Listed',
     ),
   ];

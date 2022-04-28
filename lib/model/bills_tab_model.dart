@@ -1,6 +1,7 @@
 import 'package:aplikasi_rw/screen/bills_screen/bills_reguler_screen.dart';
 import 'package:aplikasi_rw/screen/bills_screen/event_bill_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class BillTab {
   Tab tab;
@@ -17,13 +18,13 @@ class BillTabModel {
     return [
       BillTab(
         colorsAppBar: Colors.white,
-        tab: Tab(child: Text('Regulerr'),),
+        tab: Tab(child: Text('Regulerr', style: TextStyle(fontSize: 12.0.sp)),),
         screen: BillsRegulerScreen(),
         colorsText: Colors.black
       ),
       BillTab(
         colorsAppBar: Colors.red,
-        tab: Tab(text: 'Event 17 August'),
+        tab: Tab(child: Text('Event 17 August', style: TextStyle(fontSize: 12.0.sp))),
         screen: EventBillScrenn(
           urlHeroImage: 'https://asset.kompas.com/crops/wvIJirTN7tp9S7AQ4mmlkdkMk0o=/0x0:780x520/750x500/data/photo/2020/08/13/5f354e00ebe40.jpg',
           titleEvent: 'citizen dues for the 17 august 2022',
@@ -35,7 +36,7 @@ class BillTabModel {
       ),
       BillTab(
         colorsAppBar: Colors.blue,
-        tab: Tab(text: 'Event idul adha',),
+        tab: Tab(child: Text('Event idul adha', style: TextStyle(fontSize: 12.0.sp),),),
         screen: EventBillScrenn(
           urlHeroImage: 'https://kemenkumham.go.id/images/foto/2019/8_Agustus/2019-08-11_-_Idul_Adha_1.jpg',
           titleEvent: 'cost to buy sacrificial animals',

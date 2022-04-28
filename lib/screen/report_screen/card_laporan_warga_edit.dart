@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sizer/sizer.dart';
 
 class CardLaporanWargaEdit extends StatelessWidget {
   // data laporan
@@ -18,7 +19,6 @@ class CardLaporanWargaEdit extends StatelessWidget {
   PickedFile imageFile;
   final _picker = ImagePicker();
   bool isVisible = false;
-  double mediaSizeWidth, mediaSizeHeigth;
 
   final appBar = AppBar(
     brightness: Brightness.light,
@@ -39,13 +39,6 @@ class CardLaporanWargaEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<TempatTulisStatusBloc>(context);
-
-    mediaSizeHeigth = MediaQuery.of(context).size.height -
-        MediaQuery.of(context).padding.top -
-        appBar.preferredSize.height;
-    mediaSizeWidth =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-
     isVisible = true;
 
     return BlocBuilder<TempatTulisStatusBloc, TempatTulisStatusState>(
@@ -57,29 +50,32 @@ class CardLaporanWargaEdit extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 1.0.w),
                   child: SizedBox(
-                    height: mediaSizeHeigth * 0.06,
+                    height: 6.0.h,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: EdgeInsets.only(top: 1.0.h),
                       child: Card(
                         elevation: 2,
                         child: Row(
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
+                              padding: EdgeInsets.symmetric(horizontal: 1.5.h),
                               child: Text(
                                 'No tickets',
                                 style: TextStyle(
                                     color: Colors.green,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0.sp
+                                    ),
                               ),
                             ),
                             Text(noTickects,
                                 style: TextStyle(
                                     color: Colors.indigo,
-                                    fontWeight: FontWeight.bold)),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13.0.sp
+                                    )),
                           ],
                         ),
                       ),
@@ -87,23 +83,29 @@ class CardLaporanWargaEdit extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                   child: TextField(
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
                             borderRadius: BorderRadius.circular(10)),
-                        hintText: 'title'),
+                        hintText: 'title',
+                        hintStyle: TextStyle(
+                          fontSize: 13.0.sp
+                        )),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                   child: TextField(
                     maxLines: 10,
                     decoration: InputDecoration(
                         hintText: 'contents of the report',
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10))),
+                            borderRadius: BorderRadius.circular(10)),
+                            hintStyle: TextStyle(
+                              fontSize: 13.0.sp
+                            )),
                   ),
                 ),
                 Divider(
@@ -118,33 +120,33 @@ class CardLaporanWargaEdit extends StatelessWidget {
                         height: 5,
                       ),
                       Container(
-                        width: mediaSizeWidth,
+                        width: 100.0.w,
                         color: Colors.white,
                         child: Row(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(left: 20),
+                              padding: EdgeInsets.only(left: 2.0.w),
                               child: Image(
                                 alignment: Alignment.center,
                                 repeat: ImageRepeat.noRepeat,
                                 image: (state.imageFile != null)
                                     ? FileImage(File(state.imageFile.path))
                                     : NetworkImage(imageReportUrl),
-                                height: mediaSizeHeigth * 0.08,
-                                width: mediaSizeWidth * 0.2,
+                                height: 8.0.h,
+                                width: 20.0.w,
                               ),
                             ),
 
                             //  button hapus gambar
                             Padding(
-                              padding: const EdgeInsets.only(left: 15),
+                              padding: EdgeInsets.only(left: 1.5.w),
                               child: RaisedButton(
                                   elevation: 0,
                                   color: Colors.blueGrey[100],
                                   child: Text(
                                     'Hapus',
                                     style:
-                                        TextStyle(fontWeight: FontWeight.w500),
+                                        TextStyle(fontWeight: FontWeight.w500, fontSize: 11.0.sp),
                                   ),
                                   onPressed: () {
                                     // url foto dari container foto status dikosongin
@@ -159,7 +161,7 @@ class CardLaporanWargaEdit extends StatelessWidget {
                       ),
                       Divider(
                         thickness: 1,
-                        height: 10,
+                        height: 1.0.h,
                       ),
                     ],
                   ),
@@ -172,6 +174,7 @@ class CardLaporanWargaEdit extends StatelessWidget {
                           icon: Icon(
                             FontAwesomeIcons.camera,
                             color: Colors.blue,
+                            size: 4.0.h,
                           ),
                           label: Text(''),
                           onPressed: () {
@@ -187,6 +190,7 @@ class CardLaporanWargaEdit extends StatelessWidget {
                       FlatButton.icon(
                           icon: Icon(
                             FontAwesomeIcons.solidImage,
+                            size: 4.0.h,
                             color: Colors.blue,
                           ),
                           label: Text(''),
@@ -198,13 +202,12 @@ class CardLaporanWargaEdit extends StatelessWidget {
                 ),
                 Divider(
                   thickness: 1,
-                  height: 15,
+                  height: 2.0.h,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                Center(
                   child: SizedBox(
-                    width: mediaSizeWidth * 0.9,
-                    height: mediaSizeHeigth * 0.06,
+                    width: 90.0.w,
+                    height: 6.0.h,
                     child: ElevatedButton(
                       style: ButtonStyle(
                           shape:

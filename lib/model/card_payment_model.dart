@@ -7,7 +7,7 @@ class CardPaymentModel {
     return [
       CardPaymentModel(
         noPayment: 'PY052201',
-        title: 'Pembayaran tagihan air',
+        title: 'Pembayaran tagihan airrrrrrrrrrrrrrr',
         status: 'confirmed'
       ),
       CardPaymentModel(

@@ -1,60 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class DetailsBillScreen extends StatelessWidget {
-  double mediaSizeHeight;
-  double mediaSizeWidth;
-
   @override
-  Widget build(BuildContext context) {
-    mediaSizeHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    mediaSizeWidth = MediaQuery.of(context).size.width;
+  Widget build(BuildContext context) {  
 
     return Container(
-      height: mediaSizeHeight * 0.6,
+      height: 65.0.h,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
       child: Column(
         children: [
           buildContainerHeader(context),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: mediaSizeWidth * 0.07),
-            height: mediaSizeHeight * 0.5,
+            margin: EdgeInsets.symmetric(horizontal: 7.0.w),
+            height: 50.0.h,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 10,
+                    height: 1.0.h,
                   ),
                   Text(
                     'Detail Bill',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 17.0.sp, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 1.5.h,
                   ),
                   ListView.builder(
                       physics: ClampingScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: 7,
                       itemBuilder: (context, index) => Padding(
-                            padding: const EdgeInsets.only(bottom: 15),
+                            padding: EdgeInsets.only(bottom: 1.5.h),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   'Payment ${index + 1}',
                                   style: TextStyle(
-                                      fontSize: 16,
+                                      fontSize: 13.0.sp,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   '${(index + 1) * 100000} IDR',
-                                  style: TextStyle(color: Colors.grey[700]),
+                                  style: TextStyle(color: Colors.grey[700], fontSize: 13.0.sp),
                                   textAlign: TextAlign.left,
                                 ),
                                 SizedBox(
-                                  width: mediaSizeWidth * 0.1,
+                                  width: 10.0.w,
                                 )
                               ],
                             ),
@@ -63,27 +58,27 @@ class DetailsBillScreen extends StatelessWidget {
                     thickness: 1,
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 1.0.h,
                   ),
                   Row(
                     children: [
                       Text(
                         'Total',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 14.0.sp, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        width: mediaSizeWidth * 0.3,
+                        width: 30.0.w,
                       ),
-                      Text('2.800.000 IDR'),
+                      Text('2.800.000 IDR', style: TextStyle(fontSize: 14.0.sp)),
                     ],
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 1.5.h,
                   ),
                   SizedBox(
-                    width: mediaSizeWidth * 0.9,
-                    height: mediaSizeHeight * 0.06,
+                    width: 90.0.w,
+                    height: 6.0.h,
                     child: ElevatedButton(
                       style: ButtonStyle(
                           shape:
@@ -91,7 +86,7 @@ class DetailsBillScreen extends StatelessWidget {
                                   RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(10)))),
-                      child: Text('Pay'),
+                      child: Text('Pay', style: TextStyle(fontSize: 11.0.sp),),
                       onPressed: () {},
                     ),
                   )
@@ -106,8 +101,8 @@ class DetailsBillScreen extends StatelessWidget {
 
   Container buildContainerHeader(BuildContext context) {
     return Container(
-      height: mediaSizeHeight * 0.08,
-      width: mediaSizeWidth,
+      height: 8.0.h,
+      width: 100.0.w,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(15),
@@ -124,11 +119,11 @@ class DetailsBillScreen extends StatelessWidget {
             'My Bill Detail',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 17.0.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(width: mediaSizeWidth * 0.4),
+          SizedBox(width: 40.0.w),
           IconButton(
               icon: Icon(
                 Icons.clear_rounded,

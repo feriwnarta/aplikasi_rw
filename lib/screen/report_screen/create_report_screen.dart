@@ -8,8 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
 
 class CreateReportScreen extends StatelessWidget {
-
-
   PickedFile imageFile; // akan dikirim kedatabase
   final _picker = ImagePicker();
 
@@ -64,10 +62,10 @@ class CreateReportScreen extends StatelessWidget {
                       title: Text(
                         'Citra Susanti',
                         style:
-                            TextStyle(fontFamily: 'poppins', fontSize: 10.0.sp),
+                            TextStyle(fontFamily: 'poppins', fontSize: 12.0.sp),
                       ),
                       subtitle: Text('BLOK XY NO 21',
-                          style: TextStyle(fontSize: 8.0.sp)),
+                          style: TextStyle(fontSize: 9.0.sp)),
                     ),
                   ),
 
@@ -87,7 +85,7 @@ class CreateReportScreen extends StatelessWidget {
                                 borderSide: BorderSide(color: Colors.red),
                                 borderRadius: BorderRadius.circular(10)),
                             hintText: 'title'),
-                        style: TextStyle(fontSize: 11.0.sp),
+                        style: TextStyle(fontSize: 12.0.sp),
                       ),
                     ),
                   ),
@@ -103,7 +101,7 @@ class CreateReportScreen extends StatelessWidget {
                             hintText: 'contents of the report',
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10))),
-                        style: TextStyle(fontSize: 11.0.sp),
+                        style: TextStyle(fontSize: 12.0.sp),
                       ),
                     ),
                   ),

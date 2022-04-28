@@ -1,5 +1,6 @@
 import 'package:aplikasi_rw/screen/payment_screen/edit_payment_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
 class CardPayment extends StatelessWidget {
@@ -23,13 +24,13 @@ class CardPayment extends StatelessWidget {
           splashColor: Colors.indigo,
           borderRadius: BorderRadius.circular(20),
           child: ListTile(
-            contentPadding: EdgeInsets.only(left: 20, right: 20),
+            contentPadding: EdgeInsets.symmetric(horizontal: 3.0.w),
             leading: Padding(
               padding: EdgeInsets.only(top: 3),
               child: Text(
                 noPayment,
                 style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 10.0.sp,
                     fontWeight: FontWeight.bold,
                     color: Colors.indigo),
               ),
@@ -39,12 +40,12 @@ class CardPayment extends StatelessWidget {
               title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 10.0.sp, fontWeight: FontWeight.bold),
             ),
             trailing: Text(
               status,
               style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 10.0.sp,
                   fontWeight: FontWeight.bold,
                   color: colorStatusCheck()),
             ),

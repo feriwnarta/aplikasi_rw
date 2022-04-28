@@ -63,9 +63,6 @@ class MyApp extends StatelessWidget {
         return OrientationBuilder(builder: (context, orientation) {
           SizerUtil().init(constraints, orientation);
           return MaterialApp(
-            // locale: DevicePreview.locale(context),
-            // builder: DevicePreview.appBuilder,
-            // debug banner
             debugShowCheckedModeBanner: false,
             home: TemplateScreen(),
             // home: OnboardingScreen(),

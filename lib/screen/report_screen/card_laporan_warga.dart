@@ -19,65 +19,51 @@ class CardLaporanWarga extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 9.0.h,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        elevation: 2,
-        child: Material(
-          color: Colors.transparent,
-          elevation: 0,
-          child: InkWell(
-            splashColor: Colors.indigo,
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 4.0.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    noTicket,
-                    style: TextStyle(
-                        fontSize: 9.0.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.indigo),
-                  ),
-                  Container(
-                    width: 60.0.w,
-                    child: Text(
-                      // 36 kata
-                      judul,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 9.0.sp, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(
-                    width: 12.0.w,
-                    child: Text(
-                    status,
-                    style: TextStyle(
-                        fontSize: 9.0.sp,
-                        fontWeight: FontWeight.bold,
-                        color: colorStatusCheck()),
-                ),
-                  ),
-                  
-
-                ],
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 2,
+      child: Material(
+        color: Colors.transparent,
+        elevation: 0,
+        child: InkWell(
+          splashColor: Colors.indigo,
+          borderRadius: BorderRadius.circular(20),
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 3.0.w),
+            leading: Padding(
+              padding: EdgeInsets.only(top: 3),
+              child: Text(
+                noTicket,
+                style: TextStyle(
+                    fontSize: 10.0.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.indigo),
               ),
             ),
-            onTap: () {
-              if (status.toLowerCase() == 'listed') {
-                Navigator.of(context).push(SlideTranstionRoute(
-                    child: CardLaporanWargaEdit(
-                      noTickects: noTicket,
-                    ),
-                    direction: AxisDirection.right));
-              }
-            },
+            title: Text(
+              // 36 kata
+              judul,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 10.0.sp, fontWeight: FontWeight.bold),
+            ),
+            trailing: Text(
+              status,
+              style: TextStyle(
+                  fontSize: 10.0.sp,
+                  fontWeight: FontWeight.bold,
+                  color: colorStatusCheck()),
+            ),
           ),
+          onTap: () {
+            if (status.toLowerCase() == 'listed') {
+              Navigator.of(context).push(SlideTranstionRoute(
+                  child: CardLaporanWargaEdit(
+                    noTickects: noTicket,
+                  ),
+                  direction: AxisDirection.right));
+            }
+          },
         ),
       ),
     );

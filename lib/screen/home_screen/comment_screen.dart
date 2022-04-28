@@ -1,10 +1,9 @@
 import 'package:aplikasi_rw/bloc/comment_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sizer/sizer.dart';
 
 class CommentScreen extends StatelessWidget {
-  double mediaSizeHeight, mediaSizeWidth;
-
   // bloc
   CommentBloc bloc;
 
@@ -21,24 +20,20 @@ class CommentScreen extends StatelessWidget {
     bloc = BlocProvider.of<CommentBloc>(context);
     controller.addListener(onScroll);
 
-    mediaSizeHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    mediaSizeWidth = MediaQuery.of(context).size.width;
-
     return Container(
-      height: mediaSizeHeight * 0.6,
+      height: 60.0.h,
       child: Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(mediaSizeHeight * 0.05),
+          preferredSize: Size.fromHeight(5.0.h),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             SizedBox(
-              width: mediaSizeWidth * 0.1,
+              width: 10.0.w,
             ),
             Text(
               // '${CommentModel.getAllComment().length} Comment',
               'comment',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0.sp),
             ),
             IconButton(
               icon: Icon(Icons.clear_rounded),
@@ -55,8 +50,8 @@ class CommentScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: SizedBox(
-                    width: 30,
-                    height: 30,
+                    width: 3.0.w,
+                    height: 3.0.h,
                     child: CircularProgressIndicator(),
                   ),
                 ),
@@ -79,7 +74,7 @@ class CommentScreen extends StatelessWidget {
                         commentLoaded.listComment[index].date,
                         commentLoaded.listComment[index].comment)
                     : Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
+                        margin: EdgeInsets.symmetric(vertical: 1.0.h),
                         child: Center(
                           child: SizedBox(
                             width: 30,
@@ -95,7 +90,7 @@ class CommentScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
-                height: mediaSizeHeight * 0.07,
+                height: 8.0.h,
                 decoration: BoxDecoration(color: Colors.grey[100], boxShadow: [
                   BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
@@ -106,18 +101,20 @@ class CommentScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     SizedBox(
-                      width: mediaSizeWidth * 0.8,
+                      width: 85.0.w,
                       child: TextField(
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.red),
-                                borderRadius: BorderRadius.circular(10)),
+                                borderSide: BorderSide(color: Colors.red)),
                             hintText: 'write status'),
+                            style: TextStyle(
+                              fontSize: 12.0.sp
+                            ),
                       ),
                     ),
                     Material(
                       child: IconButton(
-                          icon: Icon(Icons.arrow_forward), onPressed: () {}),
+                          icon: Icon(Icons.arrow_forward, size: 4.0.h,), onPressed: () {}),
                     )
                   ],
                 ),
@@ -136,15 +133,18 @@ class CommentScreen extends StatelessWidget {
         ListTile(
           leading: CircleAvatar(
             backgroundImage: NetworkImage(urlUserComment),
-            radius: 20,
+            radius: 3.5.h,
           ),
-          title: Text(userName),
-          subtitle: Text(date),
+          title: Text(
+            userName,
+            style: TextStyle(fontSize: 12.0.sp),
+          ),
+          subtitle: Text(date, style: TextStyle(fontSize: 11.0.sp)),
         ),
         Row(
           children: [
             SizedBox(
-              width: mediaSizeWidth * 0.05,
+              width: 5.0.w,
             ),
             Expanded(
               child: Text(
@@ -152,13 +152,15 @@ class CommentScreen extends StatelessWidget {
                 maxLines: 10,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
-                style: TextStyle(),
+                style: TextStyle(
+                  fontSize: 12.0.sp
+                ),
               ),
             ),
           ],
         ),
         SizedBox(
-          height: mediaSizeHeight * 0.02,
+          height: 2.0.h,
         ),
         Divider(
           thickness: 1,

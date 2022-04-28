@@ -11,8 +11,6 @@ import 'package:sizer/sizer.dart';
 //ignore: must_be_immutable
 class ReportScreen extends StatelessWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  double mediaSizeHeight;
-  double mediaSizeWidth;
   bool isVisibility = true;
 
   ReportScreen(this.scaffoldKey);
@@ -23,9 +21,6 @@ class ReportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     blocScreenReport = BlocProvider.of<ReportScreenBloc>(context);
-    mediaSizeHeight =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    mediaSizeWidth = MediaQuery.of(context).size.height;
 
     return BlocBuilder<ReportScreenBloc, ReportState>(
       builder: (context, state) => SafeArea(
