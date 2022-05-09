@@ -8,6 +8,7 @@ import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/bills_history_model.dart';
 import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
+import 'package:aplikasi_rw/screen/login_screen/onboarding/onboarding_screen.dart';
 import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen/report_screen.dart';
 import 'package:device_preview/device_preview.dart';
@@ -64,8 +65,8 @@ class MyApp extends StatelessWidget {
           SizerUtil().init(constraints, orientation);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: TemplateScreen(),
-            // home: OnboardingScreen(),
+            // home: TemplateScreen(),
+            home: OnboardingScreen(),
             theme: ThemeData(
                 fontFamily: 'open sans',
                 scaffoldBackgroundColor:

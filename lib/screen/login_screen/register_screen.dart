@@ -1,6 +1,10 @@
+import 'package:aplikasi_rw/screen/login_screen/login_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:sizer/sizer.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -18,6 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   // checker visibility password
   bool _isObscureFirst = true;
   bool _isObscureSecond = true;
+  bool _isCompleted = false;
   // date time
   DateTime date;
 
@@ -43,38 +48,36 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Register'),
+        title: Text(
+          'Register',
+          style: TextStyle(fontSize: 14.0.sp),
+        ),
       ),
-      body: Stepper( 
-
+      body: Stepper(
           physics: ScrollPhysics(),
           type: StepperType.horizontal,
           currentStep: currentStep,
-          // onStepTapped: (step) => setState(() {
-          //       if (_formKeyAccount.currentState.validate() && step == 0) {
-          //         currentStep = step;
-          //       } else if (_formKeyContact.currentState.validate() &&
-          //           step == 1) {
-          //         currentStep = step;
-          //       }
-          //     }),
           controlsBuilder: (context, {onStepCancel, onStepContinue}) {
-            return Row(
-              children: [
+            return Row(children: [
+              Expanded(
+                  child: ElevatedButton(
+                child: Text(
+                  'Next',
+                  style: TextStyle(fontSize: 11.0.sp),
+                ),
+                onPressed: onStepContinue,
+              )),
+              SizedBox(width: 2.0.w),
+              if (currentStep != 0)
                 Expanded(
                     child: ElevatedButton(
-                  child: Text('Next'),
-                  onPressed: onStepContinue,
+                  child: Text(
+                    'Back',
+                    style: TextStyle(fontSize: 11.0.sp),
+                  ),
+                  onPressed: onStepCancel,
                 )),
-                SizedBox(width: 20),
-                if (currentStep != 0)
-                  Expanded(
-                      child: ElevatedButton(
-                    child: Text('Back'),
-                    onPressed: onStepCancel,
-                  )),
-              ],
-            );
+            ]);
           },
           onStepContinue: () {
             final isLastStep = currentStep == getSteps().length - 1;
@@ -82,30 +85,18 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
             // checker validate step account
             if (currentStep == 0) {
               if (_formKeyAccount.currentState.validate()) {
-                setState(() {
-                  if (isLastStep) {
-                    print('completed');
-                  } else {
-                    currentStep++;
-                  }
-                });
+                setState(() => currentStep++);
               }
             } else if (currentStep == 1) {
               if (_formKeyContact.currentState.validate()) {
-                setState(() {
-                  if (isLastStep) {
-                    print('completed');
-                  } else {
-                    currentStep++;
-                  }
-                });
+                setState(() => currentStep++);
               }
             } else if (currentStep == 2) {
               if (_formKeyIdentity.currentState.validate()) {
                 setState(() {
                   if (isLastStep) {
-                    // cek nik dan ktp
-                    // kemudian kehalaman akhir
+                    _isCompleted = !_isCompleted;
+                    userRegistration();
                   } else {
                     currentStep++;
                   }
@@ -124,65 +115,27 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
     return [stepAccount(), stepContact(), stepIdentity()];
   }
 
-  Step stepCompleted() {
-    return Step(
-        isActive: currentStep >= 2,
-        state: currentStep > 2 ? StepState.complete : StepState.indexed,
-        title: Text('Identity'),
-        content: Form(
-          key: _formKeyIdentity,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(5),
-                child: TextFormField(
-                  controller: controllerNoKtp,
-                  keyboardType: TextInputType.number,
-                  validator: (ktp) =>
-                      (ktp.isEmpty) ? 'No Ktp can\t be empty' : null,
-                  decoration: InputDecoration(
-                      icon: Icon(FontAwesomeIcons.idCard),
-                      hintText: 'No Ktp',
-                      border: UnderlineInputBorder()),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(5),
-                child: TextFormField(
-                  controller: controllerNoKK,
-                  keyboardType: TextInputType.number,
-                  validator: (username) =>
-                      (username.isEmpty) ? 'No KK can\'t be empty' : null,
-                  decoration: InputDecoration(
-                      icon: Icon(FontAwesomeIcons.fileAlt),
-                      hintText: 'No KK',
-                      border: UnderlineInputBorder()),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              )
-            ],
-          ),
-        ));
-  }
-
   Step stepIdentity() {
     return Step(
         isActive: currentStep >= 2,
         state: currentStep > 2 ? StepState.complete : StepState.indexed,
-        title: Text('Identity'),
+        title: Text(
+          'Identity',
+          style: TextStyle(fontSize: 10.0.sp),
+        ),
         content: Form(
           key: _formKeyIdentity,
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(5),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                 child: TextFormField(
                   controller: controllerNoKtp,
                   keyboardType: TextInputType.number,
-                  validator: (ktp) =>
-                      (ktp.isEmpty) ? 'No Ktp can\t be empty' : null,
+                  style: TextStyle(fontSize: 11.0.sp),
+                  // validator: (ktp) =>
+                  //     (ktp.isEmpty) ? 'No Ktp can\t be empty' : null,
                   decoration: InputDecoration(
                       icon: Icon(FontAwesomeIcons.idCard),
                       hintText: 'No Ktp',
@@ -190,12 +143,14 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(5),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                 child: TextFormField(
                   controller: controllerNoKK,
                   keyboardType: TextInputType.number,
-                  validator: (username) =>
-                      (username.isEmpty) ? 'No KK can\'t be empty' : null,
+                  style: TextStyle(fontSize: 11.0.sp),
+                  // validator: (username) =>
+                  //     (username.isEmpty) ? 'No KK can\'t be empty' : null,
                   decoration: InputDecoration(
                       icon: Icon(FontAwesomeIcons.fileAlt),
                       hintText: 'No KK',
@@ -203,27 +158,46 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 2.0.h,
               )
             ],
           ),
-        ));
+        )
+        // : Column(
+        //     children: [
+        //       Text('Process Register'),
+        //       SizedBox(height: 10),
+        //       Center(
+        //         child: SizedBox(
+        //           height: 40,
+        //           width: 40,
+        //           child: CircularProgressIndicator(),
+        //         ),
+        //       ),
+        //     ],
+        //   )
+        );
   }
 
   Step stepContact() {
     return Step(
         isActive: currentStep >= 1,
         state: currentStep > 1 ? StepState.complete : StepState.indexed,
-        title: Text('Contact'),
+        title: Text(
+          'Contact',
+          style: TextStyle(fontSize: 10.0.sp),
+        ),
         content: Form(
           key: _formKeyContact,
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(5),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                 child: TextFormField(
                   controller: controllerFullName,
                   keyboardType: TextInputType.name,
+                  style: TextStyle(fontSize: 11.0.sp),
                   decoration: InputDecoration(
                       icon: Icon(Icons.person_outline_sharp),
                       hintText: 'Full name',
@@ -237,7 +211,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 child: TextFormField(
                   controller: controllerBirthDay,
                   keyboardType: TextInputType.datetime,
-                  // initialValue: controllerBirthDay.text,
+                  style: TextStyle(fontSize: 11.0.sp),
                   decoration: InputDecoration(
                       icon: Icon(Icons.date_range_outlined),
                       hintText: 'birthday',
@@ -256,6 +230,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 child: TextFormField(
                   controller: controllerAdress,
                   keyboardType: TextInputType.streetAddress,
+                  style: TextStyle(fontSize: 11.0.sp),
                   decoration: InputDecoration(
                       icon: Icon(Icons.home_outlined),
                       hintText: 'Address',
@@ -269,10 +244,12 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 child: TextFormField(
                   controller: controllerCity,
                   keyboardType: TextInputType.streetAddress,
+                  style: TextStyle(fontSize: 11.0.sp),
                   decoration: InputDecoration(
                       icon: Icon(Icons.location_city_outlined),
                       hintText: 'city',
                       border: UnderlineInputBorder()),
+                  validator: (city) => (city.isEmpty) ? 'city can\'t be empty' : null,
                 ),
               ),
               Padding(
@@ -280,10 +257,12 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 child: TextFormField(
                   controller: controllerPhone,
                   keyboardType: TextInputType.number,
+                  style: TextStyle(fontSize: 11.0.sp),
                   decoration: InputDecoration(
                       icon: Icon(Icons.contact_phone_outlined),
                       hintText: 'Phone',
                       border: UnderlineInputBorder()),
+                  validator: (phone) => (phone.isEmpty) ? 'phone can\'t be empty' : null,
                 ),
               ),
               SizedBox(
@@ -298,29 +277,34 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
     return Step(
         isActive: currentStep >= 0,
         state: currentStep > 0 ? StepState.complete : StepState.indexed,
-        title: Text('Account'),
+        title: Text('Account', style: TextStyle(fontSize: 10.0.sp)),
         content: Form(
           key: _formKeyAccount,
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(5),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                 child: TextFormField(
                   controller: controllerEmail,
                   keyboardType: TextInputType.emailAddress,
+                  style: TextStyle(fontSize: 11.0.sp),
                   validator: (email) =>
                       !isValidEmail(email) ? 'Email not valid' : null,
                   decoration: InputDecoration(
-                      icon: Icon(Icons.email_outlined),
-                      hintText: 'Email',
-                      border: UnderlineInputBorder()),
+                    icon: Icon(Icons.email_outlined),
+                    hintText: 'Email',
+                    border: UnderlineInputBorder(),
+                  ),
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(5),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                 child: TextFormField(
                   controller: controllerUsername,
                   keyboardType: TextInputType.name,
+                  style: TextStyle(fontSize: 11.0.sp),
                   validator: (username) => (username.isEmpty)
                       ? 'username cannot be empty'
                       : (username.length <= 6)
@@ -333,12 +317,14 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(5),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                 child: Column(
                   children: [
                     TextFormField(
                       controller: controllerFirstPassword,
                       keyboardType: TextInputType.visiblePassword,
+                      style: TextStyle(fontSize: 11.0.sp),
                       obscureText: _isObscureFirst,
                       validator: (password) => (!isValidPassword(password)
                           ? 'password not valid, Password must be more than 8 characters containing 1 uppercase letter, 1 lowercase letter, 1 number, and 1 unique characters, example (Myadmin1@, @MyAdm1n, my@dm1NN)'
@@ -365,11 +351,13 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(5),
+                padding:
+                    EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
                 child: Column(
                   children: [
                     TextFormField(
                       keyboardType: TextInputType.visiblePassword,
+                      style: TextStyle(fontSize: 11.0.sp),
                       obscureText: _isObscureSecond,
                       controller: controllerConfirmPassword,
                       validator: (password) =>
@@ -412,5 +400,92 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
         lastDate: DateTime(DateTime.now().year + 10));
     if (newDate == null) return;
     setState(() => date = newDate);
+  }
+
+  Future userRegistration() async {
+    String url = 'http://192.168.3.78/nextg_mobileapp/file/register.php';
+    var message;
+
+    var data = {
+      'email': controllerEmail.text,
+      'username': controllerUsername.text,
+      'password': controllerConfirmPassword.text,
+      'fullname': controllerFullName.text,
+      'birthday': controllerBirthDay.text,
+      'address': controllerAdress.text,
+      'city': controllerCity.text,
+      'phone': controllerPhone.text,
+      'noktp': controllerNoKtp.text,
+      'nokk': controllerNoKK.text
+    };
+
+    var response = await http.post(url, body: json.encode(data));
+
+    if (response.statusCode >= 400) {
+      AlertDialog(
+        title: Text('Error'),
+        content: Text('Error during registration, please try again',
+            style: TextStyle(color: Colors.red)),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('OKE'),
+            onPressed: () {
+              setState(() {
+                Navigator.of(context).pop();
+              });
+            },
+          ),
+        ],
+      );
+    }
+
+    if (response.statusCode == 200) {
+      if (response.body.isNotEmpty) {
+        message = jsonDecode(response.body);
+        if (message == 'Register Successful') {
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => LoginScreen()));
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Email Already Exists'),
+                content: Text('Email Already Exists, Please Use Another Email'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: new Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+          print(message);
+        }
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Error'),
+                content: Text('Error during registration ' + message),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('OKE'),
+                    onPressed: () {
+                      setState(() {
+                        Navigator.of(context).pop();
+                        _isCompleted = !_isCompleted;
+                      });
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    }
   }
 }
