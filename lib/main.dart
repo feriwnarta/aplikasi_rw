@@ -11,6 +11,8 @@ import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/onboarding/onboarding_screen.dart';
 import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen/report_screen.dart';
+import 'package:aplikasi_rw/services/check_session.dart';
+import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,15 +20,32 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sizer/sizer.dart';
-
 import 'bloc/status_user_bloc.dart';
 
 void main() {
-  runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
-  // runApp(MyApp());
+  // runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyApp();
+}
+
+class _MyApp extends State<MyApp> {
+  final CheckSession checkSession = CheckSession();
+  String idUser = "";
+
+  @override
+  void initState() {
+    // init();
+    super.initState();
+  }
+
+  // void init() async {
+  //   idUser = await UserSecureStorage.getIdUser();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -65,8 +84,17 @@ class MyApp extends StatelessWidget {
           SizerUtil().init(constraints, orientation);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
+            home: FutureBuilder<String>(
+              future: UserSecureStorage.getIdUser(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return TemplateScreen();
+                } else {
+                  return OnboardingScreen();
+                }
+              },
+            ),
             // home: TemplateScreen(),
-            home: OnboardingScreen(),
             theme: ThemeData(
                 fontFamily: 'open sans',
                 scaffoldBackgroundColor:

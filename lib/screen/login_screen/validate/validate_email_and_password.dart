@@ -4,7 +4,7 @@ mixin ValidationForm {
     return emailRegExp.hasMatch(email);
   }
 
-  bool isValidUserName(String userName) {
+  bool isValidInputString(String userName) {
     final nameRegExp =
         new RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$");
     return nameRegExp.hasMatch(userName);
@@ -19,5 +19,10 @@ mixin ValidationForm {
   bool isValidPhone(String phoneNumber) {
     final phoneRegExp = RegExp(r"^\+?0[0-9]{10}$");
     return phoneRegExp.hasMatch(phoneNumber);
+  }
+
+  bool isValidInputSpecialCharacters(String value) {
+    final inputSpecial = RegExp(r'^[a-zA-Z0-9]+$');
+    return inputSpecial.hasMatch(value);
   }
 }

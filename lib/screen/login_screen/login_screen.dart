@@ -1,8 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:aplikasi_rw/main.dart';
 import 'package:aplikasi_rw/screen/login_screen/register_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
+import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
+import 'package:sizer/sizer.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,9 +20,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
   final _formKeyLogin = GlobalKey<FormState>();
   double mediaSizeHeight, mediaSizeWidth;
   bool _isObscure = true;
-  bool formLoginOrRegister = true;
 
   Color buttonLoginRegister = Colors.lightBlue[400];
+
+  TextEditingController controllerUsername = TextEditingController();
+  TextEditingController controllerPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
       body: Stack(
         children: [
           Container(
-            height: mediaSizeHeight * 0.4,
+            height: 40.0.h,
             decoration: BoxDecoration(
                 borderRadius:
                     BorderRadius.only(bottomLeft: Radius.circular(30)),
@@ -41,8 +50,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
           Center(
             child: SingleChildScrollView(
               child: SizedBox(
-                // height: mediaSizeHeight * 0.6,
-                width: mediaSizeWidth * 0.9,
+                width: 90.0.w,
                 child: Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
@@ -51,13 +59,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(
-                        height: 20,
+                        height: 3.0.h,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            height: mediaSizeHeight * 0.05,
+                            height: 5.0.h,
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey[400]),
                                 borderRadius: BorderRadius.circular(20)),
@@ -66,35 +74,32 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
                                 FlatButton(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)),
-                                  onPressed: () {
-                                    setState(() {
-                                      formLoginOrRegister = true;
-                                    });
-                                  },
+                                  onPressed: () {},
                                   child: Text(
                                     'Login',
-                                    style: TextStyle(color: (formLoginOrRegister) ? Colors.white : Colors.blue),
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 11.0.sp),
                                   ),
-                                  color: (formLoginOrRegister) ? Colors.lightBlue[400] : Colors.white,
+                                  color: Colors.lightBlue[400],
                                   padding: EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 30),
+                                      vertical: 0.5.h, horizontal: 10.0.w),
                                 ),
                                 FlatButton(
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20)),
                                   onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) => RegisterScreen(), )
-                                    );
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => RegisterScreen(),
+                                    ));
                                   },
-                                  child: Text(
-                                    'Register',
-                                    style:
-                                        TextStyle(color: (formLoginOrRegister) ? Colors.lightBlue[400] : Colors.white),
-                                  ),
-                                  color: (!formLoginOrRegister) ? Colors.lightBlue[400] : Colors.white,
+                                  child: Text('Register',
+                                      style: TextStyle(
+                                          color: Colors.lightBlue[400],
+                                          fontSize: 11.0.sp)),
+                                  color: Colors.white,
                                   padding: EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 30),
+                                      vertical: 0.5.h, horizontal: 10.0.w),
                                 )
                               ],
                             ),
@@ -102,51 +107,53 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
                         ],
                       ),
                       // (formLoginOrRegister)
-                          buildFormLogin(),
-                          // : buildFormRegister(),
+                      buildFormLogin(),
+                      // : buildFormRegister(),
                       FlatButton(
                         child: Text(
                           'Log in',
-                          style: TextStyle(color: Colors.white),
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 11.0.sp),
                         ),
                         padding: EdgeInsets.symmetric(
-                            vertical: 15, horizontal: mediaSizeWidth * 0.3),
+                            vertical: 1.8.h, horizontal: 30.0.w),
                         color: Colors.lightBlue[400],
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                         onPressed: () {
-                          
+                          userLogin();
                         },
                       ),
                       SizedBox(
-                        height: 40,
+                        height: 4.0.h,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           RichText(
                               text: TextSpan(
-                                  text: 'Don\'t have account?',
+                                  text: 'Don\'t have account? ',
                                   style: TextStyle(
-                                    color: Colors.grey,
-                                  ),
+                                      color: Colors.grey, fontSize: 11.0.sp),
                                   children: <TextSpan>[
                                 TextSpan(
-                                    text: ' Register',
+                                    text: 'Register',
                                     style: TextStyle(
-                                      color: Colors.blue,
-                                    ),
+                                        color: Colors.blue, fontSize: 11.0.sp),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
                                         setState(() {
-                                          formLoginOrRegister = false;
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      RegisterScreen()));
                                         });
                                       })
                               ]))
                         ],
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 2.0.h,
                       ),
                     ],
                   ),
@@ -168,10 +175,15 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
           Padding(
             padding: EdgeInsets.all(25),
             child: TextFormField(
+              controller: controllerUsername,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                  icon: Icon(Icons.person),
+                  icon: Icon(
+                    Icons.person,
+                    size: 4.0.h,
+                  ),
                   hintText: 'Insert email or username',
+                  hintStyle: TextStyle(fontSize: 12.0.sp),
                   border: UnderlineInputBorder()),
             ),
           ),
@@ -182,10 +194,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
                 TextFormField(
                   keyboardType: TextInputType.visiblePassword,
                   obscureText: _isObscure,
+                  controller: controllerPassword,
                   decoration: InputDecoration(
                       icon: Icon(
                         FontAwesomeIcons.key,
-                        size: 17,
+                        size: 2.5.h,
                       ),
                       suffixIcon: IconButton(
                         icon: Icon((_isObscure)
@@ -198,13 +211,15 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
                         },
                       ),
                       hintText: 'Password',
+                      hintStyle: TextStyle(fontSize: 12.0.sp),
                       border: UnderlineInputBorder()),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      child: Text('Forgot Password ?'),
+                      child: Text('Forgot Password ?',
+                          style: TextStyle(fontSize: 10.0.sp)),
                       onPressed: () {},
                     )
                   ],
@@ -217,98 +232,87 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
     );
   }
 
-  Form buildFormRegister() {
-    return Form(
-      key: _formKeyLogin,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
-            child: TextFormField(
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                  icon: Icon(Icons.person_outline_sharp),
-                  hintText: 'Full name',
-                  border: UnderlineInputBorder()),
+  Future userLogin() async {
+    String url = 'http://192.168.3.87/nextg_mobileapp/src/login.php';
+    var message, response;
+
+    var data = {
+      'usernameOrEmail': controllerUsername.text,
+      'password': controllerPassword.text
+    };
+
+    try {
+      response = await http.post(url, body: json.encode(data));
+
+      if (response.statusCode >= 400) {
+        buildShowDialogAnimation('Error During login', 'OKE',
+            'assets/animation/error-animation.json', 15.0);
+      }
+
+      if (response.body.isNotEmpty) {
+        message = jsonDecode(response.body);
+        if (message != 'login failed') {
+          await UserSecureStorage.setIdUser(message);
+          String idUser = await UserSecureStorage.getIdUser();
+
+          if (idUser.isNotEmpty) {
+            setState(() {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => TemplateScreen(),
+              ));
+            });
+          }
+        } else {
+          buildShowDialogAnimation('Email Username Or Password Is Wrong', 'OKE',
+              'assets/animation/error-animation.json', 15.0);
+        }
+      } else {
+        buildShowDialogAnimation(
+            'Error', 'OKE', 'assets/animation/error-animation.json', 15.0);
+      }
+    } on SocketException {} on HttpException {}
+  }
+
+  Future buildShowDialogAnimation(
+      String title, String btnMessage, String urlAsset, double size) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              title,
+              style: TextStyle(fontSize: 12.0.sp),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
-            child: TextFormField(
-              keyboardType: TextInputType.name,
-              decoration: InputDecoration(
-                  icon: Icon(Icons.location_on_outlined),
-                  hintText: 'Address',
-                  border: UnderlineInputBorder()),
+            insetPadding: EdgeInsets.all(10.0.h),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            content: SizedBox(
+              width: size.w,
+              height: size.h,
+              child: LottieBuilder.asset(urlAsset),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                  icon: Icon(Icons.contact_phone_outlined),
-                  hintText: 'No Telp',
-                  border: UnderlineInputBorder()),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
-            child: TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                  icon: Icon(Icons.contact_phone_outlined),
-                  hintText: 'Email',
-                  border: UnderlineInputBorder()),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10, left: 25, right: 25),
-            child: Column(
-              children: [
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: _isObscure,
-                  decoration: InputDecoration(
-                      icon: Icon(
-                        FontAwesomeIcons.key,
-                        size: 17,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon((_isObscure)
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility),
-                        onPressed: () {
-                          setState(() {
-                            _isObscure = !_isObscure;
-                          });
-                        },
-                      ),
-                      hintText: 'Password',
-                      border: UnderlineInputBorder()),
-                ),
-                SizedBox(height: 20)
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+            actions: <Widget>[
+              FlatButton(
+                child: Text(btnMessage),
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  Map<String, String> headers = {};
+
+  void getCookie(http.Response response) {
+    String rawCookie = response.headers['set-cookie'];
+    if (rawCookie != null) {
+      int index = rawCookie.indexOf(';');
+      headers['cookie'] =
+          (index == -1) ? rawCookie : rawCookie.substring(0, index);
+    }
   }
 }
-
-// Form(
-//           key: _formKeyLogin,
-//           child: Column(
-//             children: [
-//               TextFormField(
-//                 keyboardType: TextInputType.emailAddress,
-//                 decoration: InputDecoration(
-//                     hintText: 'Insert email or username',
-//                     border: OutlineInputBorder(
-//                         borderRadius: BorderRadius.circular(5))),
-//               )
-//             ],
-//           ),
-//         ),

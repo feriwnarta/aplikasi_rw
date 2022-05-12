@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:aplikasi_rw/screen/login_screen/login_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 import 'dart:convert';
 import 'package:sizer/sizer.dart';
 
@@ -22,7 +25,6 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   // checker visibility password
   bool _isObscureFirst = true;
   bool _isObscureSecond = true;
-  bool _isCompleted = false;
   // date time
   DateTime date;
 
@@ -95,7 +97,6 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
               if (_formKeyIdentity.currentState.validate()) {
                 setState(() {
                   if (isLastStep) {
-                    _isCompleted = !_isCompleted;
                     userRegistration();
                   } else {
                     currentStep++;
@@ -134,10 +135,14 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                   controller: controllerNoKtp,
                   keyboardType: TextInputType.number,
                   style: TextStyle(fontSize: 11.0.sp),
-                  // validator: (ktp) =>
-                  //     (ktp.isEmpty) ? 'No Ktp can\t be empty' : null,
+                  validator: (noKtp) => (noKtp.isNotEmpty)
+                      ? !isValidInputSpecialCharacters(noKtp)
+                          ? 'no ktp must not contain spaces and special characters <>()!#/'
+                          : null
+                      : null,
                   decoration: InputDecoration(
                       icon: Icon(FontAwesomeIcons.idCard),
+                      errorMaxLines: 3,
                       hintText: 'No Ktp',
                       border: UnderlineInputBorder()),
                 ),
@@ -149,10 +154,14 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                   controller: controllerNoKK,
                   keyboardType: TextInputType.number,
                   style: TextStyle(fontSize: 11.0.sp),
-                  // validator: (username) =>
-                  //     (username.isEmpty) ? 'No KK can\'t be empty' : null,
+                  validator: (noKk) => (noKk.isNotEmpty)
+                      ? !isValidInputSpecialCharacters(noKk)
+                          ? 'no kk must not contain spaces and special characters <>()!#/'
+                          : null
+                      : null,
                   decoration: InputDecoration(
                       icon: Icon(FontAwesomeIcons.fileAlt),
+                      errorMaxLines: 3,
                       hintText: 'No KK',
                       border: UnderlineInputBorder()),
                 ),
@@ -162,21 +171,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
               )
             ],
           ),
-        )
-        // : Column(
-        //     children: [
-        //       Text('Process Register'),
-        //       SizedBox(height: 10),
-        //       Center(
-        //         child: SizedBox(
-        //           height: 40,
-        //           width: 40,
-        //           child: CircularProgressIndicator(),
-        //         ),
-        //       ),
-        //     ],
-        //   )
-        );
+        ));
   }
 
   Step stepContact() {
@@ -200,10 +195,14 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                   style: TextStyle(fontSize: 11.0.sp),
                   decoration: InputDecoration(
                       icon: Icon(Icons.person_outline_sharp),
+                      errorMaxLines: 3,
                       hintText: 'Full name',
                       border: UnderlineInputBorder()),
-                  validator: (name) =>
-                      (name.isEmpty) ? 'full name can\'t be empty' : null,
+                  validator: (name) => (name.isEmpty)
+                      ? 'full name can\'t be empty'
+                      : !isValidInputSpecialCharacters(name)
+                          ? 'username must not contain spaces and special characters <>()!#/'
+                          : null,
                 ),
               ),
               Padding(
@@ -234,6 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                   decoration: InputDecoration(
                       icon: Icon(Icons.home_outlined),
                       hintText: 'Address',
+                      errorMaxLines: 3,
                       border: UnderlineInputBorder()),
                   validator: (address) =>
                       (address.isEmpty) ? 'address can\'t be empty' : null,
@@ -247,9 +247,11 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                   style: TextStyle(fontSize: 11.0.sp),
                   decoration: InputDecoration(
                       icon: Icon(Icons.location_city_outlined),
+                      errorMaxLines: 3,
                       hintText: 'city',
                       border: UnderlineInputBorder()),
-                  validator: (city) => (city.isEmpty) ? 'city can\'t be empty' : null,
+                  validator: (city) =>
+                      (city.isEmpty) ? 'city can\'t be empty' : null,
                 ),
               ),
               Padding(
@@ -262,7 +264,8 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                       icon: Icon(Icons.contact_phone_outlined),
                       hintText: 'Phone',
                       border: UnderlineInputBorder()),
-                  validator: (phone) => (phone.isEmpty) ? 'phone can\'t be empty' : null,
+                  validator: (phone) =>
+                      (phone.isEmpty) ? 'phone can\'t be empty' : null,
                 ),
               ),
               SizedBox(
@@ -309,9 +312,12 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
                       ? 'username cannot be empty'
                       : (username.length <= 6)
                           ? 'username must be more than 6'
-                          : null,
+                          : !isValidInputSpecialCharacters(username)
+                              ? 'username must not contain spaces and special characters <>()!#'
+                              : null,
                   decoration: InputDecoration(
                       icon: Icon(Icons.person_outline_sharp),
+                      errorMaxLines: 3,
                       hintText: 'Username',
                       border: UnderlineInputBorder()),
                 ),
@@ -403,8 +409,9 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   }
 
   Future userRegistration() async {
-    String url = 'http://192.168.3.78/nextg_mobileapp/file/register.php';
-    var message;
+    String url = 'http://192.168.3.87/nextg_mobileapp/src/register.php';
+    var message, response;
+
 
     var data = {
       'email': controllerEmail.text,
@@ -419,73 +426,88 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
       'nokk': controllerNoKK.text
     };
 
-    var response = await http.post(url, body: json.encode(data));
+    try {
+      response = await http.post(url, body: json.encode(data));
 
-    if (response.statusCode >= 400) {
-      AlertDialog(
-        title: Text('Error'),
-        content: Text('Error during registration, please try again',
-            style: TextStyle(color: Colors.red)),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('OKE'),
-            onPressed: () {
-              setState(() {
-                Navigator.of(context).pop();
-              });
-            },
-          ),
-        ],
-      );
-    }
-
-    if (response.statusCode == 200) {
-      if (response.body.isNotEmpty) {
-        message = jsonDecode(response.body);
-        if (message == 'Register Successful') {
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => LoginScreen()));
-        } else {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Email Already Exists'),
-                content: Text('Email Already Exists, Please Use Another Email'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: new Text("OK"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-          print(message);
-        }
-      } else {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Error'),
-                content: Text('Error during registration ' + message),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('OKE'),
-                    onPressed: () {
-                      setState(() {
-                        Navigator.of(context).pop();
-                        _isCompleted = !_isCompleted;
-                      });
-                    },
-                  ),
-                ],
-              );
-            });
+      if (response.statusCode >= 400) {
+        buildShowDialogAnimation('Error During Registration', 'OKE',
+            'assets/animation/error-animation.json', 15.0);
       }
+
+      if (response.statusCode == 200) {
+        if (response.body.isNotEmpty) {
+          message = jsonDecode(response.body);
+          if (message == 'Register Successful') {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => LoginScreen()));
+          } else {
+            buildShowDialogAnimation('Email Already Exist', 'OKE',
+                'assets/animation/warning-circle-animation.json', 15.0);
+          }
+        } else {
+          buildShowDialogAnimation(
+              'Error', 'OKE', 'assets/animation/error-animation.json', 15.0);
+        }
+      }
+    } on SocketException {
+      buildShowDialogAnimation(
+          'No Internet', 'OKE', 'assets/animation/error-animation.json', 15.0);
+    } on HttpException {
+      buildShowDialogAnimation(
+          'Error', 'OKE', 'assets/animation/error-animation.json', 15.0);
     }
+  }
+
+  Future buildShowDialog(String title, String content, String btnMessage) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(btnMessage),
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  Future buildShowDialogAnimation(
+      String title, String btnMessage, String urlAsset, double size) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              title,
+              style: TextStyle(fontSize: 12.0.sp),
+            ),
+            insetPadding: EdgeInsets.all(10.0.h),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            content: SizedBox(
+              width: size.w,
+              height: size.h,
+              child: LottieBuilder.asset(urlAsset),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(btnMessage),
+                onPressed: () {
+                  setState(() {
+                    Navigator.of(context).pop();
+                  });
+                },
+              ),
+            ],
+          );
+        });
   }
 }
