@@ -27,7 +27,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final String id = await UserSecureStorage.getIdUser();
   final MyApp myApp = MyApp(
-      initialRoute: (id != null) ? '/home' : '/',
+      initialRoute: (id != null) ? '/' : '/login',
   );
   runApp(myApp);
 }
@@ -43,7 +43,7 @@ class MyApp extends StatefulWidget {
 
 class _MyApp extends State<MyApp> {
   final CheckSession checkSession = CheckSession();
-  String idUser = "/home";
+  String idUser;
   String initalRoute;
 
   _MyApp(this.initalRoute);
@@ -97,10 +97,9 @@ class _MyApp extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             initialRoute: this.initalRoute,
             routes: {
-              '/': (context) => OnboardingScreen(),
-              '/home': (context) => MainApp(),
+              '/': (context) => MainApp(),
+              '/login': (context) => OnboardingScreen(),
             },
-
             theme: ThemeData(
                 fontFamily: 'open sans',
                 scaffoldBackgroundColor:
@@ -126,11 +125,11 @@ class _MainAppState extends State<MainApp> {
   // list screen untuk menu
   List<Widget> screens;
 
-  @override
-  void initState() {
-    super.initState();
-    checkIsLogin();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   checkIsLogin();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -238,10 +237,10 @@ class _MainAppState extends State<MainApp> {
     );
   }
 
-  Future checkIsLogin() async {
-    String idUser = await UserSecureStorage.getIdUser();
-    if(idUser == null) {
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-    }
-  }
+  // Future checkIsLogin() async {
+  //   String idUser = await UserSecureStorage.getIdUser();
+  //   if(idUser == null) {
+  //     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  //   }
+  // }
 }

@@ -260,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
               // Navigator.of(context).pushReplacement(MaterialPageRoute(
               //   builder: (context) => MainApp(),
               // ));
-              Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
+              Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
             });
           }
         } else {
