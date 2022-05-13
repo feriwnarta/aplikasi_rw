@@ -22,28 +22,39 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'bloc/status_user_bloc.dart';
 
-void main() {
+void main() async {
   // runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
-  runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  final String id = await UserSecureStorage.getIdUser();
+  final MyApp myApp = MyApp(
+      initialRoute: (id != null) ? '/home' : '/',
+  );
+  runApp(myApp);
 }
 
 class MyApp extends StatefulWidget {
+  String initialRoute;
+
+  MyApp({this.initialRoute});
+
   @override
-  State<MyApp> createState() => _MyApp();
+  State<MyApp> createState() => _MyApp(initialRoute);
 }
 
 class _MyApp extends State<MyApp> {
   final CheckSession checkSession = CheckSession();
-  String idUser = "";
+  String idUser = "/home";
+  String initalRoute;
 
-  @override
-  void initState() {
-    // init();
-    super.initState();
-  }
+  _MyApp(this.initalRoute);
 
-  // void init() async {
-  //   idUser = await UserSecureStorage.getIdUser();
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
+
+  // Future init() async {
+    // idUser = await UserSecureStorage.getIdUser();
   // }
 
   @override
@@ -84,17 +95,12 @@ class _MyApp extends State<MyApp> {
           SizerUtil().init(constraints, orientation);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: FutureBuilder<String>(
-              future: UserSecureStorage.getIdUser(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return TemplateScreen();
-                } else {
-                  return OnboardingScreen();
-                }
-              },
-            ),
-            // home: TemplateScreen(),
+            initialRoute: this.initalRoute,
+            routes: {
+              '/': (context) => OnboardingScreen(),
+              '/home': (context) => MainApp(),
+            },
+
             theme: ThemeData(
                 fontFamily: 'open sans',
                 scaffoldBackgroundColor:
@@ -107,26 +113,24 @@ class _MyApp extends State<MyApp> {
   }
 }
 
-class TemplateScreen extends StatefulWidget {
+class MainApp extends StatefulWidget {
   @override
-  State<TemplateScreen> createState() => _TemplateScreenState();
+  State<MainApp> createState() => _MainAppState();
 }
 
-class _TemplateScreenState extends State<TemplateScreen> {
+class _MainAppState extends State<MainApp> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   int _index = 0;
-  // tinggi bottom tab bar
-  double heightTabBar;
-  // tinggi app bar
-  double heightAppBar;
-  // warna tab bar
   var colorTabBar = Color(0xff2196F3);
-  // padding tinggi dan lebar bottom menu Gnav
-  double heightPaddingGnav, widthPaddingGnav;
 
   // list screen untuk menu
-
   List<Widget> screens;
+
+  @override
+  void initState() {
+    super.initState();
+    checkIsLogin();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,21 +141,13 @@ class _TemplateScreenState extends State<TemplateScreen> {
       PaymentScreen()
     ];
 
-    heightPaddingGnav =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
-    widthPaddingGnav = MediaQuery.of(context).size.width;
-
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
 
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
       key: scaffoldKey,
-      // membuat bottomNavigationBar transparent
-      // extendBody: true,
-
       // membuat sidebar dan drawer
       drawer: drawerSideBar(),
       body: IndexedStack(
@@ -240,5 +236,12 @@ class _TemplateScreenState extends State<TemplateScreen> {
         ],
       ),
     );
+  }
+
+  Future checkIsLogin() async {
+    String idUser = await UserSecureStorage.getIdUser();
+    if(idUser == null) {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
   }
 }

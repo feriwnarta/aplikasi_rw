@@ -409,7 +409,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   }
 
   Future userRegistration() async {
-    String url = 'http://192.168.3.87/nextg_mobileapp/src/register.php';
+    String url = 'http://192.168.3.92/nextg_mobileapp/src/register.php';
     var message, response;
 
 
@@ -456,27 +456,6 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
       buildShowDialogAnimation(
           'Error', 'OKE', 'assets/animation/error-animation.json', 15.0);
     }
-  }
-
-  Future buildShowDialog(String title, String content, String btnMessage) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Text(content),
-            actions: <Widget>[
-              FlatButton(
-                child: Text(btnMessage),
-                onPressed: () {
-                  setState(() {
-                    Navigator.of(context).pop();
-                  });
-                },
-              ),
-            ],
-          );
-        });
   }
 
   Future buildShowDialogAnimation(

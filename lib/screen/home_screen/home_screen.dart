@@ -5,8 +5,10 @@ import 'package:aplikasi_rw/model/card_news.dart';
 import 'package:aplikasi_rw/screen/home_screen/news_screen/news_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/status_warga.dart';
 import 'package:aplikasi_rw/screen/home_screen/tempat_tulis_status_screen.dart';
+import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,16 +21,7 @@ import 'package:sizer/sizer.dart';
 class HomeScreen extends StatelessWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   HomeScreen(this.scaffoldKey);
-
-  // tinggi utuk app bar
-  double heightBackgroundRounded;
-  //  posisi dari atas untuk card status
-  double positionedCardStatus;
-  // tinggi card status
-  double heightCardStatus;
-  // color rounded
   var colorRoundedCircle = Color(0xff8CBBF1);
-  // warna card
   var colorCard = Color(0xffFCEECB);
 
   // demo user
@@ -39,8 +32,6 @@ class HomeScreen extends StatelessWidget {
       'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg';
 
   double mediaSizeHeight;
-
-  // boolean status untuk mengecek image picker sudah memilih / memfoto gambar apa belum
   bool statusPicker = false;
 
   // untuk image picker
@@ -57,8 +48,10 @@ class HomeScreen extends StatelessWidget {
   ScrollController controller = ScrollController();
 
   void onScroll() {
-    if (controller.position.maxScrollExtent == controller.position.pixels) {
-      blocStatusUser.add(StatusUserEvent());
+    if (controller.position.haveDimensions) {
+      if (controller.position.maxScrollExtent == controller.position.pixels) {
+        blocStatusUser.add(StatusUserEvent());
+      }
     }
   }
 
@@ -80,17 +73,7 @@ class HomeScreen extends StatelessWidget {
           controller: controller,
           child: Column(
             children: <Widget>[
-              Stack(children: [
-                // Container(
-                //   height: mediaSizeHeight * 0.3,
-                //   width: mediaSizeWidth,
-                //   decoration: BoxDecoration(
-                //     color: Colors.blue[100].withOpacity(0.4),
-                //     borderRadius: BorderRadius.circular(20),
-                //   ),
-                // ),
-                headerBackground(context)
-              ]),
+              Stack(children: [headerBackground(context)]),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -204,7 +187,7 @@ class HomeScreen extends StatelessWidget {
       options: CarouselOptions(
           // height: 180,
           height: 25.0.h,
-          enlargeCenterPage: true,
+          enlargeCenterPage: kDebugMode ? false : true,
           disableCenter: true,
           viewportFraction: 0.6,
           autoPlay: true,
@@ -276,8 +259,6 @@ class HomeScreen extends StatelessWidget {
 
   Container headerBackground(BuildContext context) {
     return Container(
-        // width: mediaSizeWidth,s
-        // height: heightBackgrounsdRounded,
 
         child: Column(
       // mainAxisAlignment: MainAxisAlignment.spaceEvenly,

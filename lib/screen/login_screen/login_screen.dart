@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
   }
 
   Future userLogin() async {
-    String url = 'http://192.168.3.87/nextg_mobileapp/src/login.php';
+    String url = 'http://192.168.3.92/nextg_mobileapp/src/login.php';
     var message, response;
 
     var data = {
@@ -246,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
 
       if (response.statusCode >= 400) {
         buildShowDialogAnimation('Error During login', 'OKE',
-            'assets/animation/error-animation.json', 15.0);
+            'assets/animation/error-animation.json', 15.0); 
       }
 
       if (response.body.isNotEmpty) {
@@ -257,9 +257,10 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
 
           if (idUser.isNotEmpty) {
             setState(() {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => TemplateScreen(),
-              ));
+              // Navigator.of(context).pushReplacement(MaterialPageRoute(
+              //   builder: (context) => MainApp(),
+              // ));
+              Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false);
             });
           }
         } else {
@@ -270,7 +271,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
         buildShowDialogAnimation(
             'Error', 'OKE', 'assets/animation/error-animation.json', 15.0);
       }
-    } on SocketException {} on HttpException {}
+    } on SocketException {
+      buildShowDialogAnimation(
+          'No Internet', 'OKE', 'assets/animation/error-animation.json', 15.0);
+    } on HttpException {
+      buildShowDialogAnimation(
+          'Server Error', 'OKE', 'assets/animation/error-animation.json', 15.0);
+    }
   }
 
   Future buildShowDialogAnimation(
