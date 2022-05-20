@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 
+//ignore: must_be_immutable
 class CommentScreen extends StatelessWidget {
   // bloc
   CommentBloc bloc;

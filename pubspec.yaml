@@ -56,6 +56,10 @@ dependencies:
   lottie: ^0.7.0+1
   # secure storage
   flutter_secure_storage: ^3.3.5
+  # timeline
+  timeline_tile: ^1.0.0
+  # stepper
+  im_stepper: ^0.1.2+10
 
 
   

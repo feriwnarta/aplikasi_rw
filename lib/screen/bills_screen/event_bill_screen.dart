@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+//ignore: must_be_immutable
 class EventBillScrenn extends StatelessWidget {
   double mediaSizeHeight, mediaSizeWidth;
   final Color background;

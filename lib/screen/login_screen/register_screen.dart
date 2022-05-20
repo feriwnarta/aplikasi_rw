@@ -48,68 +48,68 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          'Register',
-          style: TextStyle(fontSize: 14.0.sp),
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+    title: Text(
+      'Register',
+      style: TextStyle(fontSize: 14.0.sp),
+    ),
         ),
-      ),
-      body: Stepper(
-          physics: ScrollPhysics(),
-          type: StepperType.horizontal,
-          currentStep: currentStep,
-          controlsBuilder: (context, {onStepCancel, onStepContinue}) {
-            return Row(children: [
-              Expanded(
-                  child: ElevatedButton(
-                child: Text(
-                  'Next',
-                  style: TextStyle(fontSize: 11.0.sp),
-                ),
-                onPressed: onStepContinue,
-              )),
-              SizedBox(width: 2.0.w),
-              if (currentStep != 0)
-                Expanded(
-                    child: ElevatedButton(
-                  child: Text(
-                    'Back',
-                    style: TextStyle(fontSize: 11.0.sp),
-                  ),
-                  onPressed: onStepCancel,
-                )),
-            ]);
-          },
-          onStepContinue: () {
-            final isLastStep = currentStep == getSteps().length - 1;
+        body: Stepper(
+      physics: ScrollPhysics(),
+      type: StepperType.horizontal,
+      currentStep: currentStep,
+      controlsBuilder: (context, {onStepCancel, onStepContinue}) {
+        return Row(children: [
+          Expanded(
+              child: ElevatedButton(
+            child: Text(
+              'Next',
+              style: TextStyle(fontSize: 11.0.sp),
+            ),
+            onPressed: onStepContinue,
+          )),
+          SizedBox(width: 2.0.w),
+          if (currentStep != 0)
+            Expanded(
+                child: ElevatedButton(
+              child: Text(
+                'Back',
+                style: TextStyle(fontSize: 11.0.sp),
+              ),
+              onPressed: onStepCancel,
+            )),
+        ]);
+      },
+      onStepContinue: () {
+        final isLastStep = currentStep == getSteps().length - 1;
 
-            // checker validate step account
-            if (currentStep == 0) {
-              if (_formKeyAccount.currentState.validate()) {
-                setState(() => currentStep++);
+        // checker validate step account
+        if (currentStep == 0) {
+          if (_formKeyAccount.currentState.validate()) {
+            setState(() => currentStep++);
+          }
+        } else if (currentStep == 1) {
+          if (_formKeyContact.currentState.validate()) {
+            setState(() => currentStep++);
+          }
+        } else if (currentStep == 2) {
+          if (_formKeyIdentity.currentState.validate()) {
+            setState(() {
+              if (isLastStep) {
+                userRegistration();
+              } else {
+                currentStep++;
               }
-            } else if (currentStep == 1) {
-              if (_formKeyContact.currentState.validate()) {
-                setState(() => currentStep++);
-              }
-            } else if (currentStep == 2) {
-              if (_formKeyIdentity.currentState.validate()) {
-                setState(() {
-                  if (isLastStep) {
-                    userRegistration();
-                  } else {
-                    currentStep++;
-                  }
-                });
-              }
-            }
-          },
-          onStepCancel: () {
-            currentStep > 0 ? setState(() => currentStep--) : currentStep = 0;
-          },
-          steps: getSteps()),
-    );
+            });
+          }
+        }
+      },
+      onStepCancel: () {
+        currentStep > 0 ? setState(() => currentStep--) : currentStep = 0;
+      },
+      steps: getSteps()),
+      );
   }
 
   List<Step> getSteps() {
@@ -409,7 +409,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   }
 
   Future userRegistration() async {
-    String url = 'http://192.168.3.92/nextg_mobileapp/src/register.php';
+    String url = 'http://192.168.3.85/nextg_mobileapp/src/register.php';
     var message, response;
 
 

@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 import 'package:sizer/sizer.dart';
 
+//ignore: must_be_immutable
 class PaymentScreen extends StatelessWidget {
   bool isVisibility = false;
 

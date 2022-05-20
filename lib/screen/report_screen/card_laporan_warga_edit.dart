@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
 
+//ignore: must_be_immutable
 class CardLaporanWargaEdit extends StatelessWidget {
   // data laporan
   final String noTickects;

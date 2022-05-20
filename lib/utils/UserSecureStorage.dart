@@ -12,5 +12,4 @@ class UserSecureStorage {
       await _STORAGE.delete(key: _KEYIDUSER);
     }
   }
-
 } 

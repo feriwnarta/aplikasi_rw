@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
 
+//ignore: must_be_immutable
 class CreateReportScreen extends StatelessWidget {
   PickedFile imageFile; // akan dikirim kedatabase
   final _picker = ImagePicker();
@@ -204,7 +205,7 @@ class CreateReportScreen extends StatelessWidget {
 
                   SizedBox(
                     width: 90.0.w,
-                    height: 6.5.h,
+                    height: 6.0.h,
                     child: ElevatedButton(
                       style: ButtonStyle(
                           shape:

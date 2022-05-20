@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
   }
 
   Future userLogin() async {
-    String url = 'http://192.168.3.92/nextg_mobileapp/src/login.php';
+    String url = 'http://192.168.3.76/nextg_mobileapp/src/login.php';
     var message, response;
 
     var data = {

@@ -3,14 +3,19 @@ import 'package:aplikasi_rw/bloc/bills_tab_bloc.dart';
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
 import 'package:aplikasi_rw/bloc/comment_bloc.dart';
 import 'package:aplikasi_rw/bloc/payment_bloc.dart';
+import 'package:aplikasi_rw/bloc/report_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/bills_history_model.dart';
 import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
+import 'package:aplikasi_rw/screen/login_screen/login_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/onboarding/onboarding_screen.dart';
+import 'package:aplikasi_rw/screen/login_screen/register_screen.dart';
 import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
+import 'package:aplikasi_rw/screen/report_screen2/card_laporan_view.dart';
 import 'package:aplikasi_rw/screen/report_screen/report_screen.dart';
+import 'package:aplikasi_rw/screen/report_screen2/ReportScreen2.dart';
 import 'package:aplikasi_rw/services/check_session.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:device_preview/device_preview.dart';
@@ -24,38 +29,16 @@ import 'bloc/status_user_bloc.dart';
 
 void main() async {
   // runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
-  WidgetsFlutterBinding.ensureInitialized();
-  final String id = await UserSecureStorage.getIdUser();
-  final MyApp myApp = MyApp(
-      initialRoute: (id != null) ? '/' : '/login',
-  );
-  runApp(myApp);
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  String initialRoute;
-
-  MyApp({this.initialRoute});
-
   @override
-  State<MyApp> createState() => _MyApp(initialRoute);
+  State<MyApp> createState() => _MyApp();
 }
 
 class _MyApp extends State<MyApp> {
   final CheckSession checkSession = CheckSession();
-  String idUser;
-  String initalRoute;
-
-  _MyApp(this.initalRoute);
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
-  // Future init() async {
-    // idUser = await UserSecureStorage.getIdUser();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +55,12 @@ class _MyApp extends State<MyApp> {
           create: (context) =>
               StatusUserBloc(StatusUserUnitialized())..add(StatusUserEvent()),
         ), // fungsi ..add akan langusung menjalankan blocnya
-        BlocProvider<ReportScreenBloc>(
-          create: (context) => ReportScreenBloc(ReportState()),
+        // BlocProvider<ReportScreenBloc>(
+        //   create: (context) => ReportScreenBloc(ReportState()),
+        // ),
+        BlocProvider<ReportBloc>(
+          create: (context) =>
+              ReportBloc(ReportUnitialized())..add(ReportEvent2()),
         ),
         BlocProvider<BillTabColorBloc>(
           create: (context) => BillTabColorBloc(TabState())..add(0),
@@ -95,11 +82,9 @@ class _MyApp extends State<MyApp> {
           SizerUtil().init(constraints, orientation);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            initialRoute: this.initalRoute,
-            routes: {
-              '/': (context) => MainApp(),
-              '/login': (context) => OnboardingScreen(),
-            },
+            initialRoute: '/',
+            routes: routes,
+            // home: ReportScreen2(),
             theme: ThemeData(
                 fontFamily: 'open sans',
                 scaffoldBackgroundColor:
@@ -110,6 +95,24 @@ class _MyApp extends State<MyApp> {
       }),
     );
   }
+
+  final routes = {
+    '/': (BuildContext context) => FutureBuilder<String>(
+          future: UserSecureStorage.getIdUser(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return (snapshot.data != null && snapshot.data.isNotEmpty)
+                    ? MainApp()
+                    : OnboardingScreen();
+              default:
+                return Container(
+                  color: Colors.white,
+                );
+            }
+          },
+        ),
+  };
 }
 
 class MainApp extends StatefulWidget {
@@ -128,14 +131,14 @@ class _MainAppState extends State<MainApp> {
   // @override
   // void initState() {
   //   super.initState();
-  //   checkIsLogin();
+  //   // checkIsLogin();
   // }
 
   @override
   Widget build(BuildContext context) {
     screens = [
       HomeScreen(scaffoldKey),
-      ReportScreen(scaffoldKey),
+      ReportScreen2(),
       BillScreen(),
       PaymentScreen()
     ];
@@ -237,10 +240,10 @@ class _MainAppState extends State<MainApp> {
     );
   }
 
-  // Future checkIsLogin() async {
-  //   String idUser = await UserSecureStorage.getIdUser();
-  //   if(idUser == null) {
-  //     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-  //   }
-  // }
+  Future checkIsLogin() async {
+    String idUser = await UserSecureStorage.getIdUser();
+    if (idUser == null && idUser.isEmpty) {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
+  }
 }

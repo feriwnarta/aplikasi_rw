@@ -207,8 +207,9 @@ class ReportScreen extends StatelessWidget {
                     // 7 digit kode
                     noTicket:
                         CardLaporanWargaModel.getAllLaporan[index].noTicket,
-                    judul: CardLaporanWargaModel.getAllLaporan[index].judul,
                     status: CardLaporanWargaModel.getAllLaporan[index].status,
+                    additionalInformation: CardLaporanWargaModel.getAllLaporan[index].content,
+                    // description: ,
                   );
           },
         ),

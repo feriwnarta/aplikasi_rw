@@ -1,7 +1,9 @@
 import 'package:aplikasi_rw/screen/login_screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:lottie/lottie.dart';
 
+//ignore: must_be_immutable
 class OnboardingScreen extends StatelessWidget {
   double mediaSizeHeight, mediaSizeWidth;
 
@@ -17,23 +19,26 @@ class OnboardingScreen extends StatelessWidget {
             title: 'housing management made easier',
             body:
                 'socialize and all your environmental needs will be made easier',
-            image:
-                Image(image: AssetImage('assets/img/image-onboarding/bg1.png')),
+            image: LottieBuilder.asset('assets/animation/onboard1.json'),
+
+            // image:
+            //     Image(image: AssetImage('assets/img/image-onboarding/bg1.png')),
             decoration: buildPageDecoration(
                 pageColor: Colors.blue[100].withOpacity(0.5))),
         PageViewModel(
             title: 'report it and we will deal with it immediately',
             body:
                 'report directly through the application, and we will handle it immediately',
-            image:
-                Image(image: AssetImage('assets/img/image-onboarding/bg2.png')),
+            image: LottieBuilder.asset('assets/animation/onboard2.json'),
+            // image:
+            //     Image(image: AssetImage('assets/img/image-onboarding/bg2.png')),
             decoration: buildPageDecoration(
                 pageColor: Colors.green[100].withOpacity(0.5))),
         PageViewModel(
             title: 'payment process via app',
             body: 'Pay every bill easily by uploading screenshot proof',
-            image:
-                Image(image: AssetImage('assets/img/image-onboarding/bg3.png')),
+            // image:Image(image: AssetImage('assets/img/image-onboarding/bg3.png')),
+            image: LottieBuilder.asset('assets/animation/onboard3.json'),
             footer: FlatButton(
               textColor: Colors.white,
               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 35),

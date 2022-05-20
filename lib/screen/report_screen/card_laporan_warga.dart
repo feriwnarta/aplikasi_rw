@@ -1,3 +1,4 @@
+import 'package:aplikasi_rw/screen/report_screen2/card_laporan_view.dart';
 import 'package:aplikasi_rw/screen/report_screen/card_laporan_warga_edit.dart';
 import 'package:aplikasi_rw/screen/transition_screen/slide_transition.dart';
 import 'package:flutter/material.dart';
@@ -5,9 +6,9 @@ import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
 class CardLaporanWarga extends StatelessWidget {
-  String noTicket, judul, status;
+  String noTicket, judul, status, additionalInformation;
 
-  CardLaporanWarga({this.noTicket, this.judul, this.status});
+  CardLaporanWarga({this.noTicket, this.judul, this.status, this.additionalInformation});
 
   Color colorStatusCheck() {
     return (status.toLowerCase() == 'listed')
@@ -62,6 +63,13 @@ class CardLaporanWarga extends StatelessWidget {
                     noTickects: noTicket,
                   ),
                   direction: AxisDirection.right));
+            } else {
+              Navigator.of(context).push(SlideTranstionRoute(
+                  child: CardLaporanView(
+                    description: judul,
+                    additionalInformation: additionalInformation,
+                    noTicket: noTicket,
+                  ), direction: AxisDirection.right));
             }
           },
         ),
