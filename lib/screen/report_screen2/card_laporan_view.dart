@@ -5,17 +5,22 @@ import 'package:timeline_tile/timeline_tile.dart';
 
 //ignore: must_be_immutable
 class CardLaporanView extends StatelessWidget {
-  String urlImage, description, additionalInformation, noTicket, status, time, category;
+  String urlImage,
+      description,
+      additionalInformation,
+      noTicket,
+      status,
+      time,
+      category;
 
-  CardLaporanView({
-    this.urlImage,
-    this.description,
-    this.additionalInformation,
-    this.noTicket,
-    this.status,
-    this.time,
-    this.category
-  });
+  CardLaporanView(
+      {this.urlImage,
+      this.description,
+      this.additionalInformation,
+      this.noTicket,
+      this.status,
+      this.time,
+      this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +84,7 @@ class CardLaporanView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Additional Information',
+                              'Feedback',
                               style: TextStyle(
                                   fontSize: 11.0.sp, fontFamily: 'poppins'),
                             ),
@@ -126,7 +131,12 @@ class CardLaporanView extends StatelessWidget {
                     SizedBox(height: 2.0.h),
                     Container(
                       height: 40.0.h,
-                      color: Colors.grey,
+                      // color: Colors.grey,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/img/lokasi.jpg'),
+                              fit: BoxFit.cover,
+                              repeat: ImageRepeat.noRepeat)),
                     ),
                     SizedBox(height: 1.0.h),
                     buildContainerHistoryReport(),
@@ -206,7 +216,11 @@ class CardLaporanView extends StatelessWidget {
                     Row(
                       children: [
                         SizedBox(width: 4.5.w),
-                        Text('19 Mei 2022 : 14:55', style: TextStyle(fontSize: 9.0.sp, color: Colors.grey),),
+                        Text(
+                          '19 Mei 2022 : 14:55',
+                          style:
+                              TextStyle(fontSize: 9.0.sp, color: Colors.grey),
+                        ),
                       ],
                     ),
                     SizedBox(

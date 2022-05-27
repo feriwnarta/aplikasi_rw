@@ -2,6 +2,7 @@ import 'package:aplikasi_rw/bloc/bills_reguler_screen_bloc.dart';
 import 'package:aplikasi_rw/bloc/bills_tab_bloc.dart';
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
 import 'package:aplikasi_rw/bloc/comment_bloc.dart';
+import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:aplikasi_rw/bloc/payment_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
@@ -75,6 +76,10 @@ class _MyApp extends State<MyApp> {
         BlocProvider<CommentBloc>(
           create: (context) =>
               CommentBloc(CommentBlocUnitialized())..add(CommentBlocEvent()),
+        ),
+        BlocProvider<LoginBloc>(
+          create: (context) =>
+              LoginBloc(LoginState(idUser: '0', isLogin: false)),
         ),
       ],
       child: LayoutBuilder(builder: (context, constraints) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
 import 'package:aplikasi_rw/screen/report_screen2/CardReportScreen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/add_report.dart';
@@ -6,10 +8,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
-class ReportScreen2 extends StatelessWidget {
+class ReportScreen2 extends StatefulWidget {
+  @override
+  State<ReportScreen2> createState() => _ReportScreen2State();
+}
+
+class _ReportScreen2State extends State<ReportScreen2> {
   // scroll controller
   ScrollController controller = ScrollController();
   ReportBloc bloc;
+
 
   void onScroll() {
     if (controller.position.haveDimensions) {

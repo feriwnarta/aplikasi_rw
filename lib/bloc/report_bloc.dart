@@ -1,5 +1,6 @@
 import 'package:aplikasi_rw/model/ReportModel.dart';
 import 'package:aplikasi_rw/services/report_services.dart';
+import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReportEvent2 {}
@@ -11,14 +12,16 @@ class ReportUnitialized extends ReportState2 {}
 class ReportLoaded extends ReportState2 {
   List<ReportModel> listReport;
   bool isMaxReached;
+  String idUser;
 
-  ReportLoaded({this.listReport, this.isMaxReached});
+  ReportLoaded({this.listReport, this.isMaxReached, this.idUser});
 
   // update max reached
-  ReportLoaded copyWith({List<ReportModel> listReport, bool isMaxReached}) {
+  ReportLoaded copyWith({List<ReportModel> listReport, bool isMaxReached, String idUser}) {
     return ReportLoaded(
         listReport: listReport ?? this.listReport,
-        isMaxReached: isMaxReached ?? this.isMaxReached);
+        isMaxReached: isMaxReached ?? this.isMaxReached,
+        idUser: idUser ?? this.idUser);
   }
 }
 
@@ -30,17 +33,18 @@ class ReportBloc extends Bloc<ReportEvent2, ReportState2> {
     List<ReportModel> listReport;
 
     if (state is ReportUnitialized) {
-      listReport = await ReportServices.getDataApi(0, 10);
-      yield ReportLoaded(listReport: listReport, isMaxReached: false);
+      String idUser = await UserSecureStorage.getIdUser();
+      listReport = await ReportServices.getDataApi(idUser, 0, 10);
+      yield ReportLoaded(listReport: listReport, isMaxReached: false, idUser: idUser);
     } else {
       ReportLoaded reportLoaded = state as ReportLoaded;
-      listReport =
-          await ReportServices.getDataApi(reportLoaded.listReport.length, 10);
+      listReport = await ReportServices.getDataApi(
+          reportLoaded.idUser, reportLoaded.listReport.length, 10);
       yield (listReport.isEmpty)
-          ? reportLoaded.copyWith(isMaxReached: true)
+          ? reportLoaded.copyWith(isMaxReached: true, idUser: reportLoaded.idUser)
           : ReportLoaded(
               listReport: reportLoaded.listReport + listReport,
-              isMaxReached: false);
+              isMaxReached: false, idUser: reportLoaded.idUser);
     }
   }
 }

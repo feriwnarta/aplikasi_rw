@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:aplikasi_rw/main.dart';
 import 'package:aplikasi_rw/screen/login_screen/register_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
@@ -17,6 +19,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with ValidationForm {
+  LoginBloc bloc;
+
   final _formKeyLogin = GlobalKey<FormState>();
   double mediaSizeHeight, mediaSizeWidth;
   bool _isObscure = true;
@@ -28,6 +32,8 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
 
   @override
   Widget build(BuildContext context) {
+    bloc = BlocProvider.of<LoginBloc>(context);
+
     mediaSizeHeight =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     mediaSizeWidth = MediaQuery.of(context).size.width;
@@ -246,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
 
       if (response.statusCode >= 400) {
         buildShowDialogAnimation('Error During login', 'OKE',
-            'assets/animation/error-animation.json', 15.0); 
+            'assets/animation/error-animation.json', 15.0);
       }
 
       if (response.body.isNotEmpty) {
@@ -260,7 +266,9 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
               // Navigator.of(context).pushReplacement(MaterialPageRoute(
               //   builder: (context) => MainApp(),
               // ));
-              Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+              bloc.add(LoginEvent(idUser));
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil('/', (route) => false);
             });
           }
         } else {
