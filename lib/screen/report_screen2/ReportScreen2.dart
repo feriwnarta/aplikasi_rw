@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
 import 'package:aplikasi_rw/screen/report_screen2/CardReportScreen.dart';
@@ -17,7 +18,6 @@ class _ReportScreen2State extends State<ReportScreen2> {
   // scroll controller
   ScrollController controller = ScrollController();
   ReportBloc bloc;
-
 
   void onScroll() {
     if (controller.position.haveDimensions) {
@@ -123,41 +123,48 @@ class _ReportScreen2State extends State<ReportScreen2> {
                         );
                       } else {
                         ReportLoaded reportLoaded = state as ReportLoaded;
-                        return ListView.builder(
-                          physics: ScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: (reportLoaded.isMaxReached)
-                              ? reportLoaded.listReport.length
-                              : reportLoaded.listReport.length + 1,
-                          itemBuilder: (context, index) => (index <
-                                  reportLoaded.listReport.length)
-                              ? CardReportScreen(
-                                  urlImageReport: reportLoaded
-                                      .listReport[index].urlImageReport,
-                                  description: reportLoaded
-                                      .listReport[index].description,
-                                  location:
-                                      reportLoaded.listReport[index].location,
-                                  noTicket:
-                                      reportLoaded.listReport[index].noTicket,
-                                  time: reportLoaded.listReport[index].time,
-                                  status: reportLoaded.listReport[index].status,
-                                  additionalInformation: reportLoaded
-                                      .listReport[index].additionalInformation,
-                                  category:
-                                      reportLoaded.listReport[index].category,
-                                  // additionalInformation: ,
-                                )
-                              : Container(
-                                  margin: EdgeInsets.symmetric(vertical: 10),
-                                  child: Center(
-                                    child: SizedBox(
-                                      width: 30,
-                                      height: 30,
-                                      child: CircularProgressIndicator(),
+                        return RefreshIndicator(
+                          onRefresh: () => loadReport(context, state),
+                          child: SizedBox(
+                            height: 70.0.h,
+                            child: ListView.builder(
+                              itemCount: (reportLoaded.isMaxReached)
+                                  ? reportLoaded.listReport.length
+                                  : reportLoaded.listReport.length + 1,
+                              itemBuilder: (context, index) => (index <
+                                      reportLoaded.listReport.length)
+                                  ? CardReportScreen(
+                                      urlImageReport: reportLoaded
+                                          .listReport[index].urlImageReport,
+                                      description: reportLoaded
+                                          .listReport[index].description,
+                                      location: reportLoaded
+                                          .listReport[index].location,
+                                      noTicket: reportLoaded
+                                          .listReport[index].noTicket,
+                                      time: reportLoaded.listReport[index].time,
+                                      status:
+                                          reportLoaded.listReport[index].status,
+                                      additionalInformation: reportLoaded
+                                          .listReport[index]
+                                          .additionalInformation,
+                                      category: reportLoaded
+                                          .listReport[index].category,
+                                      // additionalInformation: ,
+                                    )
+                                  : Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: Center(
+                                        child: SizedBox(
+                                          width: 30,
+                                          height: 30,
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
+                            ),
+                          ),
                         );
                       }
                     },
@@ -180,5 +187,10 @@ class _ReportScreen2State extends State<ReportScreen2> {
         },
       ),
     );
+  }
+
+  Future loadReport(BuildContext context, ReportState2 state) async {
+    await Future.delayed(Duration(seconds: 2));
+    bloc.add(ReportEventRefresh());
   }
 }

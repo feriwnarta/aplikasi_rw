@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReportEvent2 {}
 
+class ReportEventRefresh extends ReportEvent2 {}
+
 abstract class ReportState2 {}
 
 class ReportUnitialized extends ReportState2 {}
@@ -32,9 +34,13 @@ class ReportBloc extends Bloc<ReportEvent2, ReportState2> {
   Stream<ReportState2> mapEventToState(ReportEvent2 event) async* {
     List<ReportModel> listReport;
 
+    if(event is ReportEventRefresh) {
+      yield ReportUnitialized();
+    }
+
     if (state is ReportUnitialized) {
       String idUser = await UserSecureStorage.getIdUser();
-      listReport = await ReportServices.getDataApi(idUser, 0, 10);
+      listReport = await ReportServices.getDataApi(idUser, 0, 10); 
       yield ReportLoaded(listReport: listReport, isMaxReached: false, idUser: idUser);
     } else {
       ReportLoaded reportLoaded = state as ReportLoaded;
