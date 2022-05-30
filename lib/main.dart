@@ -99,7 +99,7 @@ class _MyApp extends State<MyApp> {
         });
       }),
     );
-  }
+  } 
 
   final routes = {
     '/': (BuildContext context) => FutureBuilder<String>(
@@ -129,6 +129,7 @@ class _MainAppState extends State<MainApp> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   int _index = 0;
   var colorTabBar = Color(0xff2196F3);
+  ReportBloc bloc;
 
   // list screen untuk menu
   List<Widget> screens;
@@ -141,6 +142,8 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    bloc = BlocProvider.of<ReportBloc>(context);
+
     screens = [
       HomeScreen(scaffoldKey),
       ReportScreen2(),
@@ -176,6 +179,9 @@ class _MainAppState extends State<MainApp> {
           onTap: (index) {
             setState(() {
               _index = index;
+              if(index == 1) {
+                bloc.add(ReportEventRefresh());
+              }
             });
           },
           items: [

@@ -20,8 +20,7 @@ class CardReportScreen extends StatelessWidget {
       this.time,
       this.additionalInformation,
       this.status,
-      this.category
-      });
+      this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +42,24 @@ class CardReportScreen extends StatelessWidget {
                   SizedBox(
                     width: 3.0.w,
                   ),
-                  Container(
-                    width: 25.0.w,
-                    height: 12.5.h,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: NetworkImage(urlImageReport),
-                            repeat: ImageRepeat.noRepeat,
-                            fit: BoxFit.cover),
-                        // color: Colors.grey[400],
-                        borderRadius: BorderRadius.circular(15)),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: FadeInImage(
+                      imageErrorBuilder: (BuildContext context,
+                          Object exception, StackTrace stackTrace) {
+                        print('Error Handler');
+                        return Container(
+                          width: 25.0.w,
+                          height: 12.5.h,
+                          child: Icon(Icons.error),
+                        );
+                      },
+                      placeholder: AssetImage('assets/img/loading.gif'),
+                      image: NetworkImage(urlImageReport),
+                      fit: BoxFit.cover,
+                      width: 25.0.w,
+                      height: 12.5.h,
+                    ),
                   ),
                   SizedBox(width: 5.0.w),
                   Container(

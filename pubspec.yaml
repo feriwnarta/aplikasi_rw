@@ -60,6 +60,7 @@ dependencies:
   timeline_tile: ^1.0.0
   # stepper
   im_stepper: ^0.1.2+10
+  fluttertoast: ^7.1.8
 
 
   
