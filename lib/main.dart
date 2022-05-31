@@ -6,6 +6,7 @@ import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:aplikasi_rw/bloc/payment_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_screen_bloc.dart';
+import 'package:aplikasi_rw/bloc/shimmer_loading_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/bills_history_model.dart';
 import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
@@ -72,6 +73,9 @@ class _MyApp extends State<MyApp> {
         ),
         BlocProvider<PaymentBloc>(
           create: (context) => PaymentBloc(true),
+        ),
+        BlocProvider<ShimmerLoadingBloc>(
+          create: (context) => ShimmerLoadingBloc(true),
         ),
         BlocProvider<CommentBloc>(
           create: (context) =>
@@ -157,9 +161,8 @@ class _MainAppState extends State<MainApp> {
     ));
 
     return Scaffold(
-      key: scaffoldKey,
       // membuat sidebar dan drawer
-      drawer: drawerSideBar(),
+      // drawer: drawerSideBar(),
       body: IndexedStack(
         children: screens,
         index: _index,

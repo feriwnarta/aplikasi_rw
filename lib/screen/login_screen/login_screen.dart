@@ -4,6 +4,7 @@ import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:aplikasi_rw/main.dart';
 import 'package:aplikasi_rw/screen/login_screen/register_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
+import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -239,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
   }
 
   Future userLogin() async {
-    String url = 'http://192.168.3.19/nextg_mobileapp/src/login.php';
+    String url = 'http://${ServerApp.ip}/nextg_mobileapp/src/login/login.php';
     var message, response;
 
     var data = {

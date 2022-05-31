@@ -43,7 +43,7 @@ class CardLaporanView extends StatelessWidget {
                   children: [
                     // image
                     SizedBox(
-                      height: 30.0.h,
+                      height: 50.0.h,
                       width: 100.0.w,
                       child: Image(
                         fit: BoxFit.cover,

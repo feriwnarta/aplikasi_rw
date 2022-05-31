@@ -9,6 +9,8 @@ import 'package:lottie/lottie.dart';
 import 'dart:convert';
 import 'package:sizer/sizer.dart';
 
+import '../../server-app.dart';
+
 class RegisterScreen extends StatefulWidget {
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -409,7 +411,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   }
 
   Future userRegistration() async {
-    String url = 'http://192.168.3.85/nextg_mobileapp/src/register.php';
+    String url = 'http://${ServerApp.ip}/nextg_mobileapp/src/login/register.php';
     var message, response;
 
 

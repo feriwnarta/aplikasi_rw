@@ -1,31 +1,30 @@
 import 'package:aplikasi_rw/screen/home_screen/comment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
 class StatusWarga extends StatelessWidget {
-  // String namaUser, rw, waktuUpload, urlFotoStatus, fotoProfile, caption, jumlahLike, jumlahKomen;
+  // sampel data untuk status warga
+  String userName,
+      uploadTime,
+      urlStatusImage,
+      fotoProfile,
+      caption,
+      numberOfLikes,
+      numberOfComments;
 
   // Container untuk data
   StatusWarga({
-    this.namaUser,
-    this.lamaUpload,
-    this.urlFotoStatus,
+    this.userName,
+    this.uploadTime,
+    this.urlStatusImage,
     this.fotoProfile,
     this.caption,
-    this.jumlahLike,
-    this.jumlahKomen,
+    this.numberOfLikes,
+    this.numberOfComments,
   });
-
-  // sampel data untuk status warga
-  String namaUser,
-      lamaUpload,
-      urlFotoStatus,
-      fotoProfile,
-      caption,
-      jumlahLike,
-      jumlahKomen;
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +53,13 @@ class StatusWarga extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(bottom: 3),
-                    child: Text(namaUser, style: TextStyle(fontSize: 9.0.sp),),
+                    child: Text(
+                      userName,
+                      style: TextStyle(fontSize: 9.0.sp),
+                    ),
                   ),
                   Text(
-                    '$lamaUpload',
+                    '$uploadTime',
                     style: TextStyle(fontSize: 9.0.sp),
                   )
                 ],
@@ -78,9 +80,7 @@ class StatusWarga extends StatelessWidget {
                     trimCollapsedText: 'Read More',
                     trimExpandedText: 'Read Less',
                     textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      fontSize: 11.0.sp
-                    ),
+                    style: TextStyle(fontSize: 11.0.sp),
                   ),
                 )
               ],
@@ -93,13 +93,41 @@ class StatusWarga extends StatelessWidget {
               Container(
                 child: Expanded(
                   flex: 1,
-                  child: Image(
-                    // width: MediaQuery.of(context).size.width * 0.949,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    alignment: Alignment.bottomLeft,
+                  // child: Image(
+                  //   // width: MediaQuery.of(context).size.width * 0.949,
+                  //   height: MediaQuery.of(context).size.height * 0.4,
+                  //   alignment: Alignment.bottomLeft,
+                  //   fit: BoxFit.cover,
+                  //   repeat: ImageRepeat.noRepeat,
+                  //   image: NetworkImage(urlStatusImage),
+                  // ),
+                  // child: FadeInImage(
+                  //   imageErrorBuilder: (BuildContext context, Object exception,
+                  //       StackTrace stackTrace) {
+                  //     print('Error Handler');
+                  //     return Container(
+                  //       height: 50.0.h,
+                  //       child: Icon(Icons.error),
+                  //     );
+                  //   },
+                  //   placeholder: AssetImage('assets/img/loading.gif'),
+                  //   image: NetworkImage(urlStatusImage),
+                  //   fit: BoxFit.cover,
+                  //   height: 50.0.h,
+                  // ),
+                  child: Image.network(
+                    urlStatusImage,
+                    height: 50.0.h,
                     fit: BoxFit.cover,
-                    repeat: ImageRepeat.noRepeat,
-                    image: NetworkImage(urlFotoStatus),
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
                   ),
                 ),
               )
@@ -123,7 +151,7 @@ class StatusWarga extends StatelessWidget {
                         onPressed: () {},
                       ),
                     ),
-                    Text(jumlahLike)
+                    Text(numberOfLikes)
                   ],
                 ),
                 Row(
@@ -153,7 +181,7 @@ class StatusWarga extends StatelessWidget {
                         },
                       ),
                     ),
-                    Text(jumlahKomen)
+                    Text(numberOfComments)
                   ],
                 )
               ],

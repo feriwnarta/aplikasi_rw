@@ -1,60 +1,60 @@
 class StatusUserModel {
   final String urlProfile,
       userName,
-      lamaUpload,
-      urlFotoStatus,
+      uploadTime,
+      urlStatusImage,
       caption,
-      jumlahLike,
-      jumlahKomen;
+      numberOfLikes,
+      numberOfComments;
 
   StatusUserModel(
       {this.userName,
-      this.lamaUpload,
+      this.uploadTime,
       this.urlProfile,
-      this.urlFotoStatus,
+      this.urlStatusImage,
       this.caption,
-      this.jumlahLike,
-      this.jumlahKomen});
+      this.numberOfLikes,
+      this.numberOfComments});
 
   static List<StatusUserModel> getAllStatus = [
     StatusUserModel(
         userName: 'Siti',
-        lamaUpload: '15 menit',
+        uploadTime: '15 menit',
         urlProfile: 'https://media.suara.com/pictures/653x366/2021/09/18/26068-jung-ho-yeong.jpg',
-        urlFotoStatus: 'https://adekinan.files.wordpress.com/2015/02/wpid-wp-1424086946141.jpeg',
+        urlStatusImage: 'https://adekinan.files.wordpress.com/2015/02/wpid-wp-1424086946141.jpeg',
         caption:'pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT pedagang kumang berjualan dipinggir jalan deket rumah pak RT',
-        jumlahKomen: '12',
-        jumlahLike: '19'        
+        numberOfComments: '12',
+        numberOfLikes: '19'        
     ),
 
     StatusUserModel(
       userName: 'joko',
-      lamaUpload: '30 menit',
+      uploadTime: '30 menit',
       urlProfile: 'https://akcdn.detik.net.id/visual/2022/02/04/ainun-najib-1_169.jpeg?w=650',
-      urlFotoStatus: 'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
+      urlStatusImage: 'https://asset-a.grid.id/crop/0x0:0x0/780x800/photo/bobofoto/original/17852_bagaimana-air-hujan-bisa-merusak-jalanan-aspal.jpg',
       caption: 'Jalanan rusak di RT 07',
-      jumlahKomen: '15',
-      jumlahLike: '21'
+      numberOfComments: '15',
+      numberOfLikes: '21'
     ),
 
     StatusUserModel(
       userName: 'Susanto',
-      lamaUpload: '1 jam',
+      uploadTime: '1 jam',
       urlProfile: 'https://disk.mediaindonesia.com/thumbs/600x400/news/2020/10/fe8644c762c90d7b7ff16ed49786cd96.jpg',
-      urlFotoStatus: 'https://cdn-2.tstatic.net/kaltim/foto/bank/images/jalan-asmawarman1_20160202_133513.jpg',
+      urlStatusImage: 'https://cdn-2.tstatic.net/kaltim/foto/bank/images/jalan-asmawarman1_20160202_133513.jpg',
       caption: 'Lampu jalanan kurang penerangan' ,
-      jumlahKomen: '11',
-      jumlahLike: '19'
+      numberOfComments: '11',
+      numberOfLikes: '19'
     ),
 
   StatusUserModel(
     userName: 'Yani',
-    lamaUpload: '2 jam',
+    uploadTime: '2 jam',
     urlProfile: 'https://cdn0-production-images-kly.akamaized.net/CZ4JB-nS0u8xiMTfTEPaGuaRWAw=/640x360/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/2715477/original/040195000_1548741244-Dx95B_oUUAANtWV.jpg',
-    urlFotoStatus: 'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
+    urlStatusImage: 'https://media.suara.com/pictures/653x366/2020/10/03/28146-hobi-tanaman-hias.jpg',
     caption: 'Dijual tanaman hias hubungi saya segera..',
-    jumlahKomen: '19',
-    jumlahLike: '25'
+    numberOfComments: '19',
+    numberOfLikes: '25'
   )
   ];
 

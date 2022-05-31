@@ -61,6 +61,7 @@ dependencies:
   # stepper
   im_stepper: ^0.1.2+10
   fluttertoast: ^7.1.8
+  shimmer: ^1.1.2
 
 
   
