@@ -86,8 +86,7 @@ class HomeScreen extends StatelessWidget {
                           ? Column(
                               children: <Widget>[
                                 Stack(children: [
-                                  headerBackground(context,
-                                      '${ServerApp.url}${snapshot.data.urlProfile}')
+                                  headerBackground(context,(snapshot.data.urlProfile != 'default_pp') ? '${ServerApp.url}${snapshot.data.urlProfile}' : 'assets/img/blank_profile_picture.jpg')
                                 ]),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -408,8 +407,9 @@ class HomeScreen extends StatelessWidget {
                           padding: EdgeInsets.only(left: 5.5.w, top: 3.0.h),
                           child: CircleAvatar(
                             radius: 4.0.h,
-                            backgroundImage:
-                                CachedNetworkImageProvider(fotoProfile),
+                            backgroundImage: (fotoProfile) != 'default_pp'
+                             ? CachedNetworkImageProvider(fotoProfile) 
+                             : AssetImage(fotoProfile),
                           ),
                         ),
 
