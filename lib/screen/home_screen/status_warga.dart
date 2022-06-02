@@ -103,34 +103,19 @@ class StatusWarga extends StatelessWidget {
                   //   repeat: ImageRepeat.noRepeat,
                   //   image: NetworkImage(urlStatusImage),
                   // ),
-                  // child: FadeInImage(
-                  //   imageErrorBuilder: (BuildContext context, Object exception,
-                  //       StackTrace stackTrace) {
-                  //     print('Error Handler');
-                  //     return Container(
-                  //       height: 50.0.h,
-                  //       child: Icon(Icons.error),
-                  //     );
-                  //   },
-                  //   placeholder: AssetImage('assets/img/loading.gif'),
-                  //   image: NetworkImage(urlStatusImage),
-                  //   fit: BoxFit.cover,
-                  //   height: 50.0.h,
-                  // ),
-                  child: Image.network(
-                    urlStatusImage,
-                    height: 50.0.h,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent loadingProgress) {
-                      if (loadingProgress == null) {
-                        isLoading = !isLoading;
-                        return child;
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(),
+                  child: FadeInImage(
+                    imageErrorBuilder: (BuildContext context, Object exception,
+                        StackTrace stackTrace) {
+                      print('Error Handler');
+                      return Container(
+                        height: 40.0.h,
+                        child: Icon(Icons.error),
                       );
                     },
+                    placeholder: AssetImage('assets/img/loading.gif'),
+                    image: NetworkImage(urlStatusImage),
+                    fit: BoxFit.cover,
+                    height: 40.0.h,
                   ),
                 ),
               )

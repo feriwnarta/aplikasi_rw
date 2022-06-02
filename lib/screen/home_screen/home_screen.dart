@@ -52,6 +52,9 @@ class HomeScreen extends StatelessWidget {
   // scroll controller
   ScrollController controller = ScrollController();
 
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+
   void onScroll() {
     if (controller.position.haveDimensions) {
       if (controller.position.maxScrollExtent == controller.position.pixels) {
@@ -72,6 +75,7 @@ class HomeScreen extends StatelessWidget {
       resizeToAvoidBottomPadding: false,
       body: SafeArea(
         child: RefreshIndicator(
+          key: _refreshIndicatorKey,
           onRefresh: () async => loadStatus(),
           child: SingleChildScrollView(
             controller: controller,
@@ -86,7 +90,12 @@ class HomeScreen extends StatelessWidget {
                           ? Column(
                               children: <Widget>[
                                 Stack(children: [
-                                  headerBackground(context,(snapshot.data.urlProfile != 'default_pp') ? '${ServerApp.url}${snapshot.data.urlProfile}' : 'assets/img/blank_profile_picture.jpg')
+                                  headerBackground(
+                                      context,
+                                      (snapshot.data.urlProfile != 'default_pp')
+                                          ? '${ServerApp.url}${snapshot.data.urlProfile}'
+                                          : 'assets/img/blank_profile_picture.jpg',
+                                      snapshot.data.username)
                                 ]),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,6 +149,7 @@ class HomeScreen extends StatelessWidget {
                                         StatusUserState>(
                                       builder: (context, state) {
                                         if (state is StatusUserUnitialized) {
+                                          // _refreshIndicatorKey.currentState.show();
                                           return Center(
                                             child: Padding(
                                               padding: const EdgeInsets.only(
@@ -152,6 +162,7 @@ class HomeScreen extends StatelessWidget {
                                               ),
                                             ),
                                           );
+                                          // return Container();
                                         } else {
                                           StatusUserLoaded statusLoaded =
                                               state as StatusUserLoaded;
@@ -233,7 +244,9 @@ class HomeScreen extends StatelessWidget {
                       if (snapshot.hasError)
                         return new Text('Error: ${snapshot.error}');
                       return Container(
-                        child: Center(child: CircularProgressIndicator(),),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       );
                   }
                 }),
@@ -318,7 +331,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Container headerBackground(BuildContext context, String fotoProfile) {
+  Container headerBackground(
+      BuildContext context, String fotoProfile, String username) {
     return Container(
         child: Column(
       // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -360,7 +374,7 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(left: 4.0.w, top: 1.0.h),
               child: Text(
-                '$userName, BLOK XY 9 NO 21',
+                '$username, BLOK XY 9 NO 21',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 14.0.sp,
@@ -370,13 +384,13 @@ class HomeScreen extends StatelessWidget {
             )
           ],
         ),
-        cardStatus(context, fotoProfile),
+        cardStatus(context, fotoProfile, username),
       ],
     ));
   }
 
   // versi update
-  Padding cardStatus(BuildContext context, String fotoProfile) {
+  Padding cardStatus(BuildContext context, String fotoProfile, String username) {
     return Padding(
       padding: EdgeInsets.only(top: 1.0.h),
       // padding: EdgeInsets.only(top: 10),
@@ -408,8 +422,8 @@ class HomeScreen extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 4.0.h,
                             backgroundImage: (fotoProfile) != 'default_pp'
-                             ? CachedNetworkImageProvider(fotoProfile) 
-                             : AssetImage(fotoProfile),
+                                ? CachedNetworkImageProvider(fotoProfile)
+                                : AssetImage(fotoProfile),
                           ),
                         ),
 
@@ -417,7 +431,7 @@ class HomeScreen extends StatelessWidget {
                         // gesture detector jika tulis status diklik
                         GestureDetector(
                           onTap: () {
-                            showModalBottomStatus(context, fotoProfile);
+                            showModalBottomStatus(context, fotoProfile, username);
                           },
                           child: Container(
                             margin: EdgeInsets.only(top: 2.3.h, left: 5.0.w),
@@ -456,7 +470,7 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () {
                                 getImage(ImageSource.camera).then((value) {
                                   if (statusPicker)
-                                    showModalBottomStatus(context, fotoProfile);
+                                    showModalBottomStatus(context, fotoProfile, username);
                                 });
                               },
                               icon: Icon(
@@ -480,7 +494,7 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () {
                                 getImage(ImageSource.gallery).then((value) {
                                   if (statusPicker)
-                                    showModalBottomStatus(context, fotoProfile);
+                                    showModalBottomStatus(context, fotoProfile, username);
                                 });
                               },
                               icon: Icon(
@@ -508,13 +522,13 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Future showModalBottomStatus(BuildContext context, String fotoProfile) {
+  Future showModalBottomStatus(BuildContext context, String fotoProfile, String username) {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,
         builder: (builder) => TempatTulisStatus(
               fotoProfile: fotoProfile,
-              username: userName,
+              username: username,
               rt: rt,
               rw: rw,
             ));
