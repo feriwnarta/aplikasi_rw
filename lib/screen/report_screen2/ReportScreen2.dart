@@ -111,33 +111,32 @@ class _ReportScreen2State extends State<ReportScreen2> {
                       ),
                     ),
                   ],
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Divider(
-                      color: Colors.black,
-                      height: 3.0.h,
-                      thickness: 0.3,
-                    ),
-                    BlocBuilder<ReportBloc, ReportState2>(
-                      builder: (context, state) {
-                        if (state is ReportUnitialized) {
-                          return Center(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: SizedBox(
-                                width: 30,
-                                height: 30,
-                                child: CircularProgressIndicator(),
+              body: RefreshIndicator(
+                onRefresh: () async => loadReport(),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Divider(
+                        color: Colors.black,
+                        height: 3.0.h,
+                        thickness: 0.3,
+                      ),
+                      BlocBuilder<ReportBloc, ReportState2>(
+                        builder: (context, state) {
+                          if (state is ReportUnitialized) {
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: CircularProgressIndicator(),
+                                ),
                               ),
-                            ),
-                          );
-                        } else {
-                          ReportLoaded reportLoaded = state as ReportLoaded;
-                          return RefreshIndicator(
-                            key: refreshIndicatorKey,
-                            onRefresh: () => loadReport(),
-                            child: ListView.builder(
+                            );
+                          } else {
+                            ReportLoaded reportLoaded = state as ReportLoaded;
+                            return ListView.builder(
                               physics: ScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: (reportLoaded.isMaxReached)
@@ -175,13 +174,12 @@ class _ReportScreen2State extends State<ReportScreen2> {
                                         ),
                                       ),
                                     ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-
-                  ],
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               )),
         ),

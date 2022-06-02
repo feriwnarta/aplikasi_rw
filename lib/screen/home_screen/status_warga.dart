@@ -6,6 +6,8 @@ import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
 class StatusWarga extends StatelessWidget {
+  bool isLoading = true;
+
   // sampel data untuk status warga
   String userName,
       uploadTime,
@@ -122,6 +124,7 @@ class StatusWarga extends StatelessWidget {
                     loadingBuilder: (BuildContext context, Widget child,
                         ImageChunkEvent loadingProgress) {
                       if (loadingProgress == null) {
+                        isLoading = !isLoading;
                         return child;
                       }
                       return Center(

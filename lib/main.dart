@@ -18,7 +18,9 @@ import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/card_laporan_view.dart';
 import 'package:aplikasi_rw/screen/report_screen/report_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/ReportScreen2.dart';
+import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/check_session.dart';
+import 'package:aplikasi_rw/services/get_data_user_services.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
@@ -28,6 +30,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'bloc/status_user_bloc.dart';
+import 'model/user_model.dart';
 
 void main() async {
   // runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
@@ -103,7 +106,7 @@ class _MyApp extends State<MyApp> {
         });
       }),
     );
-  } 
+  }
 
   final routes = {
     '/': (BuildContext context) => FutureBuilder<String>(
@@ -112,7 +115,7 @@ class _MyApp extends State<MyApp> {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
                 return (snapshot.data != null && snapshot.data.isNotEmpty)
-                    ? MainApp()
+                    ? MainApp(snapshot.data)
                     : OnboardingScreen();
               default:
                 return Container(
@@ -125,31 +128,37 @@ class _MyApp extends State<MyApp> {
 }
 
 class MainApp extends StatefulWidget {
+  String _idUser;
+  MainApp(this._idUser);
   @override
-  State<MainApp> createState() => _MainAppState();
+  State<MainApp> createState() => _MainAppState(_idUser);
 }
 
 class _MainAppState extends State<MainApp> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   int _index = 0;
   var colorTabBar = Color(0xff2196F3);
-  ReportBloc bloc;
-
+  ReportBloc _reportBloc;
   // list screen untuk menu
   List<Widget> screens;
+  String _idUser;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // checkIsLogin();
-  // }
+  _MainAppState(this._idUser);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<ReportBloc>(context);
+    _reportBloc = BlocProvider.of<ReportBloc>(context);
 
     screens = [
-      HomeScreen(scaffoldKey),
+      HomeScreen(
+        scaffoldKey: scaffoldKey,
+        idUser: _idUser,
+      ),
       ReportScreen2(),
       BillScreen(),
       PaymentScreen()
@@ -163,6 +172,39 @@ class _MainAppState extends State<MainApp> {
     return Scaffold(
       // membuat sidebar dan drawer
       // drawer: drawerSideBar(),
+      // body: FutureBuilder<UserModel>(
+      //     future: GetDataUserServices.getDataUser(_idUser),
+      //     builder: (context, snapshot) {
+      //       switch (snapshot.connectionState) {
+      //         case ConnectionState.waiting:
+      //           return Center(child: CircularProgressIndicator());
+      //         case ConnectionState.done:
+      //           return (snapshot.data != null)
+      //               ? IndexedStack(
+      //                   children: [
+      //                     HomeScreen(
+      //                       scaffoldKey: scaffoldKey,
+      //                       fotoProfile: (snapshot.data.urlProfile ==
+      //                               'default_pp')
+      //                           ? 'assets/img/blank_profile_picture.jpg'
+      //                           : '${ServerApp.url}${snapshot.data.urlProfile}',
+      //                       userName: snapshot.data.username,
+      //                     ),
+      //                     ReportScreen2(),
+      //                     BillScreen(),
+      //                     PaymentScreen()
+      //                   ],
+      //                   index: _index,
+      //                 )
+      //               : Center(child: CircularProgressIndicator());
+      //         default:
+      //           if (snapshot.hasError)
+      //             return new Text('Error: ${snapshot.error}');
+      //           return Container(
+      //             color: Colors.white,
+      //           );
+      //       }
+      //     }),
       body: IndexedStack(
         children: screens,
         index: _index,
@@ -182,8 +224,8 @@ class _MainAppState extends State<MainApp> {
           onTap: (index) {
             setState(() {
               _index = index;
-              if(index == 1) {
-                bloc.add(ReportEventRefresh());
+              if (index == 1) {
+                _reportBloc.add(ReportEventRefresh());
               }
             });
           },

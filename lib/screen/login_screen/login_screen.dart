@@ -240,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
   }
 
   Future userLogin() async {
-    String url = 'http://${ServerApp.ip}/nextg_mobileapp/src/login/login.php';
+    String url = '${ServerApp.url}src/login/login.php';
     var message, response;
 
     var data = {
@@ -259,15 +259,15 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
       if (response.body.isNotEmpty) {
         message = jsonDecode(response.body);
         if (message != 'login failed') {
-          await UserSecureStorage.setIdUser(message);
+          await UserSecureStorage.setIdUser(message['id_user']);
           String idUser = await UserSecureStorage.getIdUser();
 
           if (idUser.isNotEmpty) {
             setState(() {
-              // Navigator.of(context).pushReplacement(MaterialPageRoute(
-              //   builder: (context) => MainApp(),
-              // ));
-              bloc.add(LoginEvent(idUser));
+              bloc.add(LoginEvent(
+                idUser: idUser,
+                profileImage: message['profile_image']
+              ));
               Navigator.of(context)
                   .pushNamedAndRemoveUntil('/', (route) => false);
             });

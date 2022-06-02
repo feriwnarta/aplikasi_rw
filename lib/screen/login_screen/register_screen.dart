@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:aplikasi_rw/screen/loading_send_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/login_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'dart:convert';
 import 'package:sizer/sizer.dart';
@@ -47,71 +49,75 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   TextEditingController controllerNoKtp = TextEditingController();
   TextEditingController controllerNoKK = TextEditingController();
 
+  // image picker
+  ImagePicker _picker = ImagePicker();
+  String urlFotoProfile;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-    title: Text(
-      'Register',
-      style: TextStyle(fontSize: 14.0.sp),
-    ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(
+          'Register',
+          style: TextStyle(fontSize: 14.0.sp),
         ),
-        body: Stepper(
-      physics: ScrollPhysics(),
-      type: StepperType.horizontal,
-      currentStep: currentStep,
-      controlsBuilder: (context, {onStepCancel, onStepContinue}) {
-        return Row(children: [
-          Expanded(
-              child: ElevatedButton(
-            child: Text(
-              'Next',
-              style: TextStyle(fontSize: 11.0.sp),
-            ),
-            onPressed: onStepContinue,
-          )),
-          SizedBox(width: 2.0.w),
-          if (currentStep != 0)
-            Expanded(
-                child: ElevatedButton(
-              child: Text(
-                'Back',
-                style: TextStyle(fontSize: 11.0.sp),
-              ),
-              onPressed: onStepCancel,
-            )),
-        ]);
-      },
-      onStepContinue: () {
-        final isLastStep = currentStep == getSteps().length - 1;
+      ),
+      body: Stepper(
+          physics: ScrollPhysics(),
+          type: StepperType.horizontal,
+          currentStep: currentStep,
+          controlsBuilder: (context, {onStepCancel, onStepContinue}) {
+            return Row(children: [
+              Expanded(
+                  child: ElevatedButton(
+                child: Text(
+                  'Next',
+                  style: TextStyle(fontSize: 11.0.sp),
+                ),
+                onPressed: onStepContinue,
+              )),
+              SizedBox(width: 2.0.w),
+              if (currentStep != 0)
+                Expanded(
+                    child: ElevatedButton(
+                  child: Text(
+                    'Back',
+                    style: TextStyle(fontSize: 11.0.sp),
+                  ),
+                  onPressed: onStepCancel,
+                )),
+            ]);
+          },
+          onStepContinue: () {
+            final isLastStep = currentStep == getSteps().length - 1;
 
-        // checker validate step account
-        if (currentStep == 0) {
-          if (_formKeyAccount.currentState.validate()) {
-            setState(() => currentStep++);
-          }
-        } else if (currentStep == 1) {
-          if (_formKeyContact.currentState.validate()) {
-            setState(() => currentStep++);
-          }
-        } else if (currentStep == 2) {
-          if (_formKeyIdentity.currentState.validate()) {
-            setState(() {
-              if (isLastStep) {
-                userRegistration();
-              } else {
-                currentStep++;
+            // checker validate step account
+            if (currentStep == 0) {
+              if (_formKeyAccount.currentState.validate()) {
+                setState(() => currentStep++);
               }
-            });
-          }
-        }
-      },
-      onStepCancel: () {
-        currentStep > 0 ? setState(() => currentStep--) : currentStep = 0;
-      },
-      steps: getSteps()),
-      );
+            } else if (currentStep == 1) {
+              if (_formKeyContact.currentState.validate()) {
+                setState(() => currentStep++);
+              }
+            } else if (currentStep == 2) {
+              if (_formKeyIdentity.currentState.validate()) {
+                setState(() {
+                  if (isLastStep) {
+                    userRegistration();
+                  } else {
+                    currentStep++;
+                  }
+                });
+              }
+            }
+          },
+          onStepCancel: () {
+            currentStep > 0 ? setState(() => currentStep--) : currentStep = 0;
+          },
+          steps: getSteps()),
+    );
   }
 
   List<Step> getSteps() {
@@ -287,6 +293,51 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
           key: _formKeyAccount,
           child: Column(
             children: [
+              Container(
+                child: Stack(children: [
+                  Column(
+                    children: [
+                      Text(
+                        'Upload Foto Profile',
+                        style: TextStyle(
+                            fontSize: 12.0.sp, fontFamily: 'Montserrat '),
+                      ),
+                      SizedBox(
+                        height: 1.0.h,
+                      ),
+                      Container(
+                        height: 15.0.h,
+                        width: 30.0.w,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                repeat: ImageRepeat.noRepeat,
+                                image: (urlFotoProfile != null)
+                                    ? FileImage(File(urlFotoProfile))
+                                    : AssetImage(
+                                        'assets/img/blank_profile_picture.jpg'))),
+                      )
+                    ],
+                  ),
+                  Positioned(
+                    right: -2.7.w,
+                    bottom: -1.5.h,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.image,
+                        color: Colors.blue[800],
+                      ),
+                      onPressed: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: ((builder) => bottomImagePicker(context)));
+                      },
+                      iconSize: 5.0.h,
+                    ),
+                  )
+                ]),
+              ),
               Padding(
                 padding:
                     EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
@@ -399,6 +450,61 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
         ));
   }
 
+  Widget bottomImagePicker(BuildContext context) => Container(
+        margin: EdgeInsets.only(top: 20),
+        width: MediaQuery.of(context).size.width,
+        height: 18.0.h,
+        child: Column(
+          children: [
+            Text(
+              'Pilih gambar',
+              style: TextStyle(fontSize: 13.0.sp, fontFamily: 'Pt Sans Narrow'),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FlatButton.icon(
+                    icon: Icon(Icons.camera_alt),
+                    label: Text(
+                      'Kamera',
+                      style: TextStyle(
+                          fontSize: 13.0.sp, fontFamily: 'Pt Sans Narrow'),
+                    ),
+                    onPressed: () {
+                      getImage(ImageSource.camera);
+                      Navigator.of(context)
+                          .pop(); // -> digunakan untuk menutup show modal bottom sheet secara programatic
+                    }),
+                FlatButton.icon(
+                  icon: Icon(Icons.image),
+                  label: Text(
+                    'Gallery',
+                    style: TextStyle(
+                        fontSize: 13.0.sp, fontFamily: 'Pt Sans Narrow'),
+                  ),
+                  onPressed: () {
+                    getImage(ImageSource.gallery);
+                    Navigator.of(context)
+                        .pop(); // -> digunakan untuk menutup show modal bottom sheet secara programatic
+                  },
+                )
+              ],
+            )
+          ],
+        ),
+      );
+
+  void getImage(ImageSource source) async {
+    final pickedFile = await _picker.getImage(source: source, imageQuality: 50);
+    setState(() {
+      if (pickedFile != null) {
+        setState(() {
+          urlFotoProfile = pickedFile.path;
+        });
+      }
+    });
+  }
+
   Future pickDate(BuildContext context) async {
     final initialDate = DateTime.now();
     final newDate = await showDatePicker(
@@ -411,46 +517,70 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   }
 
   Future userRegistration() async {
-    String url = 'http://${ServerApp.ip}/nextg_mobileapp/src/login/register.php';
+    String url =
+        '${ServerApp.url}src/login/register.php';
     var message, response;
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    String gambar = (urlFotoProfile != null && urlFotoProfile.isNotEmpty)
+        ? urlFotoProfile
+        : 'default_pp';
+    if (gambar != 'default_pp') {
+      var pic = await http.MultipartFile.fromPath('userprofile', gambar);
+      request.files.add(pic);
+    } else {
+      request.fields['profile_image'] = gambar;
+    }
+    request.fields['email'] = controllerEmail.text;
+    request.fields['username'] = controllerUsername.text;
+    request.fields['password'] = controllerConfirmPassword.text;
+    request.fields['fullname'] = controllerFullName.text;
+    request.fields['birthday'] = controllerBirthDay.text;
+    request.fields['address'] = controllerAdress.text;
+    request.fields['city'] = controllerCity.text;
+    request.fields['phone'] = controllerPhone.text;
+    request.fields['noktp'] = controllerNoKtp.text;
+    request.fields['nokk'] = controllerNoKK.text;
 
-
-    var data = {
-      'email': controllerEmail.text,
-      'username': controllerUsername.text,
-      'password': controllerConfirmPassword.text,
-      'fullname': controllerFullName.text,
-      'birthday': controllerBirthDay.text,
-      'address': controllerAdress.text,
-      'city': controllerCity.text,
-      'phone': controllerPhone.text,
-      'noktp': controllerNoKtp.text,
-      'nokk': controllerNoKK.text
-    };
+    // var data = {
+    //   'email': controllerEmail.text,
+    //   'username': controllerUsername.text,
+    //   'password': controllerConfirmPassword.text,
+    //   'fullname': controllerFullName.text,
+    //   'birthday': controllerBirthDay.text,
+    //   'address': controllerAdress.text,
+    //   'city': controllerCity.text,
+    //   'phone': controllerPhone.text,
+    //   'noktp': controllerNoKtp.text,
+    //   'nokk': controllerNoKK.text
+    // };
 
     try {
-      response = await http.post(url, body: json.encode(data));
-
-      if (response.statusCode >= 400) {
-        buildShowDialogAnimation('Error During Registration', 'OKE',
-            'assets/animation/error-animation.json', 15.0);
-      }
-
-      if (response.statusCode == 200) {
-        if (response.body.isNotEmpty) {
-          message = jsonDecode(response.body);
-          if (message == 'Register Successful') {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => LoginScreen()));
-          } else {
-            buildShowDialogAnimation('Email Already Exist', 'OKE',
-                'assets/animation/warning-circle-animation.json', 15.0);
+      showLoading(context);
+      // response = await http.post(url, body: json.encode(data));
+      await request.send().then((value) {
+        http.Response.fromStream(value).then((value) {
+          message = json.decode(value.body);
+          if (value.statusCode >= 400) {
+            buildShowDialogAnimation('Error During Registration', 'OKE',
+                'assets/animation/error-animation.json', 15.0);
           }
-        } else {
-          buildShowDialogAnimation(
-              'Error', 'OKE', 'assets/animation/error-animation.json', 15.0);
-        }
-      }
+          if (value.statusCode == 200) {
+            if (value.body.isNotEmpty) {
+              message = jsonDecode(value.body);
+              if (message == 'Register Successful') {
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              } else {
+                buildShowDialogAnimation('Email Already Exist', 'OKE',
+                    'assets/animation/warning-circle-animation.json', 15.0);
+              }
+            } else {
+              buildShowDialogAnimation('Error', 'OKE',
+                  'assets/animation/error-animation.json', 15.0);
+            }
+          }
+        });
+      });
     } on SocketException {
       buildShowDialogAnimation(
           'No Internet', 'OKE', 'assets/animation/error-animation.json', 15.0);

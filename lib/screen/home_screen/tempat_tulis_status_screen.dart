@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:aplikasi_rw/bloc/login_bloc.dart';
+import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
+import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
 import 'package:aplikasi_rw/screen/loading_send_screen.dart';
 import 'package:aplikasi_rw/services/status_user_services.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,10 +28,12 @@ class TempatTulisStatus extends StatelessWidget {
   // field untuk data user
   String fotoProfile, username, rt, rw;
   TempatTulisStatusBloc bloc;
+  StatusUserBloc statusBloc;
   final TextEditingController controllerStatus = TextEditingController();
 
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<TempatTulisStatusBloc>(context);
+    statusBloc = BlocProvider.of<StatusUserBloc>(context);
 
     appBar = AppBar(
       leading: IconButton(
@@ -74,8 +79,10 @@ class TempatTulisStatus extends StatelessWidget {
                               children: [
                                 // avatar
                                 CircleAvatar(
-                                  radius: 4.0.h,
-                                  backgroundImage: NetworkImage(fotoProfile),
+                                  radius: 3.5.h,
+                                  backgroundImage: (fotoProfile == 'default_pp')
+                                      ? AssetImage(fotoProfile)
+                                      : CachedNetworkImageProvider(fotoProfile),
                                 ),
                                 headerName(),
                                 Material(
@@ -156,6 +163,7 @@ class TempatTulisStatus extends StatelessWidget {
               String message = json.decode(value.body);
               if (message != null && message.isNotEmpty) {
                 Navigator.of(context)..pop()..pop();
+                statusBloc.add(StatusUserEventRefresh());
               }
             });
           });

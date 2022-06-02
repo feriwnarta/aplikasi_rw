@@ -8,7 +8,7 @@ class ReportServices extends ReportModel {
       String idUser, int start, int limit) async {
     var data = {'id_user': idUser, 'start': start, 'limit': limit};
     String apiUrl =
-        'http://${ServerApp.ip}/nextg_mobileapp/src/report/report.php';
+        '${ServerApp.url}/src/report/report.php';
     // ambil data dari api
     var apiResult = await http.post(apiUrl, body: json.encode(data));
     // ubah jadi json dan casting ke list
@@ -17,7 +17,7 @@ class ReportServices extends ReportModel {
         .map<ReportModel>((item) => ReportModel(
             noTicket: item['no_ticket'].toString(),
             urlImageReport:
-                'http://${ServerApp.ip}/nextg_mobileapp/' + item['url_image'],
+                '${ServerApp.url}' + item['url_image'],
             location: item['no_ticket'],
             status: item['status'].toString(),
             time: '${item['date_post']} : ${item['time_post']}',
@@ -37,7 +37,7 @@ class ReportServices extends ReportModel {
     String status,
   }) async {
     String uri =
-        'http://${ServerApp.ip}/nextg_mobileapp/src/report/add_report.php';
+        '${ServerApp.url}/src/report/add_report.php';
     var request = http.MultipartRequest('POST', Uri.parse(uri));
 
     print('imagepath : ' + imgPath);

@@ -5,20 +5,6 @@ import 'dart:convert';
 import '../server-app.dart';
 
 class StatusUserServices extends StatusUserModel {
-  // static Future<List<StatusUserModel>> getDataApi(int start, int limit) async {
-  //   String apiUrl = 'https://jsonplaceholder.typicode.com/photos?_start=$start&_limit=$limit';
-  //   // ambil data dari api
-  //   var apiResult = await http.get(apiUrl);
-  //   // ubah jadi json dan casting ke list
-  //   var jsonObject =  json.decode(apiResult.body) as List;
-  //   return jsonObject.map<StatusUserModel>((item) => StatusUserModel(
-  //     userName: item['id'].toString(),
-  //     urlStatusImage: item['thumbnailUrl'],
-  //     urlProfile: item['url'],
-  //     caption: item['title']
-  //   )).toList();
-  // }
-
   static Future<http.MultipartRequest> sendDataStatus(
       {String idUser,
       String imgPath,
@@ -26,7 +12,7 @@ class StatusUserServices extends StatusUserModel {
       String foto_profile,
       String caption}) async {
     String uri =
-        'http://${ServerApp.ip}/nextg_mobileapp/src/status/add_status.php';
+        '${ServerApp.url}src/status/add_status.php';
     var request = http.MultipartRequest('POST', Uri.parse(uri));
 
     print(idUser);
@@ -59,7 +45,7 @@ class StatusUserServices extends StatusUserModel {
   static Future<List<StatusUserModel>> getDataApi(String idUser, int start, int limit) async {
     var data = {'id_user': idUser, 'start': start, 'limit': limit};
     String apiUrl =
-        'http://${ServerApp.ip}/nextg_mobileapp/src/status/status.php';
+        '${ServerApp.url}src/status/status.php';
     // ambil data dari api
     var apiResult = await http.post(apiUrl, body: json.encode(data));
     // ubah jadi json dan casting ke list
@@ -70,7 +56,7 @@ class StatusUserServices extends StatusUserModel {
               uploadTime: item['upload_time'],
               urlProfile: item['foto_profile'],
               caption: item['caption'],
-              urlStatusImage: 'http://${ServerApp.ip}/nextg_mobileapp/' + item['status_image'],
+              urlStatusImage: '${ServerApp.url}' + item['status_image'],
               numberOfComments: item['comment'],
               numberOfLikes: item['like'],
             ))
