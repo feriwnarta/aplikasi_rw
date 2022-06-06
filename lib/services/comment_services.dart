@@ -1,23 +1,33 @@
 import 'dart:convert';
 
 import 'package:aplikasi_rw/model/comment_model.dart';
+import 'package:aplikasi_rw/server-app.dart';
+import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:http/http.dart' as http;
 
 class CommentService {
-  static Future<List<CommentModel>> getDataApi(int start, int limit) async {
-    String apiUrl =
-        'https://jsonplaceholder.typicode.com/comments?_start=$start&_limit=$limit';
+  
+  static Future<List<CommentModel>> getDataApi(int idStatus, int start, int limit) async {
+    String idUser = await UserSecureStorage.getIdUser();
+    String apiUrl ='http://192.168.3.83/nextg_mobileapp/src/status/comment/comment.php';
+    var data = {
+      'id_user' : idUser,
+      'id_status' : idStatus,
+      'start' : start,
+      'limit' : limit
+    };
+    print(data);
     // ambil data dari api
-    var apiResult = await http.get(apiUrl);
+    var response = await http.post(apiUrl, body: json.encode(data));
     // ubah jadi json dan casting ke list
-    var jsonObject = json.decode(apiResult.body) as List;
+    var jsonObject = json.decode(response.body) as List;
+    // print(jsonObject);
     return jsonObject
         .map<CommentModel>((item) => CommentModel(
-            urlImage:
-                'https://img.idxchannel.com/media/700/images/idx/2022/03/08/Kekayaan_Orang_Tua_Sisca_Kohl.jpg',
-            comment: item['body'],
-            userName: item['name'],
-            date: item['email']))
+            urlImage: '${ServerApp.url}${item['image_profile']}',
+            comment: item['comment'],
+            userName: item['username'],
+            date: item['time']))
         .toList();
   }
 }

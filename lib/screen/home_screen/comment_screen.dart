@@ -71,7 +71,7 @@ class CommentScreen extends StatelessWidget {
                         commentLoaded.listComment.length)
                     ? buildColumnComment(
                         commentLoaded.listComment[index].urlImage,
-                        '${commentLoaded.listComment[index].userName} $index',
+                        commentLoaded.listComment[index].userName,
                         commentLoaded.listComment[index].date,
                         commentLoaded.listComment[index].comment)
                     : Container(
@@ -138,9 +138,9 @@ class CommentScreen extends StatelessWidget {
           ),
           title: Text(
             userName,
-            style: TextStyle(fontSize: 12.0.sp),
+            style: TextStyle(fontSize: 11.0.sp),
           ),
-          subtitle: Text(date, style: TextStyle(fontSize: 11.0.sp)),
+          subtitle: Text(date, style: TextStyle(fontSize: 9.0.sp)),
         ),
         Row(
           children: [

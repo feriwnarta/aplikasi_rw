@@ -11,7 +11,6 @@ import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:aplikasi_rw/screen/loading_send_screen.dart';
-import 'package:aplikasi_rw/screen/report_screen2/ReportScreen2.dart';
 
 class AddReport extends StatefulWidget {
   @override

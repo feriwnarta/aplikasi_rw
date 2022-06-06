@@ -1,5 +1,9 @@
+import 'package:aplikasi_rw/bloc/comment_bloc.dart';
+import 'package:aplikasi_rw/bloc/like_status_bloc.dart';
 import 'package:aplikasi_rw/screen/home_screen/comment_screen.dart';
+import 'package:aplikasi_rw/server-app.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
@@ -15,21 +19,29 @@ class StatusWarga extends StatelessWidget {
       fotoProfile,
       caption,
       numberOfLikes,
+      id_status,
       numberOfComments;
 
   // Container untuk data
-  StatusWarga({
-    this.userName,
-    this.uploadTime,
-    this.urlStatusImage,
-    this.fotoProfile,
-    this.caption,
-    this.numberOfLikes,
-    this.numberOfComments,
-  });
+  StatusWarga(
+      {this.userName,
+      this.uploadTime,
+      this.urlStatusImage,
+      this.fotoProfile,
+      this.caption,
+      this.numberOfLikes,
+      this.numberOfComments,
+      this.id_status});
+
+  LikeStatusBloc bloc;
+  CommentBloc commentBloc;
 
   @override
   Widget build(BuildContext context) {
+    bloc = BlocProvider.of<LikeStatusBloc>(context);
+    commentBloc = BlocProvider.of<CommentBloc>(context);
+    print('id status from status warga ${int.parse(id_status)}');
+
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -45,7 +57,7 @@ class StatusWarga extends StatelessWidget {
               padding: const EdgeInsets.only(left: 10, top: 10),
               child: CircleAvatar(
                 radius: 20,
-                backgroundImage: NetworkImage(fotoProfile),
+                backgroundImage: NetworkImage('${ServerApp.url}${fotoProfile}'),
               ),
             ),
             Container(
@@ -92,30 +104,25 @@ class StatusWarga extends StatelessWidget {
           // Bagian foto
           Row(
             children: [
-              Container(
-                child: Expanded(
-                  flex: 1,
-                  // child: Image(
-                  //   // width: MediaQuery.of(context).size.width * 0.949,
-                  //   height: MediaQuery.of(context).size.height * 0.4,
-                  //   alignment: Alignment.bottomLeft,
-                  //   fit: BoxFit.cover,
-                  //   repeat: ImageRepeat.noRepeat,
-                  //   image: NetworkImage(urlStatusImage),
-                  // ),
-                  child: FadeInImage(
-                    imageErrorBuilder: (BuildContext context, Object exception,
-                        StackTrace stackTrace) {
-                      print('Error Handler');
-                      return Container(
-                        height: 40.0.h,
-                        child: Icon(Icons.error),
-                      );
-                    },
-                    placeholder: AssetImage('assets/img/loading.gif'),
-                    image: NetworkImage(urlStatusImage),
-                    fit: BoxFit.cover,
-                    height: 40.0.h,
+              Visibility(
+                visible: (urlStatusImage.contains('no_image')) ? false : true,
+                child: Container(
+                  child: Expanded(
+                    flex: 1,
+                    child: FadeInImage(
+                      imageErrorBuilder: (BuildContext context,
+                          Object exception, StackTrace stackTrace) {
+                        print('Error Handler');
+                        return Container(
+                          height: 40.0.h,
+                          child: Icon(Icons.error),
+                        );
+                      },
+                      placeholder: AssetImage('assets/img/loading.gif'),
+                      image: NetworkImage(urlStatusImage),
+                      fit: BoxFit.cover,
+                      height: 40.0.h,
+                    ),
                   ),
                 ),
               )
@@ -123,56 +130,58 @@ class StatusWarga extends StatelessWidget {
           ),
 
           // Like Dan comment
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row(
-                  children: [
-                    Material(
-                      color: Colors.transparent,
-                      child: IconButton(
-                        splashColor: Colors.transparent,
-                        icon: Icon(Icons.thumb_up_alt_outlined,
-                            color: Colors.black),
-                        onPressed: () {},
-                      ),
-                    ),
-                    Text(numberOfLikes)
-                  ],
-                ),
-                Row(
-                  children: [
-                    Material(
-                      color: Colors.transparent,
-                      child: IconButton(
-                        splashColor: Colors.transparent,
-                        icon: Icon(
-                          Icons.comment_outlined,
-                          color: Colors.black,
+          BlocBuilder<LikeStatusBloc, LikeStatusState>(
+            builder: (context, state) => Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    children: [
+                      Material(
+                        color: Colors.transparent,
+                        child: IconButton(
+                          splashColor: Colors.transparent,
+                          icon: Icon(Icons.thumb_up_alt_outlined,
+                              color: Colors.black),
+                          onPressed: () {},
                         ),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            barrierColor: Colors.white.withOpacity(0.4),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                topRight: Radius.circular(16),
-                              ),
-                            ),
-                            isScrollControlled: true,
-                            context: context,
-                            // push id comment
-                            builder: (context) => CommentScreen(),
-                          );
-                        },
                       ),
-                    ),
-                    Text(numberOfComments)
-                  ],
-                )
-              ],
+                      Text(numberOfLikes)
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Material(
+                        color: Colors.transparent,
+                        child: IconButton(
+                          splashColor: Colors.transparent,
+                          icon: Icon(
+                            Icons.comment_outlined,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            commentBloc.add(CommentBlocEvent(idStatus: int.parse(id_status)));
+                            showModalBottomSheet(
+                                barrierColor: Colors.black.withOpacity(0.4),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(16),
+                                    topRight: Radius.circular(16),
+                                  ),
+                                ),
+                                isScrollControlled: true,
+                                context: context,
+                                // push id comment
+                                builder: (context) => CommentScreen());
+                          },
+                        ),
+                      ),
+                      Text(numberOfComments)
+                    ],
+                  )
+                ],
+              ),
             ),
           )
         ],

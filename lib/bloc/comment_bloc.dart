@@ -2,7 +2,10 @@ import 'package:aplikasi_rw/model/comment_model.dart';
 import 'package:aplikasi_rw/services/comment_services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CommentBlocEvent {}
+class CommentBlocEvent {
+  int idStatus;
+  CommentBlocEvent({this.idStatus});
+}
 
 abstract class CommentBlocState {}
 
@@ -28,15 +31,18 @@ class CommentBloc extends Bloc<CommentBlocEvent, CommentBlocState> {
 
   @override
   Stream<CommentBlocState> mapEventToState(CommentBlocEvent event) async* {
+
+    print('event id status ${event.idStatus}');
+
     if (state is CommentBlocUnitialized) {
-      listComment = await CommentService.getDataApi(0, 10);
+      listComment = await CommentService.getDataApi(event.idStatus, 0, 10);
       yield CommentBlocLoaded(isMaxReached: false, listComment: listComment);
     } else {
       // ambil data sebelumnya
       CommentBlocLoaded loaded = state as CommentBlocLoaded;
 
       // ambil data baru dengan start dari data sebelumnya sebanyak 10
-      listComment = await CommentService.getDataApi(loaded.listComment.length, 10);
+      listComment = await CommentService.getDataApi(event.idStatus, loaded.listComment.length, 10);
 
       // jika list comment empty (sudah abis) diberikan data sebelumny dengan ismaxreached true
       // jika belum berikan comment bloc loaded baru dengan list sebelumnya di tambah list baru is max reached false

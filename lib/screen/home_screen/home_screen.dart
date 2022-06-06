@@ -1,5 +1,4 @@
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
-import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/card_news.dart';
@@ -9,12 +8,10 @@ import 'package:aplikasi_rw/screen/home_screen/status_warga.dart';
 import 'package:aplikasi_rw/screen/home_screen/tempat_tulis_status_screen.dart';
 import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/get_data_user_services.dart';
-import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -71,8 +68,6 @@ class HomeScreen extends StatelessWidget {
     controller.addListener(onScroll);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
       body: SafeArea(
         child: RefreshIndicator(
           key: _refreshIndicatorKey,
@@ -93,7 +88,7 @@ class HomeScreen extends StatelessWidget {
                                   headerBackground(
                                       context,
                                       (snapshot.data.urlProfile != 'default_pp')
-                                          ? '${ServerApp.url}${snapshot.data.urlProfile}'
+                                          ? '${snapshot.data.urlProfile}'
                                           : 'assets/img/blank_profile_picture.jpg',
                                       snapshot.data.username)
                                 ]),
@@ -215,6 +210,10 @@ class HomeScreen extends StatelessWidget {
                                                                 .listStatusUser[
                                                                     index]
                                                                 .numberOfLikes,
+                                                        id_status: statusLoaded
+                                                            .listStatusUser[
+                                                                index]
+                                                            .id_status,
                                                       )
                                                     : Container(
                                                         margin: EdgeInsets
@@ -390,7 +389,8 @@ class HomeScreen extends StatelessWidget {
   }
 
   // versi update
-  Padding cardStatus(BuildContext context, String fotoProfile, String username) {
+  Padding cardStatus(
+      BuildContext context, String fotoProfile, String username) {
     return Padding(
       padding: EdgeInsets.only(top: 1.0.h),
       // padding: EdgeInsets.only(top: 10),
@@ -422,7 +422,7 @@ class HomeScreen extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 4.0.h,
                             backgroundImage: (fotoProfile) != 'default_pp'
-                                ? CachedNetworkImageProvider(fotoProfile)
+                                ? CachedNetworkImageProvider('${ServerApp.url}${fotoProfile}')
                                 : AssetImage(fotoProfile),
                           ),
                         ),
@@ -431,7 +431,8 @@ class HomeScreen extends StatelessWidget {
                         // gesture detector jika tulis status diklik
                         GestureDetector(
                           onTap: () {
-                            showModalBottomStatus(context, fotoProfile, username);
+                            showModalBottomStatus(
+                                context, fotoProfile, username);
                           },
                           child: Container(
                             margin: EdgeInsets.only(top: 2.3.h, left: 5.0.w),
@@ -470,7 +471,8 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () {
                                 getImage(ImageSource.camera).then((value) {
                                   if (statusPicker)
-                                    showModalBottomStatus(context, fotoProfile, username);
+                                    showModalBottomStatus(
+                                        context, fotoProfile, username);
                                 });
                               },
                               icon: Icon(
@@ -494,7 +496,8 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () {
                                 getImage(ImageSource.gallery).then((value) {
                                   if (statusPicker)
-                                    showModalBottomStatus(context, fotoProfile, username);
+                                    showModalBottomStatus(
+                                        context, fotoProfile, username);
                                 });
                               },
                               icon: Icon(
@@ -522,7 +525,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Future showModalBottomStatus(BuildContext context, String fotoProfile, String username) {
+  Future showModalBottomStatus(
+      BuildContext context, String fotoProfile, String username) {
     return showModalBottomSheet(
         isScrollControlled: true,
         context: context,

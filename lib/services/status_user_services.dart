@@ -11,8 +11,7 @@ class StatusUserServices extends StatusUserModel {
       String username,
       String foto_profile,
       String caption}) async {
-    String uri =
-        '${ServerApp.url}src/status/add_status.php';
+    String uri = '${ServerApp.url}src/status/add_status.php';
     var request = http.MultipartRequest('POST', Uri.parse(uri));
 
     print(idUser);
@@ -22,8 +21,12 @@ class StatusUserServices extends StatusUserModel {
     print(caption);
 
     if (imgPath != null && imgPath.isNotEmpty) {
-      var pic = await http.MultipartFile.fromPath('status_image', imgPath);
-      request.files.add(pic);
+      if (imgPath != 'no_image') {
+        var pic = await http.MultipartFile.fromPath('status_image', imgPath);
+        request.files.add(pic);
+      } else {
+        request.fields['status_image'] = imgPath;  
+      }
       request.fields['id_user'] = idUser;
       request.fields['username'] = username;
       request.fields['foto_profile'] = foto_profile;
@@ -42,10 +45,10 @@ class StatusUserServices extends StatusUserModel {
     return request;
   }
 
-  static Future<List<StatusUserModel>> getDataApi(String idUser, int start, int limit) async {
+  static Future<List<StatusUserModel>> getDataApi(
+      String idUser, int start, int limit) async {
     var data = {'id_user': idUser, 'start': start, 'limit': limit};
-    String apiUrl =
-        '${ServerApp.url}src/status/status.php';
+    String apiUrl = '${ServerApp.url}src/status/status.php';
     // ambil data dari api
     var apiResult = await http.post(apiUrl, body: json.encode(data));
     // ubah jadi json dan casting ke list
@@ -58,6 +61,7 @@ class StatusUserServices extends StatusUserModel {
               caption: item['caption'],
               urlStatusImage: '${ServerApp.url}' + item['status_image'],
               numberOfComments: item['comment'],
+              id_status: item['id_status'],
               numberOfLikes: item['like'],
             ))
         .toList();

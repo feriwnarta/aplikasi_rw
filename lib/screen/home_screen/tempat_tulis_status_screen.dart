@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
-import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
 import 'package:aplikasi_rw/screen/loading_send_screen.dart';
+import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/status_user_services.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -14,9 +13,27 @@ import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-//ignore: must_be_immutable
-class TempatTulisStatus extends StatelessWidget {
+class TempatTulisStatus extends StatefulWidget {
+  String fotoProfile, username, rt, rw;
+
   TempatTulisStatus({
+    this.fotoProfile,
+    this.username,
+    this.rt,
+    this.rw,
+  });
+
+  @override
+  State<TempatTulisStatus> createState() => _TempatTulisStatusState(
+      fotoProfile: this.fotoProfile,
+      rt: this.rt,
+      rw: this.rw,
+      username: this.username);
+}
+
+//ignore: must_be_immutable
+class _TempatTulisStatusState extends State<TempatTulisStatus> {
+  _TempatTulisStatusState({
     this.fotoProfile,
     this.username,
     this.rt,
@@ -30,6 +47,7 @@ class TempatTulisStatus extends StatelessWidget {
   TempatTulisStatusBloc bloc;
   StatusUserBloc statusBloc;
   final TextEditingController controllerStatus = TextEditingController();
+  PickedFile pickedFile;
 
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<TempatTulisStatusBloc>(context);
@@ -59,6 +77,8 @@ class TempatTulisStatus extends StatelessWidget {
       builder: (context, state) => Container(
         height: (state.isVisible) ? 70.0.h : 61.0.h,
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomPadding: false,
             appBar: appBar,
             body: ListView(children: [
               Column(
@@ -82,7 +102,7 @@ class TempatTulisStatus extends StatelessWidget {
                                   radius: 3.5.h,
                                   backgroundImage: (fotoProfile == 'default_pp')
                                       ? AssetImage(fotoProfile)
-                                      : CachedNetworkImageProvider(fotoProfile),
+                                      : CachedNetworkImageProvider('${ServerApp.url}${fotoProfile}'),
                                 ),
                                 headerName(),
                                 Material(
@@ -110,7 +130,6 @@ class TempatTulisStatus extends StatelessWidget {
                   ),
 
                   textFieldTulisStatus(),
-
                   // gambar jika diupload
                   gambarUploadStatus(),
 
@@ -123,7 +142,7 @@ class TempatTulisStatus extends StatelessWidget {
                   buttonPilihGambar(context),
 
                   // button untuk kirim posting status
-                  buttonPosting(state, context)
+                  buttonPosting(pickedFile, state, context)
                 ],
               ),
             ])),
@@ -131,7 +150,7 @@ class TempatTulisStatus extends StatelessWidget {
     );
   }
 
-  ElevatedButton buttonPosting(
+  ElevatedButton buttonPosting(PickedFile pickedFile,
       TempatTulisStatusState tsstate, BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
@@ -150,10 +169,12 @@ class TempatTulisStatus extends StatelessWidget {
       ),
       onPressed: () async {
         String idUser = await UserSecureStorage.getIdUser();
+        // String imgPath = (tsstate.imageFile.path == null && tsstate.imageFile == null) ? 'no_image' : tsstate.imageFile.path;
+        String imgPath = (pickedFile != null && pickedFile.path.isNotEmpty) ? pickedFile.path : 'no_image';
         StatusUserServices.sendDataStatus(
                 username: username,
                 idUser: idUser,
-                imgPath: tsstate.imageFile.path,
+                imgPath: imgPath,
                 caption: controllerStatus.text,
                 foto_profile: fotoProfile)
             .then((value) {
@@ -258,22 +279,16 @@ class TempatTulisStatus extends StatelessWidget {
   }
 
   // sebelumnya pake sizebox
-  Container textFieldTulisStatus() {
-    return Container(
-      height: 30.0.h,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(bottom: BorderSide(color: Colors.grey[200]))),
-      child: Padding(
-        padding: EdgeInsets.only(left: 1.0.w),
-        child: TextField(
-          controller: controllerStatus,
-          maxLines: 10,
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Apa yang anda pikirkan ?',
-              hintStyle: TextStyle(fontSize: 11.0.sp)),
-        ),
+  Padding textFieldTulisStatus() {
+    return Padding(
+      padding: EdgeInsets.only(left: 1.0.w),
+      child: TextField(
+        controller: controllerStatus,
+        maxLines: 10,
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: 'Apa yang anda pikirkan ?',
+            hintStyle: TextStyle(fontSize: 11.0.sp)),
       ),
     );
   }
@@ -355,7 +370,7 @@ class TempatTulisStatus extends StatelessWidget {
       );
 
   void getImage(ImageSource source) async {
-    final pickedFile = await _picker.getImage(source: source, imageQuality: 50);
+    pickedFile = await _picker.getImage(source: source, imageQuality: 50);
     // setState(() {
     //   if (pickedFile != null) {
     //     imageFile = pickedFile;
