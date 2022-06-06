@@ -163,17 +163,20 @@ class _ReportScreen2State extends State<ReportScreen2> {
                                           .listReport[index].category,
                                       // additionalInformation: ,
                                     )
-                                  : Container(
-                                      margin:
-                                          EdgeInsets.symmetric(vertical: 10),
-                                      child: Center(
-                                        child: SizedBox(
-                                          width: 30,
-                                          height: 30,
-                                          child: CircularProgressIndicator(),
+                                  : (index == reportLoaded.listReport.length)
+                                      ? Container()
+                                      : Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 30,
+                                              height: 30,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
                             );
                           }
                         },

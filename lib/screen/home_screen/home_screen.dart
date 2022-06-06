@@ -210,7 +210,7 @@ class HomeScreen extends StatelessWidget {
                                                                 .listStatusUser[
                                                                     index]
                                                                 .numberOfLikes,
-                                                        id_status: statusLoaded
+                                                        idStatus: statusLoaded
                                                             .listStatusUser[
                                                                 index]
                                                             .id_status,
@@ -422,7 +422,8 @@ class HomeScreen extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 4.0.h,
                             backgroundImage: (fotoProfile) != 'default_pp'
-                                ? CachedNetworkImageProvider('${ServerApp.url}${fotoProfile}')
+                                ? CachedNetworkImageProvider(
+                                    '${ServerApp.url}${fotoProfile}')
                                 : AssetImage(fotoProfile),
                           ),
                         ),

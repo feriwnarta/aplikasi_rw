@@ -11,6 +11,8 @@ abstract class CommentBlocState {}
 
 class CommentBlocUnitialized extends CommentBlocState {}
 
+class CommentEventRefresh extends CommentBlocEvent {}
+
 class CommentBlocLoaded extends CommentBlocState {
   List<CommentModel> listComment = [];
   bool isMaxReached;
@@ -31,8 +33,13 @@ class CommentBloc extends Bloc<CommentBlocEvent, CommentBlocState> {
 
   @override
   Stream<CommentBlocState> mapEventToState(CommentBlocEvent event) async* {
+    print('event id status bloc ${event.idStatus}');
 
-    print('event id status ${event.idStatus}');
+    if (event is CommentEventRefresh) {
+      listComment = [];
+      print('status di load ulang');
+      yield CommentBlocUnitialized();
+    }
 
     if (state is CommentBlocUnitialized) {
       listComment = await CommentService.getDataApi(event.idStatus, 0, 10);
@@ -42,7 +49,8 @@ class CommentBloc extends Bloc<CommentBlocEvent, CommentBlocState> {
       CommentBlocLoaded loaded = state as CommentBlocLoaded;
 
       // ambil data baru dengan start dari data sebelumnya sebanyak 10
-      listComment = await CommentService.getDataApi(event.idStatus, loaded.listComment.length, 10);
+      listComment = await CommentService.getDataApi(
+          event.idStatus, loaded.listComment.length, 10);
 
       // jika list comment empty (sudah abis) diberikan data sebelumny dengan ismaxreached true
       // jika belum berikan comment bloc loaded baru dengan list sebelumnya di tambah list baru is max reached false

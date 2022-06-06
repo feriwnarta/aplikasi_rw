@@ -1,4 +1,5 @@
 import 'package:aplikasi_rw/bloc/comment_bloc.dart';
+import 'package:aplikasi_rw/services/add_comment_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sizer/sizer.dart';
@@ -7,6 +8,11 @@ import 'package:sizer/sizer.dart';
 class CommentScreen extends StatelessWidget {
   // bloc
   CommentBloc bloc;
+  TextEditingController controllerWriteStatus = TextEditingController();
+  String idStatus;
+  bool _isValidate = false;
+
+  CommentScreen({this.idStatus});
 
   ScrollController controller = ScrollController();
   void onScroll() {
@@ -51,7 +57,7 @@ class CommentScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10),
                   child: SizedBox(
-                    width: 3.0.w,
+                    width: 5.0.w,
                     height: 3.0.h,
                     child: CircularProgressIndicator(),
                   ),
@@ -59,31 +65,30 @@ class CommentScreen extends StatelessWidget {
               );
             } else {
               CommentBlocLoaded commentLoaded = state as CommentBlocLoaded;
-
               return ListView.builder(
                 controller: controller,
-                physics: ClampingScrollPhysics(),
+                physics: ScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: (commentLoaded.isMaxReached)
                     ? commentLoaded.listComment.length
-                    : commentLoaded.listComment.length + 2,
-                itemBuilder: (context, index) => (index <
-                        commentLoaded.listComment.length)
-                    ? buildColumnComment(
-                        commentLoaded.listComment[index].urlImage,
-                        commentLoaded.listComment[index].userName,
-                        commentLoaded.listComment[index].date,
-                        commentLoaded.listComment[index].comment)
-                    : Container(
-                        margin: EdgeInsets.symmetric(vertical: 1.0.h),
-                        child: Center(
-                          child: SizedBox(
-                            width: 30,
-                            height: 30,
-                            child: CircularProgressIndicator(),
+                    : commentLoaded.listComment.length + 1,
+                itemBuilder: (context, index) =>
+                    (index < commentLoaded.listComment.length)
+                        ? buildColumnComment(
+                            commentLoaded.listComment[index].urlImage,
+                            commentLoaded.listComment[index].userName,
+                            commentLoaded.listComment[index].date,
+                            commentLoaded.listComment[index].comment)
+                        : Container(
+                            margin: EdgeInsets.symmetric(vertical: 1.0.h),
+                            child: Center(
+                              child: SizedBox(
+                                width: 10.0.w,
+                                height: 5.0.h,
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
               );
             }
           }),
@@ -104,18 +109,28 @@ class CommentScreen extends StatelessWidget {
                     SizedBox(
                       width: 85.0.w,
                       child: TextField(
+                        controller: controllerWriteStatus,
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.red)),
-                            hintText: 'write status'),
-                            style: TextStyle(
-                              fontSize: 12.0.sp
-                            ),
+                            hintText: 'write status',
+                            errorText: (_isValidate)
+                                ? 'comment can\'t be empty'
+                                : null),
+                        style: TextStyle(fontSize: 12.0.sp),
                       ),
                     ),
                     Material(
                       child: IconButton(
-                          icon: Icon(Icons.arrow_forward, size: 4.0.h,), onPressed: () {}),
+                          icon: Icon(
+                            Icons.arrow_forward,
+                            size: 4.0.h,
+                          ),
+                          onPressed: () {
+                            AddCommentServices.addComment(
+                                idStatus, controllerWriteStatus.text, context);
+                            bloc.add(CommentEventRefresh());
+                          }),
                     )
                   ],
                 ),
@@ -153,9 +168,7 @@ class CommentScreen extends StatelessWidget {
                 maxLines: 10,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontSize: 12.0.sp
-                ),
+                style: TextStyle(fontSize: 12.0.sp),
               ),
             ),
           ],

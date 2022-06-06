@@ -19,7 +19,7 @@ class StatusWarga extends StatelessWidget {
       fotoProfile,
       caption,
       numberOfLikes,
-      id_status,
+      idStatus,
       numberOfComments;
 
   // Container untuk data
@@ -31,7 +31,7 @@ class StatusWarga extends StatelessWidget {
       this.caption,
       this.numberOfLikes,
       this.numberOfComments,
-      this.id_status});
+      this.idStatus});
 
   LikeStatusBloc bloc;
   CommentBloc commentBloc;
@@ -40,7 +40,7 @@ class StatusWarga extends StatelessWidget {
   Widget build(BuildContext context) {
     bloc = BlocProvider.of<LikeStatusBloc>(context);
     commentBloc = BlocProvider.of<CommentBloc>(context);
-    print('id status from status warga ${int.parse(id_status)}');
+    print('id status from status warga ${int.parse(idStatus)}');
 
     return Container(
       decoration: BoxDecoration(
@@ -161,7 +161,9 @@ class StatusWarga extends StatelessWidget {
                             color: Colors.black,
                           ),
                           onPressed: () {
-                            commentBloc.add(CommentBlocEvent(idStatus: int.parse(id_status)));
+                            commentBloc.add(CommentEventRefresh());
+                            commentBloc.add(CommentBlocEvent(
+                                idStatus: int.parse(idStatus)));
                             showModalBottomSheet(
                                 barrierColor: Colors.black.withOpacity(0.4),
                                 shape: const RoundedRectangleBorder(
@@ -173,7 +175,9 @@ class StatusWarga extends StatelessWidget {
                                 isScrollControlled: true,
                                 context: context,
                                 // push id comment
-                                builder: (context) => CommentScreen());
+                                builder: (context) => CommentScreen(
+                                      idStatus: idStatus,
+                                    ));
                           },
                         ),
                       ),

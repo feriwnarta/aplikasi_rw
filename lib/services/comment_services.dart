@@ -9,7 +9,7 @@ class CommentService {
   
   static Future<List<CommentModel>> getDataApi(int idStatus, int start, int limit) async {
     String idUser = await UserSecureStorage.getIdUser();
-    String apiUrl ='http://192.168.3.83/nextg_mobileapp/src/status/comment/comment.php';
+    String apiUrl ='${ServerApp.url}src/status/comment/comment.php';
     var data = {
       'id_user' : idUser,
       'id_status' : idStatus,
