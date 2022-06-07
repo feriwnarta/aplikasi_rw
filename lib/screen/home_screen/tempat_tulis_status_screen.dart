@@ -75,7 +75,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
 
     return BlocBuilder<TempatTulisStatusBloc, TempatTulisStatusState>(
       builder: (context, state) => Container(
-        height: (state.isVisible) ? 70.0.h : 61.0.h,
+        height: (state.isVisible) ? 65.0.h : 57.0.h,
         child: Scaffold(
             resizeToAvoidBottomInset: false,
             resizeToAvoidBottomPadding: false,
@@ -100,7 +100,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                                 // avatar
                                 CircleAvatar(
                                   radius: 3.5.h,
-                                  backgroundImage: (fotoProfile == 'default_pp')
+                                  backgroundImage: (fotoProfile == 'assets/img/blank_profile_picture.jpg')
                                       ? AssetImage(fotoProfile)
                                       : CachedNetworkImageProvider('${ServerApp.url}${fotoProfile}'),
                                 ),
