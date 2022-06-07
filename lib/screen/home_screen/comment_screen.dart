@@ -51,47 +51,56 @@ class CommentScreen extends StatelessWidget {
           ]),
         ),
         body: Stack(children: [
-          BlocBuilder<CommentBloc, CommentBlocState>(builder: (context, state) {
-            if (state is CommentBlocUnitialized) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: SizedBox(
-                    width: 5.0.w,
-                    height: 3.0.h,
-                    child: CircularProgressIndicator(),
+          /**
+           * ***************
+           * perlu dibenerin
+           * ***************
+           */
+          Container(
+            height: 47.0.h,
+            child: BlocBuilder<CommentBloc, CommentBlocState>(
+                builder: (context, state) {
+              if (state is CommentBlocUnitialized) {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: SizedBox(
+                      width: 5.0.w,
+                      height: 3.0.h,
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
-                ),
-              );
-            } else {
-              CommentBlocLoaded commentLoaded = state as CommentBlocLoaded;
-              return ListView.builder(
-                controller: controller,
-                physics: ScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: (commentLoaded.isMaxReached)
-                    ? commentLoaded.listComment.length
-                    : commentLoaded.listComment.length + 1,
-                itemBuilder: (context, index) =>
-                    (index < commentLoaded.listComment.length)
-                        ? buildColumnComment(
-                            commentLoaded.listComment[index].urlImage,
-                            commentLoaded.listComment[index].userName,
-                            commentLoaded.listComment[index].date,
-                            commentLoaded.listComment[index].comment)
-                        : Container(
-                            margin: EdgeInsets.symmetric(vertical: 1.0.h),
-                            child: Center(
-                              child: SizedBox(
-                                width: 10.0.w,
-                                height: 5.0.h,
-                                child: CircularProgressIndicator(),
+                );
+              } else {
+                CommentBlocLoaded commentLoaded = state as CommentBlocLoaded;
+                return ListView.builder(
+                  controller: controller,
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: (commentLoaded.isMaxReached)
+                      ? commentLoaded.listComment.length
+                      : commentLoaded.listComment.length + 1,
+                  itemBuilder: (context, index) =>
+                      (index < commentLoaded.listComment.length)
+                          ? buildColumnComment(
+                              commentLoaded.listComment[index].urlImage,
+                              commentLoaded.listComment[index].userName,
+                              commentLoaded.listComment[index].date,
+                              commentLoaded.listComment[index].comment)
+                          : Container(
+                              margin: EdgeInsets.symmetric(vertical: 1.0.h),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 10.0.w,
+                                  height: 5.0.h,
+                                  child: CircularProgressIndicator(),
+                                ),
                               ),
                             ),
-                          ),
-              );
-            }
-          }),
+                );
+              }
+            }),
+          ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -130,6 +139,8 @@ class CommentScreen extends StatelessWidget {
                             AddCommentServices.addComment(
                                 idStatus, controllerWriteStatus.text, context);
                             bloc.add(CommentEventRefresh());
+                            bloc.add(CommentBlocEvent(
+                                idStatus: int.parse(idStatus)));
                           }),
                     )
                   ],
@@ -174,7 +185,7 @@ class CommentScreen extends StatelessWidget {
           ],
         ),
         SizedBox(
-          height: 2.0.h,
+          height: 1.0.h,
         ),
         Divider(
           thickness: 1,

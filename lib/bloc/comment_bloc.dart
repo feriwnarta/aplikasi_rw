@@ -11,7 +11,7 @@ abstract class CommentBlocState {}
 
 class CommentBlocUnitialized extends CommentBlocState {}
 
-class CommentEventRefresh extends CommentBlocEvent {}
+class CommentEventRefresh extends CommentBlocEvent{}
 
 class CommentBlocLoaded extends CommentBlocState {
   List<CommentModel> listComment = [];

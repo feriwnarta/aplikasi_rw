@@ -17,12 +17,6 @@ class BillTabModel {
   static List<BillTab> tabs() {
     return [
       BillTab(
-        colorsAppBar: Colors.white,
-        tab: Tab(child: Text('Regulerr', style: TextStyle(fontSize: 12.0.sp)),),
-        screen: BillsRegulerScreen(),
-        colorsText: Colors.black
-      ),
-      BillTab(
         colorsAppBar: Colors.red,
         tab: Tab(child: Text('Event 17 August', style: TextStyle(fontSize: 12.0.sp))),
         screen: EventBillScrenn(
