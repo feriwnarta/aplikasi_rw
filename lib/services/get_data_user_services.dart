@@ -4,32 +4,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class GetDataUserServices {
-  // static Future<String> getDataUser(String id) async {
-  //   String uri = '${ServerApp.url}src/user/user.php';
-  //   var request = http.MultipartRequest('POST', Uri.parse(uri));
-  //   UserModel user;
-  //   var message;
-
-  //   String data;
-  //   if (id != null && id.isNotEmpty) {
-  //     request.fields['id_user'] = id;
-  //     await request.send().then((value) {
-  //       http.Response.fromStream(value).then((value) {
-  //          message = json.decode(value.body);
-  //         user = UserModel(
-  //             urlProfile: message['profile_image'],
-  //             username: message['username']);
-  //             data = message['profile_image'];
-  //             print(message['username']);
-  //             print(message['profile_image']);
-
-  //         // return user;
-  //       });
-  //     });
-  //   }
-  //   return message['username'];
-  // }
-
   static Future<UserModel> getDataUser(String idUser) async {
     String url = '${ServerApp.url}src/user/user.php';
     var data = {"id_user": idUser};
