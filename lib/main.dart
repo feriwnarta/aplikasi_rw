@@ -80,7 +80,8 @@ class _MyApp extends State<MyApp> {
               LoginBloc(LoginState(idUser: '0', isLogin: false)),
         ),
         BlocProvider<LikeStatusBloc>(
-          create: (context) => LikeStatusBloc(LikeStatusState(colorButton: Colors.black)),
+          create: (context) =>
+              LikeStatusBloc(LikeStatusState(colorButton: Colors.black)),
         ),
       ],
       child: LayoutBuilder(builder: (context, constraints) {

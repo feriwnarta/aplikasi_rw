@@ -421,7 +421,8 @@ class HomeScreen extends StatelessWidget {
                           padding: EdgeInsets.only(left: 5.5.w, top: 3.0.h),
                           child: CircleAvatar(
                             radius: 4.0.h,
-                            backgroundImage: (fotoProfile) != 'assets/img/blank_profile_picture.jpg'
+                            backgroundImage: (fotoProfile) !=
+                                    'assets/img/blank_profile_picture.jpg'
                                 ? CachedNetworkImageProvider(
                                     '${ServerApp.url}${fotoProfile}')
                                 : AssetImage(fotoProfile),
