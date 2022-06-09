@@ -61,7 +61,7 @@ class StatusUserServices extends StatusUserModel {
               caption: item['caption'],
               urlStatusImage: '${ServerApp.url}' + item['status_image'],
               numberOfComments: item['comment'],
-              id_status: item['id_status'],
+              idStatus: item['id_status'],
               numberOfLikes: item['like'],
             ))
         .toList();

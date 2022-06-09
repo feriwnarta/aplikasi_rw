@@ -2,7 +2,7 @@ import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
 import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/card_news.dart';
-import 'package:aplikasi_rw/model/user_model.dart';
+
 import 'package:aplikasi_rw/screen/home_screen/news_screen/news_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/status_warga.dart';
 import 'package:aplikasi_rw/screen/home_screen/tempat_tulis_status_screen.dart';
@@ -21,13 +21,13 @@ import 'package:sizer/sizer.dart';
 //ignore: must_be_immutable
 class HomeScreen extends StatelessWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
-  HomeScreen({this.scaffoldKey, this.idUser});
+  String userName, urlProfile;
+  HomeScreen({this.scaffoldKey, this.idUser, this.userName, this.urlProfile});
   var colorRoundedCircle = Color(0xff8CBBF1);
   var colorCard = Color(0xffFCEECB);
 
   // demo user
   String idUser;
-  String userName = 'Citra susanti';
   String rt = 'RT 02';
   String rw = 'RW 07';
   String fotoProfile =
@@ -73,183 +73,123 @@ class HomeScreen extends StatelessWidget {
           key: _refreshIndicatorKey,
           onRefresh: () async => loadStatus(),
           child: SingleChildScrollView(
-            controller: controller,
-            child: FutureBuilder<UserModel>(
-                future: GetDataUserServices.getDataUser(idUser),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Center(child: CircularProgressIndicator());
-                    case ConnectionState.done:
-                      return (snapshot.data != null)
-                          ? Column(
-                              children: <Widget>[
-                                Stack(children: [
-                                  headerBackground(
-                                      context,
-                                      (snapshot.data.urlProfile != 'default_pp')
-                                          ? '${snapshot.data.urlProfile}'
-                                          : 'assets/img/blank_profile_picture.jpg',
-                                      snapshot.data.username)
-                                ]),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 15, top: 10, bottom: 10),
-                                      child: Text(
-                                        'News',
-                                        style: TextStyle(
-                                            fontFamily: 'poppins',
-                                            fontSize: 11.0.sp),
-                                      ),
-                                    ),
-                                    buildCarouselSliderNews(),
-                                    SizedBox(
-                                      height: 17,
-                                    ),
-                                    Center(
-                                      child: BlocBuilder<CarouselBloc, int>(
-                                        builder: (context, index) =>
-                                            AnimatedSmoothIndicator(
-                                          activeIndex: index,
-                                          count: CardNews.getCardNews.length,
-                                          effect: ExpandingDotsEffect(
-                                              dotWidth: 10,
-                                              dotHeight: 10,
-                                              activeDotColor: Colors.lightBlue,
-                                              dotColor: Colors.grey[350]),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 15, top: 10),
-                                      child: Text(
-                                        "Today's Status",
-                                        style: TextStyle(
-                                          fontFamily: 'poppins',
-                                          fontSize: 11.0.sp,
-                                        ),
-                                      ),
-                                    ),
-                                    BlocBuilder<StatusUserBloc,
-                                        StatusUserState>(
-                                      builder: (context, state) {
-                                        if (state is StatusUserUnitialized) {
-                                          // _refreshIndicatorKey.currentState.show();
-                                          return Center(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10),
-                                              child: SizedBox(
-                                                width: 30,
-                                                height: 30,
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                            ),
-                                          );
-                                          // return Container();
-                                        } else {
-                                          StatusUserLoaded statusLoaded =
-                                              state as StatusUserLoaded;
-                                          return ListView.builder(
-                                            physics: ScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount:
-                                                (statusLoaded.isMaxReached)
-                                                    ? statusLoaded
-                                                        .listStatusUser.length
-                                                    : statusLoaded
-                                                            .listStatusUser
-                                                            .length +
-                                                        1,
-                                            itemBuilder: (context, index) =>
-                                                (index <
-                                                        statusLoaded
-                                                            .listStatusUser
-                                                            .length)
-                                                    ? StatusWarga(
-                                                        userName: statusLoaded
-                                                            .listStatusUser[
-                                                                index]
-                                                            .userName,
-                                                        caption: statusLoaded
-                                                            .listStatusUser[
-                                                                index]
-                                                            .caption,
-                                                        fotoProfile:
-                                                            statusLoaded
-                                                                .listStatusUser[
-                                                                    index]
-                                                                .urlProfile,
-                                                        urlStatusImage:
-                                                            statusLoaded
-                                                                .listStatusUser[
-                                                                    index]
-                                                                .urlStatusImage,
-                                                        numberOfComments:
-                                                            statusLoaded
-                                                                .listStatusUser[
-                                                                    index]
-                                                                .numberOfComments,
-                                                        uploadTime: statusLoaded
-                                                            .listStatusUser[
-                                                                index]
-                                                            .uploadTime,
-                                                        numberOfLikes:
-                                                            statusLoaded
-                                                                .listStatusUser[
-                                                                    index]
-                                                                .numberOfLikes,
-                                                        idStatus: statusLoaded
-                                                            .listStatusUser[
-                                                                index]
-                                                            .id_status,
-                                                      )
-                                                    : Container(
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                vertical: 10),
-                                                        child: Center(
-                                                          child: SizedBox(
-                                                            width: 30,
-                                                            height: 30,
-                                                            child:
-                                                                CircularProgressIndicator(),
-                                                          ),
-                                                        ),
-                                                      ),
-                                          );
-                                        }
-                                      },
-                                    )
-                                  ],
-                                )
-                                // status dari warga
-                                // Column(children: listStatus),
-                              ],
-                            )
-                          : Center(child: CircularProgressIndicator());
-                    default:
-                      if (snapshot.hasError)
-                        return new Text('Error: ${snapshot.error}');
-                      return Container(
-                        child: Center(
-                          child: CircularProgressIndicator(),
+              controller: controller,
+              child: Column(
+                children: <Widget>[
+                  Stack(children: [
+                    headerBackground(context, urlProfile, userName)
+                  ]),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 15, top: 10, bottom: 10),
+                        child: Text(
+                          'News',
+                          style: TextStyle(
+                              fontFamily: 'poppins', fontSize: 11.0.sp),
                         ),
-                      );
-                  }
-                }),
-          ),
+                      ),
+                      buildCarouselSliderNews(),
+                      SizedBox(
+                        height: 17,
+                      ),
+                      Center(
+                        child: BlocBuilder<CarouselBloc, int>(
+                          builder: (context, index) => AnimatedSmoothIndicator(
+                            activeIndex: index,
+                            count: CardNews.getCardNews.length,
+                            effect: ExpandingDotsEffect(
+                                dotWidth: 10,
+                                dotHeight: 10,
+                                activeDotColor: Colors.lightBlue,
+                                dotColor: Colors.grey[350]),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15, top: 10),
+                        child: Text(
+                          "Today's Status",
+                          style: TextStyle(
+                            fontFamily: 'poppins',
+                            fontSize: 11.0.sp,
+                          ),
+                        ),
+                      ),
+                      BlocBuilder<StatusUserBloc, StatusUserState>(
+                        builder: (context, state) {
+                          if (state is StatusUserUnitialized) {
+                            // _refreshIndicatorKey.currentState.show();
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: SizedBox(
+                                  width: 30,
+                                  height: 30,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            );
+                            // return Container();
+                          } else {
+                            StatusUserLoaded statusLoaded =
+                                state as StatusUserLoaded;
+                            return ListView.builder(
+                              physics: ScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: (statusLoaded.isMaxReached)
+                                  ? statusLoaded.listStatusUser.length
+                                  : statusLoaded.listStatusUser.length + 1,
+                              itemBuilder: (context, index) => (index <
+                                      statusLoaded.listStatusUser.length)
+                                  ? StatusWarga(
+                                      userName: statusLoaded
+                                          .listStatusUser[index].userName,
+                                      caption: statusLoaded
+                                          .listStatusUser[index].caption,
+                                      fotoProfile: statusLoaded
+                                          .listStatusUser[index].urlProfile,
+                                      urlStatusImage: statusLoaded
+                                          .listStatusUser[index].urlStatusImage,
+                                      numberOfComments: statusLoaded
+                                          .listStatusUser[index]
+                                          .numberOfComments,
+                                      uploadTime: statusLoaded
+                                          .listStatusUser[index].uploadTime,
+                                      numberOfLikes: statusLoaded
+                                          .listStatusUser[index].numberOfLikes,
+                                      idStatus: statusLoaded
+                                          .listStatusUser[index].idStatus,
+                                    )
+                                  : Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      child: Center(
+                                        child: SizedBox(
+                                          width: 30,
+                                          height: 30,
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                    ),
+                            );
+                          }
+                        },
+                      )
+                    ],
+                  )
+                  // status dari warga
+                  // Column(children: listStatus),
+                ],
+              )),
         ),
       ),
     );
@@ -420,13 +360,9 @@ class HomeScreen extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.only(left: 5.5.w, top: 3.0.h),
                           child: CircleAvatar(
-                            radius: 4.0.h,
-                            backgroundImage: (fotoProfile) !=
-                                    'assets/img/blank_profile_picture.jpg'
-                                ? CachedNetworkImageProvider(
-                                    '${ServerApp.url}${fotoProfile}')
-                                : AssetImage(fotoProfile),
-                          ),
+                              radius: 4.0.h,
+                              backgroundImage: CachedNetworkImageProvider(
+                                  '${ServerApp.url}${fotoProfile}')),
                         ),
 
                         // container ini berisi tempat menulis status

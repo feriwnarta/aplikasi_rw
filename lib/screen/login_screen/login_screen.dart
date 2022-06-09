@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:aplikasi_rw/bloc/login_bloc.dart';
+import 'package:aplikasi_rw/bloc/user_loading_bloc.dart';
 import 'package:aplikasi_rw/screen/login_screen/register_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/validate/validate_email_and_password.dart';
 import 'package:aplikasi_rw/server-app.dart';
@@ -19,8 +19,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with ValidationForm {
-  LoginBloc bloc;
-
   final _formKeyLogin = GlobalKey<FormState>();
   double mediaSizeHeight, mediaSizeWidth;
   bool _isObscure = true;
@@ -30,13 +28,15 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
   TextEditingController controllerUsername = TextEditingController();
   TextEditingController controllerPassword = TextEditingController();
 
+  UserLoadingBloc bloc;
+
   @override
   Widget build(BuildContext context) {
-    bloc = BlocProvider.of<LoginBloc>(context);
-
     mediaSizeHeight =
         MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     mediaSizeWidth = MediaQuery.of(context).size.width;
+
+    bloc = BlocProvider.of<UserLoadingBloc>(context);
 
     return Scaffold(
       body: Stack(
@@ -263,10 +263,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationForm {
 
           if (idUser.isNotEmpty) {
             setState(() {
-              bloc.add(LoginEvent(
-                idUser: idUser,
-                profileImage: message['profile_image']
-              ));
+              bloc.add(UserLoadingEvent());
               Navigator.of(context)
                   .pushNamedAndRemoveUntil('/', (route) => false);
             });

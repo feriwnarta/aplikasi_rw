@@ -3,11 +3,11 @@ import 'package:aplikasi_rw/bloc/bills_tab_bloc.dart';
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
 import 'package:aplikasi_rw/bloc/comment_bloc.dart';
 import 'package:aplikasi_rw/bloc/like_status_bloc.dart';
-import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:aplikasi_rw/bloc/payment_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
 import 'package:aplikasi_rw/bloc/shimmer_loading_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
+import 'package:aplikasi_rw/bloc/user_loading_bloc.dart';
 import 'package:aplikasi_rw/model/bills_history_model.dart';
 import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
@@ -35,6 +35,7 @@ class MyApp extends StatefulWidget {
 
 class _MyApp extends State<MyApp> {
   final CheckSession checkSession = CheckSession();
+  String initalState = '/';
 
   @override
   Widget build(BuildContext context) {
@@ -75,14 +76,13 @@ class _MyApp extends State<MyApp> {
           create: (context) =>
               CommentBloc(CommentBlocUnitialized())..add(CommentBlocEvent()),
         ),
-        BlocProvider<LoginBloc>(
-          create: (context) =>
-              LoginBloc(LoginState(idUser: '0', isLogin: false)),
-        ),
         BlocProvider<LikeStatusBloc>(
           create: (context) =>
               LikeStatusBloc(LikeStatusState(colorButton: Colors.black)),
         ),
+        BlocProvider<UserLoadingBloc>(
+            create: (context) => UserLoadingBloc(UserLoadingUnitialized())
+              ..add(UserLoadingEvent())),
       ],
       child: LayoutBuilder(builder: (context, constraints) {
         return OrientationBuilder(builder: (context, orientation) {
@@ -91,7 +91,6 @@ class _MyApp extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             initialRoute: '/',
             routes: routes,
-            // home: ReportScreen2(),
             theme: ThemeData(
                 fontFamily: 'open sans',
                 scaffoldBackgroundColor:
@@ -104,29 +103,37 @@ class _MyApp extends State<MyApp> {
   }
 
   final routes = {
-    '/': (BuildContext context) => FutureBuilder<String>(
-          future: UserSecureStorage.getIdUser(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                return (snapshot.data != null && snapshot.data.isNotEmpty)
-                    ? MainApp(snapshot.data)
-                    : OnboardingScreen();
-              default:
-                return Container(
-                  color: Colors.white,
-                );
+    '/': (BuildContext context) =>
+        BlocBuilder<UserLoadingBloc, UserLoadingState>(
+          builder: (context, state) {
+            print('refresh');
+            if (state is UserNotLogin) {
+              return OnboardingScreen();
+            } else if (state is UserLoadingUnitialized) {
+              return Container(
+                color: Colors.white,
+              );
+            } else {
+              UserLoadingInitialized userLogin =
+                  state as UserLoadingInitialized;
+              return MainApp(
+                idUser: userLogin.idUser,
+                urlProfile: userLogin.urlProfile,
+                username: userLogin.username,
+              );
             }
           },
         ),
   };
 }
 
+//ignore: must_be_immutable
 class MainApp extends StatefulWidget {
-  String _idUser;
-  MainApp(this._idUser);
+  String idUser, username, urlProfile;
+  MainApp({this.idUser, this.username, this.urlProfile});
   @override
-  State<MainApp> createState() => _MainAppState(_idUser);
+  State<MainApp> createState() =>
+      _MainAppState(idUser: idUser, urlProfile: urlProfile, username: username);
 }
 
 class _MainAppState extends State<MainApp> {
@@ -136,9 +143,9 @@ class _MainAppState extends State<MainApp> {
   ReportBloc _reportBloc;
   // list screen untuk menu
   List<Widget> screens;
-  String _idUser;
+  String idUser, username, urlProfile;
 
-  _MainAppState(this._idUser);
+  _MainAppState({this.idUser, this.username, this.urlProfile});
 
   @override
   void initState() {
@@ -152,7 +159,9 @@ class _MainAppState extends State<MainApp> {
     screens = [
       HomeScreen(
         scaffoldKey: scaffoldKey,
-        idUser: _idUser,
+        idUser: idUser,
+        urlProfile: urlProfile,
+        userName: username,
       ),
       ReportScreen2(),
       BillScreen(),
@@ -166,40 +175,7 @@ class _MainAppState extends State<MainApp> {
 
     return Scaffold(
       // membuat sidebar dan drawer
-      // drawer: drawerSideBar(),
-      // body: FutureBuilder<UserModel>(
-      //     future: GetDataUserServices.getDataUser(_idUser),
-      //     builder: (context, snapshot) {
-      //       switch (snapshot.connectionState) {
-      //         case ConnectionState.waiting:
-      //           return Center(child: CircularProgressIndicator());
-      //         case ConnectionState.done:
-      //           return (snapshot.data != null)
-      //               ? IndexedStack(
-      //                   children: [
-      //                     HomeScreen(
-      //                       scaffoldKey: scaffoldKey,
-      //                       fotoProfile: (snapshot.data.urlProfile ==
-      //                               'default_pp')
-      //                           ? 'assets/img/blank_profile_picture.jpg'
-      //                           : '${ServerApp.url}${snapshot.data.urlProfile}',
-      //                       userName: snapshot.data.username,
-      //                     ),
-      //                     ReportScreen2(),
-      //                     BillScreen(),
-      //                     PaymentScreen()
-      //                   ],
-      //                   index: _index,
-      //                 )
-      //               : Center(child: CircularProgressIndicator());
-      //         default:
-      //           if (snapshot.hasError)
-      //             return new Text('Error: ${snapshot.error}');
-      //           return Container(
-      //             color: Colors.white,
-      //           );
-      //       }
-      //     }),
+      drawer: drawerSideBar(),
       body: IndexedStack(
         children: screens,
         index: _index,
@@ -211,8 +187,8 @@ class _MainAppState extends State<MainApp> {
         child: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           iconSize: 6.0.w,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.black54,
           currentIndex: _index,
@@ -236,7 +212,7 @@ class _MainAppState extends State<MainApp> {
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.wallet), label: 'Payment'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.thumb_up), label: 'Recomendation'),
+                icon: Icon(Icons.thumb_up), label: 'Recomen'),
           ],
         ),
       ),

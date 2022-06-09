@@ -5,7 +5,6 @@ import 'package:aplikasi_rw/server-app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:readmore/readmore.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
@@ -57,7 +56,7 @@ class StatusWarga extends StatelessWidget {
               padding: const EdgeInsets.only(left: 10, top: 10),
               child: CircleAvatar(
                 radius: 20,
-                backgroundImage: NetworkImage('${ServerApp.url}${fotoProfile}'),
+                backgroundImage: NetworkImage('${ServerApp.url}$fotoProfile'),
               ),
             ),
             Container(

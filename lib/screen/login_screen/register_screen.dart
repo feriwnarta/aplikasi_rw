@@ -519,12 +519,12 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   Future userRegistration() async {
     String url =
         '${ServerApp.url}src/login/register.php';
-    var message, response;
+    var message;
     var request = http.MultipartRequest('POST', Uri.parse(url));
     String gambar = (urlFotoProfile != null && urlFotoProfile.isNotEmpty)
         ? urlFotoProfile
-        : 'default_pp';
-    if (gambar != 'default_pp') {
+        : '/imageuser/default_profile/blank_profile_picture.jpg';
+    if (gambar != '/imageuser/default_profile/blank_profile_picture.jpg') {
       var pic = await http.MultipartFile.fromPath('userprofile', gambar);
       request.files.add(pic);
     } else {

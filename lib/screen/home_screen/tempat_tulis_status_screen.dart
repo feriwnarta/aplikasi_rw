@@ -13,6 +13,7 @@ import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+//ignore: must_be_immutable
 class TempatTulisStatus extends StatefulWidget {
   String fotoProfile, username, rt, rw;
 
@@ -100,9 +101,8 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
                                 // avatar
                                 CircleAvatar(
                                   radius: 3.5.h,
-                                  backgroundImage: (fotoProfile == 'assets/img/blank_profile_picture.jpg')
-                                      ? AssetImage(fotoProfile)
-                                      : CachedNetworkImageProvider('${ServerApp.url}${fotoProfile}'),
+                                  backgroundImage: CachedNetworkImageProvider(
+                                      '${ServerApp.url}${fotoProfile}'),
                                 ),
                                 headerName(),
                                 Material(
@@ -170,7 +170,9 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
       onPressed: () async {
         String idUser = await UserSecureStorage.getIdUser();
         // String imgPath = (tsstate.imageFile.path == null && tsstate.imageFile == null) ? 'no_image' : tsstate.imageFile.path;
-        String imgPath = (pickedFile != null && pickedFile.path.isNotEmpty) ? pickedFile.path : 'no_image';
+        String imgPath = (pickedFile != null && pickedFile.path.isNotEmpty)
+            ? pickedFile.path
+            : 'no_image';
         StatusUserServices.sendDataStatus(
                 username: username,
                 idUser: idUser,

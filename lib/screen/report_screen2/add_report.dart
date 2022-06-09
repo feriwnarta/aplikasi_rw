@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'package:aplikasi_rw/server-app.dart';
+import 'package:aplikasi_rw/services/category_detail_services.dart';
 import 'package:aplikasi_rw/services/category_services.dart';
+import 'package:aplikasi_rw/services/klasifikasi_category_services.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:aplikasi_rw/model/category_model.dart';
 import 'package:aplikasi_rw/services/report_services.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
-import 'package:aplikasi_rw/bloc/login_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:aplikasi_rw/screen/loading_send_screen.dart';
@@ -31,6 +31,7 @@ class _AddReportState extends State<AddReport> {
   Color color = Colors.white;
   String idUser;
   Future _future;
+  String title = 'Select Category Report';
 
   TextEditingController controllerDescription = TextEditingController();
   TextEditingController controllerAdditionalLocation = TextEditingController();
@@ -38,6 +39,10 @@ class _AddReportState extends State<AddReport> {
 
   final _formKeyError = GlobalKey<FormState>();
   String categoryPicked;
+  String idCategoryDetail;
+  bool check = false;
+  var selectedIndex = [];
+  List<String> klasifikasiPicked = [];
 
   @override
   void initState() {
@@ -102,9 +107,64 @@ class _AddReportState extends State<AddReport> {
                         width: 20.0.w,
                       )
                     : (activeStep == 1)
-                        ? Container(
-                            width: 20.0.w,
-                          )
+                        ? (idCategory == null)
+                            ? RaisedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (activeStep != 0) {
+                                      activeStep--;
+                                      isVisibility = true;
+                                    }
+                                  });
+                                },
+                                color: Colors.blue[400],
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: Text(
+                                  'Prev',
+                                  style: TextStyle(
+                                      fontSize: 11.0.sp, color: Colors.white),
+                                ),
+                              )
+                            : (idCategoryDetail != null)
+                                ? RaisedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        idCategoryDetail = null;
+                                        selectedIndex = [];
+                                        klasifikasiPicked = [];
+                                        title = 'Detail report';
+                                      });
+                                    },
+                                    color: Colors.blue[400],
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    child: Text(
+                                      'Prev',
+                                      style: TextStyle(
+                                          fontSize: 11.0.sp,
+                                          color: Colors.white),
+                                    ),
+                                  )
+                                : RaisedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        idCategory = null;
+                                        title = 'Select category report';
+                                      });
+                                    },
+                                    color: Colors.blue[400],
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    child: Text(
+                                      'Prev',
+                                      style: TextStyle(
+                                          fontSize: 11.0.sp,
+                                          color: Colors.white),
+                                    ),
+                                  )
                         : RaisedButton(
                             onPressed: () {
                               setState(() {
@@ -130,7 +190,7 @@ class _AddReportState extends State<AddReport> {
                       setState(() {
                         if (activeStep != 2) {
                           activeStep++;
-                          if (activeStep == 1) {
+                          if (activeStep == 1 && klasifikasiPicked.isEmpty) {
                             setState(() {
                               isVisibility = !isVisibility;
                             });
@@ -280,8 +340,8 @@ class _AddReportState extends State<AddReport> {
                         style: TextStyle(fontSize: 12.0.sp),
                         validator: (description) => (description.isEmpty)
                             ? 'form additional location tidak boleh kosong'
-                            : (description.length < 50)
-                                ? 'minimal kata harus lebih dari 50 karakter'
+                            : (description.length < 10)
+                                ? 'minimal kata harus lebih 10 karakter'
                                 : null,
                         decoration: InputDecoration(
                             errorMaxLines: 3,
@@ -327,11 +387,11 @@ class _AddReportState extends State<AddReport> {
                         controller: controllerFeedBack,
                         keyboardType: TextInputType.name,
                         style: TextStyle(fontSize: 12.0.sp),
-                        validator: (description) => (description.isEmpty)
-                            ? 'form feedback tidak boleh kosong'
-                            : (description.length < 50)
-                                ? 'minimal kata harus lebih dari 50 karakter'
-                                : null,
+                        // validator: (description) => (description.isEmpty)
+                        //     ? 'form feedback tidak boleh kosong'
+                        //     : (description.length < 50)
+                        //         ? 'minimal kata harus lebih dari 50 karakter'
+                        //         : null,
                         decoration: InputDecoration(
                             errorMaxLines: 3,
                             hintText:
@@ -366,7 +426,7 @@ class _AddReportState extends State<AddReport> {
         Container(
           margin: EdgeInsets.symmetric(horizontal: 3.0.w),
           child: Text(
-            'Select Category Report',
+            title,
             style: TextStyle(fontFamily: 'Poppins', fontSize: 11.0.sp),
           ),
         ),
@@ -381,7 +441,11 @@ class _AddReportState extends State<AddReport> {
                     return Container(
                         child: Center(child: CircularProgressIndicator()));
                   case ConnectionState.done:
-                    return gridViewCategory(snapshot.data);
+                    return (idCategory == null)
+                        ? gridViewCategory(snapshot.data)
+                        : (idCategoryDetail == null)
+                            ? gridViewCategoryDetail()
+                            : viewKlasifikasiCategory();
                   default:
                     if (snapshot.hasError)
                       return new Text('Error: ${snapshot.error}');
@@ -397,16 +461,147 @@ class _AddReportState extends State<AddReport> {
     );
   }
 
+  FutureBuilder<List<KlasifikasiCategory>> viewKlasifikasiCategory() {
+    return FutureBuilder<List<KlasifikasiCategory>>(
+        future: KlasifikasiCategoryServices.getKlasifikasiCategory(
+            idCategoryDetail),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Container(
+                  child: Center(child: CircularProgressIndicator()));
+            case ConnectionState.done:
+              return ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    return buildCheckboxListTile(
+                        snapshot.data[index].klasifikasi,
+                        index,
+                        snapshot.data[index].idKlasifikasi);
+                  });
+            default:
+              if (snapshot.hasError)
+                return new Text('Error: ${snapshot.error}');
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+          }
+        });
+  }
+
+  CheckboxListTile buildCheckboxListTile(
+      String klasifikasi, int index, String idKlasifikasi) {
+    return CheckboxListTile(
+      controlAffinity: ListTileControlAffinity.leading,
+      activeColor: Colors.blue,
+      value: selectedIndex.contains(index),
+      title: Text(klasifikasi),
+      onChanged: (value) {
+        setState(() {
+          if (selectedIndex.contains(index)) {
+            selectedIndex.remove(index);
+            klasifikasiPicked.remove(idKlasifikasi);
+            if (klasifikasiPicked.isEmpty) {
+              isVisibility = false;
+            }
+            print(klasifikasiPicked);
+          } else {
+            selectedIndex.add(index);
+            klasifikasiPicked.add(idKlasifikasi);
+            isVisibility = true;
+            print(klasifikasiPicked);
+          }
+        });
+      },
+    );
+  }
+
+  FutureBuilder<List<CategoryDetailModel>> gridViewCategoryDetail() {
+    return FutureBuilder<List<CategoryDetailModel>>(
+        future: CategoryDetailServices.getCategoryDetail(idCategory),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return Container(
+                  child: Center(child: CircularProgressIndicator()));
+            case ConnectionState.done:
+              return GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  // childAspectRatio: 0.05.w / 0.05.h
+                  // childAspectRatio: 100.0.h / 1100,
+                  childAspectRatio: 100.0.h / 1100,
+                  // crossAxisSpacing: 0.05.h,
+                  // mainAxisSpacing: 0.02.h
+                ),
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      SizedBox(
+                        height: 10.0.h,
+                        width: 20.0.w,
+                        child: Card(
+                          elevation: 7,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Container(
+                              child: IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      idCategoryDetail =
+                                          snapshot.data[index].idCategoryDetail;
+                                      title = 'Klasifikasi Report';
+                                    });
+                                  },
+                                  icon: Image.network(
+                                      '${ServerApp.url}/icon/${snapshot.data[index].iconDetail}'))),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            snapshot.data[index].namecategoryDetail,
+                            style: TextStyle(
+                                fontSize: 9.0.sp, fontFamily: 'poppins'),
+                            softWrap: true,
+                            maxLines: 3,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      )
+                    ],
+                  );
+                },
+              );
+            default:
+              if (snapshot.hasError)
+                return new Text('Error: ${snapshot.error}');
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+          }
+        });
+  }
+
   GridView gridViewCategory(List<CategoryModel> category) {
     return GridView.builder(
       shrinkWrap: true,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
+          crossAxisCount: 3,
           // childAspectRatio: 0.05.w / 0.05.h
           // childAspectRatio: 100.0.h / 1100,
-          childAspectRatio: 100.0.h / 950,
-          crossAxisSpacing: 1.0.w,
-          mainAxisSpacing: 1.0.h),
+          childAspectRatio: 100.0.h / 600,
+          crossAxisSpacing: 0.5.w,
+          mainAxisSpacing: 0.7.h),
       itemCount: category.length,
       itemBuilder: (context, index) {
         return Column(
@@ -424,13 +619,12 @@ class _AddReportState extends State<AddReport> {
                         onPressed: () {
                           setState(() {
                             idCategory = '${category[index].idCategory}';
-                            activeStep++;
-                            isVisibility = !isVisibility;
                             categoryPicked = '${category[index].category}';
+                            title = 'Detail Report';
                           });
                         },
                         icon: Image.network(
-                            '${ServerApp.url}${category[index].icon}'))),
+                            '${ServerApp.url}/icon/${category[index].icon}'))),
               ),
             ),
             Column(

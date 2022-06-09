@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sizer/sizer.dart';
 
+//ignore: must_be_immutable
 class BillsRegulerScreen extends StatelessWidget {
   bool isExpand = false;
 

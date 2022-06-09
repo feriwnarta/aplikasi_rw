@@ -87,16 +87,18 @@ class CommentScreen extends StatelessWidget {
                               commentLoaded.listComment[index].userName,
                               commentLoaded.listComment[index].date,
                               commentLoaded.listComment[index].comment)
-                          : Container(
-                              margin: EdgeInsets.symmetric(vertical: 1.0.h),
-                              child: Center(
-                                child: SizedBox(
-                                  width: 10.0.w,
-                                  height: 5.0.h,
-                                  child: CircularProgressIndicator(),
+                          : (index == commentLoaded.listComment.length)
+                              ? Container()
+                              : Container(
+                                  margin: EdgeInsets.symmetric(vertical: 1.0.h),
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 10.0.w,
+                                      height: 5.0.h,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                 );
               }
             }),

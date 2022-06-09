@@ -5,7 +5,7 @@ class StatusUserModel {
       urlStatusImage,
       caption,
       numberOfLikes,
-      id_status,
+      idStatus,
       numberOfComments;
 
   StatusUserModel(
@@ -14,7 +14,7 @@ class StatusUserModel {
       this.urlProfile,
       this.urlStatusImage,
       this.caption,
-      this.id_status,
+      this.idStatus,
       this.numberOfLikes,
       this.numberOfComments});
 }

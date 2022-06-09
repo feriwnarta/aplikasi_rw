@@ -1,4 +1,3 @@
-import 'package:aplikasi_rw/screen/bills_screen/bills_reguler_screen.dart';
 import 'package:aplikasi_rw/screen/bills_screen/event_bill_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
