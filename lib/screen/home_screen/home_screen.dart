@@ -169,17 +169,25 @@ class HomeScreen extends StatelessWidget {
                                       idStatus: statusLoaded
                                           .listStatusUser[index].idStatus,
                                     )
-                                  : Container(
-                                      margin:
-                                          EdgeInsets.symmetric(vertical: 10),
-                                      child: Center(
-                                        child: SizedBox(
-                                          width: 30,
-                                          height: 30,
-                                          child: CircularProgressIndicator(),
+                                  : (statusLoaded.listStatusUser.length ==
+                                          index)
+                                      ? Center(
+                                          child: Padding(
+                                          padding: EdgeInsets.only(top: 3.0.h),
+                                          child: Text('No Status'),
+                                        ))
+                                      : Container(
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 30,
+                                              height: 30,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
                             );
                           }
                         },
