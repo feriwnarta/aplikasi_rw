@@ -110,7 +110,6 @@ class HomeScreen extends StatelessWidget {
                       )
                     ],
                   ),
-
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
