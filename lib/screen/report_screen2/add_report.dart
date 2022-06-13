@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:aplikasi_rw/bloc/report_bloc.dart';
 import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/category_detail_services.dart';
 import 'package:aplikasi_rw/services/category_services.dart';
@@ -7,6 +8,7 @@ import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:aplikasi_rw/model/category_model.dart';
 import 'package:aplikasi_rw/services/report_services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,6 +16,8 @@ import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:aplikasi_rw/screen/loading_send_screen.dart';
+
+import 'google_maps_screen.dart';
 
 class AddReport extends StatefulWidget {
   @override
@@ -27,7 +31,7 @@ class _AddReportState extends State<AddReport> {
   PickedFile imageFile;
   bool isVisibility = false;
   bool isVisibilityGuid = true;
-  String idCategory;
+  String idCategory, address;
   Color color = Colors.white;
   String idUser;
   Future _future;
@@ -44,14 +48,21 @@ class _AddReportState extends State<AddReport> {
   var selectedIndex = [];
   List<String> klasifikasiPicked = [];
 
+  // flutter maps
+  double latitude, longitude;
+
   @override
   void initState() {
-    super.initState();
     _future = UserSecureStorage.getIdUser();
+    super.initState();
   }
+
+  ReportBloc bloc;
 
   @override
   Widget build(BuildContext context) {
+    bloc = BlocProvider.of<ReportBloc>(context);
+
     return Scaffold(
       // backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -188,6 +199,18 @@ class _AddReportState extends State<AddReport> {
                   child: RaisedButton(
                     onPressed: () {
                       setState(() {
+                        if (activeStep == 0) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MapSample(),
+                              )).then((value) {
+                            latitude = value[0];
+                            longitude = value[1];
+                            address = value[2];
+                            print('${latitude} ${longitude} ${address}');
+                          });
+                        }
                         if (activeStep != 2) {
                           activeStep++;
                           if (activeStep == 1 && klasifikasiPicked.isEmpty) {
@@ -196,7 +219,11 @@ class _AddReportState extends State<AddReport> {
                             });
                           }
                         } else {
-                          if (_formKeyError.currentState.validate())
+                          if (_formKeyError.currentState.validate()) {
+                            String stringKlasifikasi = "";
+                            klasifikasiPicked.forEach((element) {
+                              stringKlasifikasi += element + ',';
+                            });
                             ReportServices.sendDataReport(
                                     description: controllerDescription.text,
                                     additionalLocation:
@@ -206,6 +233,10 @@ class _AddReportState extends State<AddReport> {
                                     idUser: idUser,
                                     imgPath: imagePath,
                                     idCategory: idCategory,
+                                    idCategoryDetail: idCategoryDetail,
+                                    latitude: latitude.toString(),
+                                    longitude: longitude.toString(),
+                                    idKlasifikasiCategory: stringKlasifikasi,
                                     status: 'listed')
                                 .then((value) {
                               showLoading(context);
@@ -215,10 +246,12 @@ class _AddReportState extends State<AddReport> {
                                   if (message != null && message.isNotEmpty) {
                                     Navigator.of(context)
                                         .popUntil((route) => route.isFirst);
+                                    bloc.add(ReportEventRefresh());
                                   }
                                 });
                               });
                             });
+                          }
                         }
                       });
                     },
@@ -583,11 +616,7 @@ class _AddReportState extends State<AddReport> {
             default:
               if (snapshot.hasError)
                 return new Text('Error: ${snapshot.error}');
-              return Container(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
+              return Container();
           }
         });
   }

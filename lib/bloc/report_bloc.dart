@@ -11,6 +11,8 @@ class ReportUnitialized extends ReportState2 {}
 
 class ReportEventRefresh extends ReportEvent2 {}
 
+class ReportEventMainRefresh extends ReportEvent2 {}
+
 class ReportLoaded extends ReportState2 {
   List<ReportModel> listReport;
   bool isMaxReached;
@@ -35,7 +37,7 @@ class ReportBloc extends Bloc<ReportEvent2, ReportState2> {
     List<ReportModel> listReport;
 
     if(event is ReportEventRefresh) {
-      listReport = [];
+      // listReport = [];
       yield ReportUnitialized();
     }
 

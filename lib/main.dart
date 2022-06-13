@@ -2,6 +2,7 @@ import 'package:aplikasi_rw/bloc/bills_reguler_screen_bloc.dart';
 import 'package:aplikasi_rw/bloc/bills_tab_bloc.dart';
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
 import 'package:aplikasi_rw/bloc/comment_bloc.dart';
+import 'package:aplikasi_rw/bloc/google_map_bloc.dart';
 import 'package:aplikasi_rw/bloc/like_status_bloc.dart';
 import 'package:aplikasi_rw/bloc/payment_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
@@ -13,7 +14,8 @@ import 'package:aplikasi_rw/screen/bills_screen/bills_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/home_screen.dart';
 import 'package:aplikasi_rw/screen/login_screen/onboarding/onboarding_screen.dart';
 import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
-import 'package:aplikasi_rw/screen/report_screen2/ReportScreen2.dart';
+import 'package:aplikasi_rw/screen/report_screen2/google_maps_screen.dart';
+import 'package:aplikasi_rw/screen/report_screen2/report_screen_2.dart';
 import 'package:aplikasi_rw/services/check_session.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'bloc/status_user_bloc.dart';
 
-void main() async {
+void main() {
   // runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
   runApp(MyApp());
 }
@@ -52,9 +54,6 @@ class _MyApp extends State<MyApp> {
           create: (context) =>
               StatusUserBloc(StatusUserUnitialized())..add(StatusUserEvent()),
         ), // fungsi ..add akan langusung menjalankan blocnya
-        // BlocProvider<ReportScreenBloc>(
-        //   create: (context) => ReportScreenBloc(ReportState()),
-        // ),
         BlocProvider<ReportBloc>(
           create: (context) =>
               ReportBloc(ReportUnitialized())..add(ReportEvent2()),
@@ -83,6 +82,9 @@ class _MyApp extends State<MyApp> {
         BlocProvider<UserLoadingBloc>(
             create: (context) => UserLoadingBloc(UserLoadingUnitialized())
               ..add(UserLoadingEvent())),
+        BlocProvider<GoogleMapBloc>(
+          create: (context) => GoogleMapBloc(GoogleMapState()),
+        ),
       ],
       child: LayoutBuilder(builder: (context, constraints) {
         return OrientationBuilder(builder: (context, orientation) {
@@ -91,6 +93,7 @@ class _MyApp extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             initialRoute: '/',
             routes: routes,
+            // home: MapSample(),
             theme: ThemeData(
                 fontFamily: 'open sans',
                 scaffoldBackgroundColor:
@@ -196,6 +199,7 @@ class _MainAppState extends State<MainApp> {
             setState(() {
               _index = index;
               if (index == 1) {
+                print('ini ke2');
                 _reportBloc.add(ReportEventRefresh());
               }
             });

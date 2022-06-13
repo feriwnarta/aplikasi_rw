@@ -9,7 +9,11 @@ abstract class UserLoadingState {}
 
 class UserLoadingUnitialized extends UserLoadingState {}
 
+class UserSuccesLogin extends UserLoadingState {}
+
 class UserNotLogin extends UserLoadingState {}
+
+class UserLogin extends UserLoadingEvent {}
 
 class UserLoadingInitialized extends UserLoadingState {
   String idUser, username, urlProfile;
@@ -21,17 +25,24 @@ class UserLoadingBloc extends Bloc<UserLoadingEvent, UserLoadingState> {
   UserLoadingBloc(UserLoadingState initialState) : super(initialState);
   @override
   Stream<UserLoadingState> mapEventToState(UserLoadingEvent event) async* {
-    if(state is UserLoadingUnitialized) {
+    if (state is UserLoadingUnitialized) {
       String idUser = await UserSecureStorage.getIdUser();
-      if(idUser == null) {
+      if (idUser == null) {
         yield UserNotLogin();
       } else {
         UserModel userModel = await GetDataUserServices.getDataUser(idUser);
         String username = userModel.username;
         String urlProfile = userModel.urlProfile;
-        yield UserLoadingInitialized(idUser: idUser, urlProfile: urlProfile, username: username);
+        yield UserLoadingInitialized(
+            idUser: idUser, urlProfile: urlProfile, username: username);
       }
+    } else {
+      String idUser = await UserSecureStorage.getIdUser();
+      UserModel userModel = await GetDataUserServices.getDataUser(idUser);
+      String username = userModel.username;
+      String urlProfile = userModel.urlProfile;
+      yield UserLoadingInitialized(
+          idUser: idUser, urlProfile: urlProfile, username: username);
     }
   }
-  
 }

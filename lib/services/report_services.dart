@@ -35,7 +35,11 @@ class ReportServices extends ReportModel {
     String category,
     String imgPath,
     String status,
-    String idCategory
+    String idCategory,
+    String latitude,
+    String longitude,
+    String idCategoryDetail,
+    String idKlasifikasiCategory
   }) async {
     String uri =
         '${ServerApp.url}/src/report/add_report.php';
@@ -53,6 +57,10 @@ class ReportServices extends ReportModel {
       request.fields['category'] = category;
       request.fields['status'] = status;
       request.fields['id_category'] = idCategory;
+      request.fields['latitude'] = latitude;
+      request.fields['longitude'] = longitude;
+      request.fields['id_category_detail'] = idCategoryDetail;
+      request.fields['id_klasifikasi_category'] = idKlasifikasiCategory;
 
       return request;
 

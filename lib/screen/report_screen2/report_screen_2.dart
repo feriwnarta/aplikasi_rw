@@ -1,5 +1,5 @@
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
-import 'package:aplikasi_rw/screen/report_screen2/CardReportScreen.dart';
+import 'package:aplikasi_rw/screen/report_screen2/card_report_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/add_report.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +32,13 @@ class _ReportScreen2State extends State<ReportScreen2> {
   @override
   void initState() {
     super.initState();
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
   }
 
   @override
@@ -112,6 +119,7 @@ class _ReportScreen2State extends State<ReportScreen2> {
                     ),
                   ],
               body: RefreshIndicator(
+                key: refreshIndicatorKey,
                 onRefresh: () async => loadReport(),
                 child: SingleChildScrollView(
                   child: Column(
@@ -192,9 +200,15 @@ class _ReportScreen2State extends State<ReportScreen2> {
             size: 4.0.h,
           ),
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(
+            Navigator.of(context)
+                .push(MaterialPageRoute(
               builder: (context) => AddReport(),
-            ));
+            ))
+                .then((value) {
+              if (value == 'reload') {
+                bloc.add(ReportEventRefresh());
+              }
+            });
           },
         ),
       ),
