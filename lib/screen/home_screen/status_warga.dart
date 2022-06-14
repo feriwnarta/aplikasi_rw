@@ -1,6 +1,7 @@
 import 'package:aplikasi_rw/bloc/comment_bloc.dart';
 import 'package:aplikasi_rw/bloc/like_status_bloc.dart';
 import 'package:aplikasi_rw/screen/home_screen/comment_screen.dart';
+import 'package:aplikasi_rw/screen/report_screen2/view_image.dart';
 import 'package:aplikasi_rw/server-app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,19 +109,26 @@ class StatusWarga extends StatelessWidget {
                 child: Container(
                   child: Expanded(
                     flex: 1,
-                    child: FadeInImage(
-                      imageErrorBuilder: (BuildContext context,
-                          Object exception, StackTrace stackTrace) {
-                        print('Error Handler');
-                        return Container(
-                          height: 40.0.h,
-                          child: Icon(Icons.error),
-                        );
-                      },
-                      placeholder: AssetImage('assets/img/loading.gif'),
-                      image: NetworkImage(urlStatusImage),
-                      fit: BoxFit.cover,
-                      height: 40.0.h,
+                    child: GestureDetector(
+                      child: FadeInImage(
+                        imageErrorBuilder: (BuildContext context,
+                            Object exception, StackTrace stackTrace) {
+                          print('Error Handler');
+                          return Container(
+                            height: 40.0.h,
+                            child: Icon(Icons.error),
+                          );
+                        },
+                        placeholder: AssetImage('assets/img/loading.gif'),
+                        image: NetworkImage(urlStatusImage),
+                        fit: BoxFit.cover,
+                        height: 40.0.h,
+                      ),
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ViewImage(
+                          urlImage: urlStatusImage,
+                        ),
+                      )),
                     ),
                   ),
                 ),

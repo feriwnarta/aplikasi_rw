@@ -19,11 +19,18 @@ class ReportServices extends ReportModel {
             urlImageReport:
                 '${ServerApp.url}' + item['url_image'],
             location: item['no_ticket'],
+            
             status: item['status'].toString(),
             time: '${item['date_post']} : ${item['time_post']}',
             description: item['description'],
             additionalInformation: item['feedback'],
-            category: item['category']))
+            category: item['category'],
+            iconCategory: item['icon_category'],
+            latitude: item['latitude'],
+            idReport: item['id_report'],
+            idUser: item['id_user'],
+            longitude: item['longitude']
+            ))
         .toList();
   }
 

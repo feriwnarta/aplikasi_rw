@@ -70,7 +70,6 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
-          key: _refreshIndicatorKey,
           onRefresh: () async => loadStatus(),
           child: SingleChildScrollView(
               controller: controller,

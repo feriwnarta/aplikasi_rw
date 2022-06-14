@@ -56,14 +56,14 @@ class _BillScreenState extends State<BillScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Bills',
+                              'Event',
                               style: TextStyle(
                                   color: state.colorsText,
                                   fontSize: 26.0.sp,
                                   fontFamily: 'poppins'),
                             ),
                             Text(
-                              'citizen dues',
+                              'Event Citizen',
                               style: TextStyle(
                                   color: state.colorsText,
                                   fontSize: 12.0.sp,

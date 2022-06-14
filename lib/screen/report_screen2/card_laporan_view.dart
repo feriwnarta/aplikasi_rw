@@ -1,5 +1,9 @@
+import 'package:aplikasi_rw/screen/report_screen2/view_image.dart';
+import 'package:aplikasi_rw/server-app.dart';
+import 'package:aplikasi_rw/services/history_report_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -11,7 +15,12 @@ class CardLaporanView extends StatelessWidget {
       noTicket,
       status,
       time,
-      category;
+      category,
+      categoryIcon,
+      latitude,
+      idReport,
+      idUser,
+      longitude;
 
   CardLaporanView(
       {this.urlImage,
@@ -20,7 +29,12 @@ class CardLaporanView extends StatelessWidget {
       this.noTicket,
       this.status,
       this.time,
-      this.category});
+      this.category,
+      this.categoryIcon,
+      this.latitude,
+      this.idReport,
+      this.idUser,
+      this.longitude});
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +56,19 @@ class CardLaporanView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // image
-                    SizedBox(
-                      height: 50.0.h,
-                      width: 100.0.w,
-                      child: Image(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(urlImage),
-                      ),
-                    ),
+                    GestureDetector(
+                        child: SizedBox(
+                          height: 50.0.h,
+                          width: 100.0.w,
+                          child: Image(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(urlImage),
+                          ),
+                        ),
+                        onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ViewImage(urlImage: urlImage)))),
                     SizedBox(
                       height: 3.0.h,
                     ),
@@ -131,12 +150,23 @@ class CardLaporanView extends StatelessWidget {
                     SizedBox(height: 2.0.h),
                     Container(
                       height: 40.0.h,
-                      // color: Colors.grey,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage('assets/img/lokasi.jpg'),
-                              fit: BoxFit.cover,
-                              repeat: ImageRepeat.noRepeat)),
+                      child: GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                            bearing: 192.8334901395799,
+                            target: LatLng(double.parse(latitude),
+                                double.parse(longitude)),
+                            tilt: 0,
+                            zoom: 12.151926040649414),
+                        zoomControlsEnabled: false,
+                        zoomGesturesEnabled: false,
+                        mapType: MapType.normal,
+                        markers: {
+                          Marker(
+                              markerId: MarkerId('1'),
+                              position: LatLng(double.parse(latitude),
+                                  double.parse(longitude)))
+                        },
+                      ),
                     ),
                     SizedBox(height: 1.0.h),
                     buildContainerHistoryReport(),
@@ -242,6 +272,7 @@ class CardLaporanView extends StatelessWidget {
             dividerColor: Colors.transparent, accentColor: Colors.black),
         child: ExpansionTile(
           expandedAlignment: Alignment.centerLeft,
+          initiallyExpanded: true,
           title: Text(
             'History Report',
             style: TextStyle(fontSize: 12.0.sp, fontFamily: 'poppins'),
@@ -278,46 +309,40 @@ class CardLaporanView extends StatelessWidget {
             ],
           ),
           children: [
-            Container(
-              margin: EdgeInsets.only(left: 4.0.w),
-              height: 10.0.h,
-              child: TimelineTile(
-                endChild: Container(
-                  margin: EdgeInsets.only(left: 20),
-                  child: ListTile(
-                    title: Text('Laporan ditanggapi'),
-                    subtitle: Text('19 Mei 2022 : 19.00'),
-                  ),
-                ),
-                isFirst: true,
-                afterLineStyle:
-                    LineStyle(color: Colors.blueAccent, thickness: 1),
-                indicatorStyle: IndicatorStyle(
-                  color: Colors.green,
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 4.0.w),
-              height: 10.0.h,
-              child: TimelineTile(
-                endChild: Container(
-                  margin: EdgeInsets.only(left: 20),
-                  child: ListTile(
-                    title: Text('Laporan diproses'),
-                    subtitle: Text('19 Mei 2022 : 19.00'),
-                  ),
-                ),
-                beforeLineStyle:
-                    LineStyle(color: Colors.blueAccent, thickness: 1),
-                // isFirst: true,
-                afterLineStyle:
-                    LineStyle(color: Colors.blueAccent, thickness: 1),
-                indicatorStyle: IndicatorStyle(
-                  color: Colors.green,
-                ),
-              ),
-            )
+            FutureBuilder<List<HistoryReportModel>>(
+                future:
+                    HistoryReportServices.getHistoryProcess(idReport, idUser),
+                builder: (context, snapshot) => (snapshot.hasData)
+                    ? (snapshot.data.length > 0)
+                        ? ListView.builder(
+                            itemCount: snapshot.data.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => Container(
+                              margin: EdgeInsets.only(left: 4.0.w),
+                              height: 10.0.h,
+                              child: TimelineTile(
+                                endChild: Container(
+                                  margin: EdgeInsets.only(left: 20),
+                                  child: ListTile(
+                                    title: Text(
+                                        '${snapshot.data[index].statusProcess}'),
+                                    subtitle:
+                                        Text('${snapshot.data[index].time}'),
+                                  ),
+                                ),
+                                isFirst: index == 0 ? true : false,
+                                beforeLineStyle: LineStyle(
+                                    color: Colors.blueAccent, thickness: 1),
+                                afterLineStyle: LineStyle(
+                                    color: Colors.blueAccent, thickness: 1),
+                                indicatorStyle: IndicatorStyle(
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Center(child: Text('history kosong'))
+                    : Container()),
           ],
         ),
       ),
@@ -332,6 +357,7 @@ class CardLaporanView extends StatelessWidget {
             dividerColor: Colors.transparent, accentColor: Colors.black),
         child: ExpansionTile(
           expandedAlignment: Alignment.centerLeft,
+          initiallyExpanded: true,
           title: Text(
             'Detail Report',
             style: TextStyle(fontSize: 12.0.sp, fontFamily: 'poppins'),
@@ -375,9 +401,9 @@ class CardLaporanView extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(
-                        Icons.waves,
-                        color: Colors.red,
+                      Image.network(
+                        '${ServerApp.url}icon/${categoryIcon}',
+                        height: 4.5.h,
                       ),
                       SizedBox(
                         width: 5.0.w,

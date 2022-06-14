@@ -3,6 +3,7 @@ import 'package:aplikasi_rw/screen/report_screen2/card_report_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/add_report.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
@@ -32,7 +33,6 @@ class _ReportScreen2State extends State<ReportScreen2> {
   @override
   void initState() {
     super.initState();
-    setState(() {});
   }
 
   @override
@@ -132,14 +132,27 @@ class _ReportScreen2State extends State<ReportScreen2> {
                       BlocBuilder<ReportBloc, ReportState2>(
                         builder: (context, state) {
                           if (state is ReportUnitialized) {
-                            return Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: CircularProgressIndicator(),
-                                ),
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: 5,
+                              itemBuilder: (context, index) => Container(
+                                width: 95.0.w,
+                                height: 20.0.h,
+                                margin: EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Shimmer.fromColors(
+                                    baseColor: Colors.grey[300],
+                                    highlightColor: Colors.grey[200],
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      width: double.infinity,
+                                      height: 50,
+                                    )),
                               ),
                             );
                           } else {
@@ -169,6 +182,16 @@ class _ReportScreen2State extends State<ReportScreen2> {
                                           .additionalInformation,
                                       category: reportLoaded
                                           .listReport[index].category,
+                                      categoryIcon: reportLoaded
+                                          .listReport[index].iconCategory,
+                                      latitude: reportLoaded
+                                          .listReport[index].latitude,
+                                      longitude: reportLoaded
+                                          .listReport[index].longitude,
+                                      idReport: reportLoaded
+                                          .listReport[index].idReport,
+                                      idUser:
+                                          reportLoaded.listReport[index].idUser,
                                       // additionalInformation: ,
                                     )
                                   : (index == reportLoaded.listReport.length)

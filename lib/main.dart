@@ -16,6 +16,7 @@ import 'package:aplikasi_rw/screen/login_screen/onboarding/onboarding_screen.dar
 import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/google_maps_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/report_screen_2.dart';
+import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/check_session.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:flutter/material.dart';
@@ -113,9 +114,7 @@ class _MyApp extends State<MyApp> {
             if (state is UserNotLogin) {
               return OnboardingScreen();
             } else if (state is UserLoadingUnitialized) {
-              return Container(
-                color: Colors.white,
-              );
+              return Container(color: Colors.white);
             } else {
               UserLoadingInitialized userLogin =
                   state as UserLoadingInitialized;
@@ -168,7 +167,7 @@ class _MainAppState extends State<MainApp> {
       ),
       ReportScreen2(),
       BillScreen(),
-      PaymentScreen()
+      // PaymentScreen()
     ];
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -177,6 +176,7 @@ class _MainAppState extends State<MainApp> {
     ));
 
     return Scaffold(
+      key: scaffoldKey,
       // membuat sidebar dan drawer
       drawer: drawerSideBar(),
       body: IndexedStack(
@@ -212,9 +212,10 @@ class _MainAppState extends State<MainApp> {
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.clipboardList), label: 'Report'),
             BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.fileInvoiceDollar), label: 'Bills'),
-            BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.wallet), label: 'Payment'),
+                icon: Icon(FontAwesomeIcons.solidCalendarCheck),
+                label: 'Event'),
+            // BottomNavigationBarItem(
+            //     icon: Icon(FontAwesomeIcons.wallet), label: 'Payment'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.thumb_up), label: 'Recomen'),
           ],
@@ -236,13 +237,13 @@ class _MainAppState extends State<MainApp> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: NetworkImage(
-                        'http://rawakalong.desa.id/wp-content/uploads/2019/02/person2.jpg'),
+                    backgroundImage:
+                        NetworkImage('${ServerApp.url}${urlProfile}'),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 10, bottom: 10),
                     child: Text(
-                      'Nama user',
+                      username,
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
@@ -255,16 +256,27 @@ class _MainAppState extends State<MainApp> {
             ),
           ),
           ListTile(
+            leading: Icon(
+              Icons.person,
+              color: Colors.blue,
+            ),
             title: Text('Ganti Data'),
             onTap: () {},
           ),
+          // ListTile(
+          //   title: Text('item 2'),
+          //   onTap: () {},
+          // ),
           ListTile(
-            title: Text('item 2'),
-            onTap: () {},
-          ),
-          ListTile(
-            title: Text('item 3'),
-            onTap: () {},
+            leading: Icon(Icons.logout, color: Colors.blue),
+            title: Text('Log Out'),
+            onTap: () {
+              UserSecureStorage.deleteIdUser().then((value) {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) => OnboardingScreen(),
+                ));
+              });
+            },
           ),
         ],
       ),

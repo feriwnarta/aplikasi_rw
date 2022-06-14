@@ -10,7 +10,12 @@ class CardReportScreen extends StatelessWidget {
       location,
       time,
       category,
-      status;
+      categoryIcon,
+      status,
+      latitude,
+      idReport,
+      idUser,
+      longitude;
 
   CardReportScreen(
       {this.urlImageReport,
@@ -20,7 +25,12 @@ class CardReportScreen extends StatelessWidget {
       this.time,
       this.additionalInformation,
       this.status,
-      this.category});
+      this.categoryIcon,
+      this.category,
+      this.idReport,
+      this.latitude,
+      this.idUser,
+      this.longitude});
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +160,11 @@ class CardReportScreen extends StatelessWidget {
                   status: status,
                   time: time,
                   category: category,
+                  categoryIcon: categoryIcon,
+                  latitude: latitude,
+                  longitude: longitude,
+                  idReport: idReport,
+                  idUser: idUser,
                 ),
               ));
         },
