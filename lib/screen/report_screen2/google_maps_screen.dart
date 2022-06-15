@@ -50,24 +50,15 @@ class MapSampleState extends State<MapSample> {
                     LatLng(snapshot.data.latitude, snapshot.data.longitude),
                 infoWindow: InfoWindow(title: 'Lokasi anda')));
 
-            // Geocoder.local
-            //     .findAddressesFromCoordinates(Coordinates(
-            //         snapshot.data.latitude, snapshot.data.longitude))
-            //     .then((value) {
-            //   setState(() {
-            //     jalan = value.first.addressLine;
-            //     deflatitude = snapshot.data.latitude;
-            //     deflongitude = snapshot.data.longitude;
-            //   });
-            // });
             Geocoder.local
                 .findAddressesFromCoordinates(Coordinates(
                     snapshot.data.latitude, snapshot.data.longitude))
                 .then((value) {
-              bloc.add(GoogleMapEvent(
-                  latitude: snapshot.data.latitude,
-                  longitude: snapshot.data.longitude,
-                  address: value.first.addressLine));
+              setState(() {
+                jalan = value.first.addressLine;
+                deflatitude = snapshot.data.latitude;
+                deflongitude = snapshot.data.longitude;
+              });
             });
           }
           return new Scaffold(
@@ -111,15 +102,6 @@ class MapSampleState extends State<MapSample> {
                                 markers.add(Marker(
                                     markerId: markerId,
                                     position: position.target));
-                                // Geocoder.local
-                                //     .findAddressesFromCoordinates(Coordinates(
-                                //         position.target.latitude,
-                                //         position.target.longitude))
-                                //     .then((value) {
-                                //   address = value.first.addressLine;
-                                //   latitude = position.target.latitude;
-                                //   longitude = position.target.longitude;
-                                // });
                               });
                               Geocoder.local
                                   .findAddressesFromCoordinates(Coordinates(
@@ -186,11 +168,21 @@ class MapSampleState extends State<MapSample> {
                                         ),
                                       ),
                                       onPressed: () {
-                                        Navigator.pop(context, [
-                                          state.latitude,
-                                          state.longitude,
-                                          state.address
-                                        ]);
+                                        if (state.address != null) {
+                                          print(state.latitude);
+                                          Navigator.pop(context, [
+                                            state.latitude,
+                                            state.longitude,
+                                            state.address
+                                          ]);
+                                          bloc.add(GoogleMapEventDelete());
+                                        } else {
+                                          Navigator.pop(context, [
+                                            deflatitude,
+                                            deflongitude,
+                                            jalan
+                                          ]);
+                                        }
                                       },
                                     ),
                                   ),

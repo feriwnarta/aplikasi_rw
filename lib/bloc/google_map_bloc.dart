@@ -7,6 +7,8 @@ class GoogleMapEvent {
   GoogleMapEvent({this.latitude, this.longitude, this.address});
 }
 
+class GoogleMapEventDelete extends GoogleMapEvent {}
+
 class GoogleMapState {
   String address;
   double longitude, latitude;
@@ -18,6 +20,10 @@ class GoogleMapBloc extends Bloc<GoogleMapEvent, GoogleMapState> {
 
   @override
   Stream<GoogleMapState> mapEventToState(GoogleMapEvent event) async* {
+    if (event is GoogleMapEventDelete) {
+      yield GoogleMapState(address: null, latitude: null, longitude: null);
+    }
+
     yield GoogleMapState(
         address: event.address,
         latitude: event.latitude,
