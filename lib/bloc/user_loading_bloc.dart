@@ -7,6 +7,8 @@ class UserLoadingEvent {}
 
 abstract class UserLoadingState {}
 
+class UserLoadingRefresh extends UserLoadingEvent {}
+
 class UserLoadingUnitialized extends UserLoadingState {}
 
 class UserSuccesLogin extends UserLoadingState {}
@@ -25,6 +27,10 @@ class UserLoadingBloc extends Bloc<UserLoadingEvent, UserLoadingState> {
   UserLoadingBloc(UserLoadingState initialState) : super(initialState);
   @override
   Stream<UserLoadingState> mapEventToState(UserLoadingEvent event) async* {
+    if (event is UserLoadingRefresh) {
+      yield UserLoadingUnitialized();
+    }
+
     if (state is UserLoadingUnitialized) {
       String idUser = await UserSecureStorage.getIdUser();
       if (idUser == null) {

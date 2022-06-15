@@ -155,10 +155,12 @@ class _MainAppState extends State<MainApp> {
     super.initState();
   }
 
+  UserLoadingBloc bloc;
+
   @override
   Widget build(BuildContext context) {
     _reportBloc = BlocProvider.of<ReportBloc>(context);
-
+    bloc = BlocProvider.of<UserLoadingBloc>(context);
     screens = [
       HomeScreen(
         scaffoldKey: scaffoldKey,
@@ -263,9 +265,18 @@ class _MainAppState extends State<MainApp> {
             ),
             title: Text('Ganti Data'),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ChangeDataUser(urlProfile: urlProfile, idUser: idUser,),
-              ));
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                builder: (context) => ChangeDataUser(
+                  urlProfile: urlProfile,
+                  idUser: idUser,
+                ),
+              ))
+                  .then((value) {
+                if (value == 'refresh') {
+                  bloc.add(UserLoadingRefresh());
+                }
+              });
             },
           ),
           // ListTile(

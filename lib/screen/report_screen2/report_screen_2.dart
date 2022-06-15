@@ -37,7 +37,7 @@ class _ReportScreen2State extends State<ReportScreen2> {
 
   @override
   void dispose() {
-    bloc.close();
+    bloc.close(); 
     super.dispose();
   }
 
