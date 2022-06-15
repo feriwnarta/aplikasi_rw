@@ -20,7 +20,10 @@ class _BillScreenState extends State<BillScreen>
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: BillTabModel.tabs().length, vsync: this,);
+    controller = TabController(
+      length: BillTabModel.tabs().length,
+      vsync: this,
+    );
     bloc = BlocProvider.of<BillTabColorBloc>(context);
     controller.addListener(() {
       bloc.add(controller.index);
@@ -32,11 +35,9 @@ class _BillScreenState extends State<BillScreen>
     controller.dispose();
     super.dispose();
   }
-  
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<BillTabColorBloc, TabState>(
       builder: (context, state) => Scaffold(
           appBar: PreferredSize(
@@ -74,7 +75,7 @@ class _BillScreenState extends State<BillScreen>
                   ],
                 ),
               ),
-              bottom: TabBar(                
+              bottom: TabBar(
                   labelPadding: EdgeInsets.symmetric(horizontal: 1.0.w),
                   controller: controller,
                   labelColor: state.colorsText,

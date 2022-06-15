@@ -1,4 +1,5 @@
 import 'package:aplikasi_rw/screen/bills_screen/event_bill_screen.dart';
+import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -42,3 +43,21 @@ class BillTabModel {
     ];
   }
 }
+
+// class BillEventServices {
+//   static Future<List<BillTabModel>> getCategoryDetail(String idCategory) async {
+//     String idUser = await UserSecureStorage.getIdUser();
+//     String url = '${ServerApp.url}src/category/category_detail.php';
+//     var data = {'id_user': idUser, 'id_category' : idCategory};
+
+//     http.Response response = await http.post(url, body: jsonEncode(data));
+//     var obj = jsonDecode(response.body) as List;
+//     return obj
+//         .map((item) => CategoryDetailModel(
+//             idCategory: item['id_category'],
+//             idCategoryDetail: item['id_category_detail'],
+//             iconDetail: item['icon_detail'],
+//             namecategoryDetail: item['name_category_detail']))
+//         .toList();
+//   }
+// }

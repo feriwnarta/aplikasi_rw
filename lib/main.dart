@@ -16,6 +16,7 @@ import 'package:aplikasi_rw/screen/login_screen/onboarding/onboarding_screen.dar
 import 'package:aplikasi_rw/screen/payment_screen/payment_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/google_maps_screen.dart';
 import 'package:aplikasi_rw/screen/report_screen2/report_screen_2.dart';
+import 'package:aplikasi_rw/screen/user_screen/change_data_user.dart';
 import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/check_session.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
@@ -261,7 +262,11 @@ class _MainAppState extends State<MainApp> {
               color: Colors.blue,
             ),
             title: Text('Ganti Data'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ChangeDataUser(urlProfile: urlProfile, idUser: idUser,),
+              ));
+            },
           ),
           // ListTile(
           //   title: Text('item 2'),
