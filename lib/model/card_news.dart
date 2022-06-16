@@ -1,30 +1,26 @@
+import '../server-app.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class CardNews {
-  final String urlImageNews, caption, content;
+  final String urlImageNews, caption, content, writerAndTime;
 
-  CardNews({this.urlImageNews, this.caption, this.content});
+  CardNews({this.urlImageNews, this.caption, this.content, this.writerAndTime});
+}
 
-  static List<CardNews> getCardNews = [
-      CardNews(
-        urlImageNews: 'https://dinkes.acehprov.go.id/uploads/Flyer_Vaksinasi_Dosis_Lanjutan_atau_Booster.jpg',
-        caption: 'Vaksin booster Pfizer terbaru, Daftar segeraa di kantor RW 05 BGM PIK',
-        content: 'Pemerintah Provinsi (Pemprov) DKI Jakarta menggelar program vaksinasi dosis ketiga (booster ) bagi warganya di sejumlah lokasi pada Minggu (24/4/2022). Layanan vaksinasi booster diberikan kepada mereka yang telah memenuhi syarat yakni berusia 18 tahun ke atas dan sudah mendapatkan vaksin dosis kedua minimal 3 bulan yang lalu. Selain KTP asli, masyarakat diimbau untuk membawa kartu vaksinasi Covid-19 atau menunjukkan undangan vaksinasi booster di aplikasi PeduliLindungi.Pemberian jenis vaksin ini tentunya tidak sembarangan, bagi yang mendapatkan vaksin dosis pertama dan kedua Sinovac akan diberikan 1/2 dosis Pfizer/ AstraZenece atau 1 dosis Moderna. Bagi mereka yang mendapatkan vaksin dosis pertama dan kedua AstraZeneca maka mendapatkan satu dosis AstraZeneca atau 1/2 dosis Moderna/Pfizer.\n\nPemerintah Provinsi (Pemprov) DKI Jakarta menggelar program vaksinasi dosis ketiga (booster ) bagi warganya di sejumlah lokasi pada Minggu (24/4/2022). Layanan vaksinasi booster diberikan kepada mereka yang telah memenuhi syarat yakni berusia 18 tahun ke atas dan sudah mendapatkan vaksin dosis kedua minimal 3 bulan yang lalu. Selain KTP asli, masyarakat diimbau untuk membawa kartu vaksinasi Covid-19 atau menunjukkan undangan vaksinasi booster di aplikasi PeduliLindungi.Pemberian jenis vaksin ini tentunya tidak sembarangan, bagi yang mendapatkan vaksin dosis pertama dan kedua Sinovac akan diberikan 1/2 dosis Pfizer/ AstraZenece atau 1 dosis Moderna. Bagi mereka yang mendapatkan vaksin dosis pertama dan kedua AstraZeneca maka mendapatkan satu dosis AstraZeneca atau 1/2 dosis Moderna/Pfizer.'
-      ),
-      CardNews(
-        urlImageNews: 'https://disk.mediaindonesia.com/thumbs/1800x1200/news/2021/04/1ebba27ef1df8c02a33e10e9704a6bc1.jpg',
-        caption: 'Jadwal Bukber Dirumah Pak Sumardin, Akasia Golf AG2 No. 192',
-        content: 'DPRD Kota Surabaya menggelar buka bersama (buber) dengan anak yatim piatu, Senin (25/4). Ratusan anak yatim piatu yang hadir di gedung DPRD Kota Surabaya serta diberikan santuan uang dan bingkisan. Ketua DPRD Kota Surabaya Adi Sutarwijono mengatakan acara buka bersama anak yatim piatu merupakan agenda rutin setiap tahun. Kegiatan ini, kata dia, merupakan bentuk syukur di bulan penuh berkah. Adi menambahkan acara bukber bersama anak yatim piatu menjadi tradisi di DPRD Kota Surabaya. Menurut Adi, bulan Ramadan menjadi bulan yang tepat untuk menyambung silaturahmi, termasuk dengan seluruh staf dan anak-anak yatim piatu.\n\nDPRD Kota Surabaya menggelar buka bersama (buber) dengan anak yatim piatu, Senin (25/4). Ratusan anak yatim piatu yang hadir di gedung DPRD Kota Surabaya serta diberikan santuan uang dan bingkisan. Ketua DPRD Kota Surabaya Adi Sutarwijono mengatakan acara buka bersama anak yatim piatu merupakan agenda rutin setiap tahun. Kegiatan ini, kata dia, merupakan bentuk syukur di bulan penuh berkah. Adi menambahkan acara bukber bersama anak yatim piatu menjadi tradisi di DPRD Kota Surabaya. Menurut Adi, bulan Ramadan menjadi bulan yang tepat untuk menyambung silaturahmi, termasuk dengan seluruh staf dan anak-anak yatim piatu.'
-      ),
-      CardNews(
-        urlImageNews: 'https://news.maranatha.edu/wp-content/uploads/2021/03/photo_2021-03-12_15-14-48.jpg',
-        caption: 'Update Protokol Kesehatan RW 05 BGM PIK, Tetap Taati Protokol Kesehatan Walau Kasus Covid Melandai',
-        content: 'Pemerintah telah memutuskan untuk melakukan perpanjangan pemberlakuan pembatasan kegiatan masyarakat ( PPKM ) di luar Jawa Bali mulai tanggal 26 April sampai dengan 9 Mei 2022. Aturan ini tertuang dalam Instruksi Menteri Dalam Negeri Nomor 23 Tahun 2022. “Instruksi Menteri ini mulai berlaku pada tanggal 26 April 2022 sampai dengan tanggal 9 Mei 2022,” dikutip dari Inmendagri yang ditandatangani Menteri Dalam Negeri Tito Karnavian, Selasa (26/4/2022) Saat ini, level PPKM pada 386 Kabupaten/Kota di luar Jawa-Bali untuk periode PPKM 26 April - 9 Mei 2022 adalah level 1 meningkat dari 84 menjadi 131 Kabupaten/Kota. Level 2 menurun dari 259 menjadi 216 Kabupaten/Kota. Level 3 menurun dari 43 menjadi 39 Kabupaten/Kota\n\nPemerintah telah memutuskan untuk melakukan perpanjangan pemberlakuan pembatasan kegiatan masyarakat ( PPKM ) di luar Jawa Bali mulai tanggal 26 April sampai dengan 9 Mei 2022. Aturan ini tertuang dalam Instruksi Menteri Dalam Negeri Nomor 23 Tahun 2022. “Instruksi Menteri ini mulai berlaku pada tanggal 26 April 2022 sampai dengan tanggal 9 Mei 2022,” dikutip dari Inmendagri yang ditandatangani Menteri Dalam Negeri Tito Karnavian, Selasa (26/4/2022) Saat ini, level PPKM pada 386 Kabupaten/Kota di luar Jawa-Bali untuk periode PPKM 26 April - 9 Mei 2022 adalah level 1 meningkat dari 84 menjadi 131 Kabupaten/Kota. Level 2 menurun dari 259 menjadi 216 Kabupaten/Kota. Level 3 menurun dari 43 menjadi 39 Kabupaten/Kota'
-      ),
-      CardNews(
-        urlImageNews: 'https://cdn-2.tstatic.net/jabar/foto/bank/images/e-ktp-illustrasi.jpg',
-        caption: 'Sekarang buat KTP Prosesnya tambah cepat, cukup sediakan KK dan Akte, proses hanya berlangsung 3 Sampai 7 Hari',
-        content: 'Saat ini, Kementerian Dalam Negeri (Kemendagri) tengah melakukan uji coba versi baru dari e-KTP, yang disebut e-KTP digital.  Melansir laman indonesiabaik.id, sejauh ini, proses digitalisasi e-KTP sudah dimulai di 58 kabupaten dan kota di Indonesia. Uji coba pengadaan e-KTP digital ini telah dilakukan sejak 2021. Nantinya, KTP elektronik digital akan diterapkan secara bertahap. Dengan KTP digital, masyarakat tidak perlu lagi menyimpan kartu tanda pengenal fisik, melainkan tinggal menunjukkan quick response (QR) code KTP digital dalam ponsel untuk keperluan administrasi.\n\nSaat ini, Kementerian Dalam Negeri (Kemendagri) tengah melakukan uji coba versi baru dari e-KTP, yang disebut e-KTP digital.  Melansir laman indonesiabaik.id, sejauh ini, proses digitalisasi e-KTP sudah dimulai di 58 kabupaten dan kota di Indonesia. Uji coba pengadaan e-KTP digital ini telah dilakukan sejak 2021. Nantinya, KTP elektronik digital akan diterapkan secara bertahap. Dengan KTP digital, masyarakat tidak perlu lagi menyimpan kartu tanda pengenal fisik, melainkan tinggal menunjukkan quick response (QR) code KTP digital dalam ponsel untuk keperluan administrasi.'
-      ),
+class NewsServices {
+  static Stream<List<CardNews>> getNews(String idUser) async* {
+    String url = '${ServerApp.url}src/news/news.php';
+    var data = {'id_user': idUser};
 
-  ];
-
+    http.Response response = await http.post(url, body: jsonEncode(data));
+    var obj = jsonDecode(response.body) as List;
+    yield obj
+        .map((item) => CardNews(
+            caption: item['caption'],
+            content: item['content'],
+            urlImageNews: item['url_news_image'],
+            writerAndTime: item['writer'] + ',  ' + item['time']))
+        .toList();
+  }
 }

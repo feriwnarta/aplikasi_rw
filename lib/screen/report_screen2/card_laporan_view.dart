@@ -279,7 +279,8 @@ class CardLaporanView extends StatelessWidget {
                 ? ExpansionTile(
                     expandedAlignment: Alignment.centerLeft,
                     initiallyExpanded: true,
-                    onExpansionChanged: (value) => isVisibilityExpansion = value,
+                    onExpansionChanged: (value) =>
+                        isVisibilityExpansion = value,
                     title: Text(
                       'History Report',
                       style:
@@ -337,9 +338,13 @@ class CardLaporanView extends StatelessWidget {
                                         margin: EdgeInsets.only(left: 20),
                                         child: ListTile(
                                           title: Text(
-                                              '${snapshot.data[index].statusProcess}'),
+                                            '${snapshot.data[index].statusProcess}',
+                                            style: TextStyle(fontSize: 12.0.sp),
+                                          ),
                                           subtitle: Text(
-                                              '${snapshot.data[index].time}'),
+                                            '${snapshot.data[index].time}',
+                                            style: TextStyle(fontSize: 10.0.sp),
+                                          ),
                                         ),
                                       ),
                                       isFirst: index == 0 ? true : false,

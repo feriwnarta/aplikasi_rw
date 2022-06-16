@@ -37,7 +37,7 @@ class _ReportScreen2State extends State<ReportScreen2> {
 
   @override
   void dispose() {
-    bloc.close(); 
+    bloc.close();
     super.dispose();
   }
 
@@ -135,25 +135,7 @@ class _ReportScreen2State extends State<ReportScreen2> {
                             return ListView.builder(
                               shrinkWrap: true,
                               itemCount: 5,
-                              itemBuilder: (context, index) => Container(
-                                width: 95.0.w,
-                                height: 20.0.h,
-                                margin: EdgeInsets.only(
-                                    left: 10, right: 10, bottom: 10),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Shimmer.fromColors(
-                                    baseColor: Colors.grey[300],
-                                    highlightColor: Colors.grey[200],
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                      width: double.infinity,
-                                      height: 50,
-                                    )),
-                              ),
+                              itemBuilder: (context, index) => ShimmerReport(),
                             );
                           } else {
                             ReportLoaded reportLoaded = state as ReportLoaded;
@@ -242,5 +224,107 @@ class _ReportScreen2State extends State<ReportScreen2> {
   Future loadReport() async {
     await Future.delayed(Duration(seconds: 2));
     bloc.add(ReportEventRefresh());
+  }
+}
+
+class ShimmerReport extends StatelessWidget {
+  const ShimmerReport({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 2.0.h),
+            Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[200],
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10)),
+                  width: 25.0.w,
+                  height: 13.0.h,
+                  margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                )),
+          ],
+        ),
+        // shimmer title
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 1.0.h),
+            Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[200],
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10)),
+                  width: 30.0.w,
+                  height: 2.0.h,
+                )),
+            SizedBox(
+              height: 1.0.h,
+            ),
+            Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[200],
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10)),
+                  width: 60.0.w,
+                  height: 2.0.h,
+                )),
+            SizedBox(
+              height: 1.0.h,
+            ),
+            Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[200],
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10)),
+                  width: 30.0.w,
+                  height: 2.0.h,
+                )),
+            SizedBox(
+              height: 1.0.h,
+            ),
+            Shimmer.fromColors(
+                baseColor: Colors.grey[300],
+                highlightColor: Colors.grey[200],
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10)),
+                  width: 40.0.w,
+                  height: 2.0.h,
+                )),
+            Row(
+              children: [
+                SizedBox(width: 46.0.w),
+                Shimmer.fromColors(
+                    baseColor: Colors.grey[300],
+                    highlightColor: Colors.grey[200],
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(7)),
+                      width: 17.0.w,
+                      height: 3.0.h,
+                    )),
+              ],
+            ),
+          ],
+        )
+      ],
+    );
   }
 }

@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:sizer/sizer.dart';
 
@@ -94,19 +95,26 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(
                         height: 17,
                       ),
-                      Center(
-                        child: BlocBuilder<CarouselBloc, int>(
-                          builder: (context, index) => AnimatedSmoothIndicator(
-                            activeIndex: index,
-                            count: CardNews.getCardNews.length,
-                            effect: ExpandingDotsEffect(
-                                dotWidth: 10,
-                                dotHeight: 10,
-                                activeDotColor: Colors.lightBlue,
-                                dotColor: Colors.grey[350]),
-                          ),
-                        ),
-                      )
+                      StreamBuilder<List<CardNews>>(
+                          stream: NewsServices.getNews(idUser),
+                          builder: (context, snapshot) => (snapshot.hasData)
+                              ? (snapshot.data.length > 0)
+                                  ? Center(
+                                      child: BlocBuilder<CarouselBloc, int>(
+                                        builder: (context, index) =>
+                                            AnimatedSmoothIndicator(
+                                          activeIndex: index,
+                                          count: snapshot.data.length,
+                                          effect: ExpandingDotsEffect(
+                                              dotWidth: 10,
+                                              dotHeight: 10,
+                                              activeDotColor: Colors.lightBlue,
+                                              dotColor: Colors.grey[350]),
+                                        ),
+                                      ),
+                                    )
+                                  : Container()
+                              : Container())
                     ],
                   ),
                   Column(
@@ -201,78 +209,122 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  CarouselSlider buildCarouselSliderNews() {
-    return CarouselSlider.builder(
-      options: CarouselOptions(
-          // height: 180,
-          height: 25.0.h,
-          enlargeCenterPage: kDebugMode ? false : true,
-          disableCenter: true,
-          viewportFraction: 0.6,
-          autoPlay: true,
-          autoPlayInterval: Duration(seconds: 2),
-          onPageChanged: (index, _) => blocColor.add(index)),
-      itemCount: CardNews.getCardNews.length,
-      itemBuilder: (context, index, realIndex) {
-        return SingleChildScrollView(
-          child: GestureDetector(
-            child: Card(
-              color: Colors.blue[50],
-              elevation: 1.5,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              margin: EdgeInsets.only(right: 1.0.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                      height: 17.0.h,
-                      width: 60.0.w,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(15),
-                              topRight: Radius.circular(15)),
-                          child: CachedNetworkImage(
-                            imageUrl: CardNews.getCardNews[index].urlImageNews,
-                            fit: BoxFit.cover,
-                            placeholder: (context, _) => Container(
-                              color: Colors.grey,
-                            ),
-                            errorWidget: (context, url, _) => Container(
-                              color: Colors.grey,
-                              child: Icon(
-                                Icons.error,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ))),
-                  Container(
-                    padding:
-                        EdgeInsets.only(left: 1.0.w, top: 0.5.h, bottom: 1.0.h),
-                    // margin: EdgeInsets.only(left: 10, top: 5),
-                    width: 90.0.w,
-                    child: Text(
-                      CardNews.getCardNews[index].caption,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                      style: TextStyle(fontFamily: 'poppins', fontSize: 9.5.sp),
-                    ),
-                  )
-                ],
+  StreamBuilder buildCarouselSliderNews() {
+    return StreamBuilder<List<CardNews>>(
+      stream: NewsServices.getNews(idUser),
+      builder: (context, snapshot) => (snapshot.hasData)
+          ? (snapshot.data.length > 0)
+              ? CarouselSlider.builder(
+                  options: CarouselOptions(
+                      // height: 180,
+                      height: 25.0.h,
+                      enlargeCenterPage: kDebugMode ? false : true,
+                      disableCenter: true,
+                      viewportFraction: 0.6,
+                      autoPlay: true,
+                      autoPlayInterval: Duration(seconds: 2),
+                      onPageChanged: (index, _) => blocColor.add(index)),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index, realIndex) {
+                    return SingleChildScrollView(
+                      child: GestureDetector(
+                        child: Card(
+                          color: Colors.blue[50],
+                          elevation: 1.5,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          margin: EdgeInsets.only(right: 1.0.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  height: 17.0.h,
+                                  width: 60.0.w,
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          topRight: Radius.circular(15)),
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            '${ServerApp.url}${snapshot.data[index].urlImageNews}',
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, _) => Container(
+                                          color: Colors.grey,
+                                        ),
+                                        errorWidget: (context, url, _) =>
+                                            Container(
+                                          color: Colors.grey,
+                                          child: Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ))),
+                              Container(
+                                padding: EdgeInsets.only(
+                                    left: 1.0.w, top: 0.5.h, bottom: 1.0.h),
+                                // margin: EdgeInsets.only(left: 10, top: 5),
+                                width: 90.0.w,
+                                child: Text(
+                                  snapshot.data[index].caption,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                      fontFamily: 'poppins', fontSize: 9.5.sp),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => NewsScreen(
+                                    urlImage:
+                                        '${ServerApp.url}${snapshot.data[index].urlImageNews}',
+                                    caption: snapshot.data[index].caption,
+                                    content: snapshot.data[index].content,
+                                    writerAndTime:
+                                        snapshot.data[index].writerAndTime,
+                                  )));
+                        },
+                      ),
+                    );
+                  },
+                )
+              : Center(
+                  child: Text(
+                    'No News',
+                    style: TextStyle(fontSize: 11.0.sp),
+                  ),
+                )
+          : SizedBox(
+              height: 20.0.h,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: 5,
+                scrollDirection: Axis.horizontal,
+                // padding: EdgeInsets.only(right: 2.0.w),
+                physics: ScrollPhysics(),
+                itemBuilder: (context, index) => Container(
+                  width: 60.0.w,
+                  height: 17.0.h,
+                  margin: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  child: Shimmer.fromColors(
+                      baseColor: Colors.grey[300],
+                      highlightColor: Colors.grey[200],
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10)),
+                        width: double.infinity,
+                        height: 50,
+                      )),
+                ),
               ),
             ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => NewsScreen(
-                        urlImage: CardNews.getCardNews[index].urlImageNews,
-                        caption: CardNews.getCardNews[index].caption,
-                        content: CardNews.getCardNews[index].content,
-                      )));
-            },
-          ),
-        );
-      },
     );
   }
 
