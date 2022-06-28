@@ -51,6 +51,7 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
   PickedFile pickedFile;
 
   Widget build(BuildContext context) {
+    print(kBottomNavigationBarHeight);
     bloc = BlocProvider.of<TempatTulisStatusBloc>(context);
     statusBloc = BlocProvider.of<StatusUserBloc>(context);
 
@@ -78,74 +79,76 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
       builder: (context, state) => Container(
         height: (state.isVisible) ? 65.0.h : 57.0.h,
         child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            resizeToAvoidBottomPadding: false,
+            // resizeToAvoidBottomInset: false,
+            // resizeToAvoidBottomPadding: false,
             appBar: appBar,
-            body: ListView(children: [
-              Column(
-                children: [
-                  SizedBox(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border(
-                              top: BorderSide(color: Colors.grey[200]),
-                              bottom: BorderSide(color: Colors.grey[200]))),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 1.0.w, vertical: 1.0.h),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                // avatar
-                                CircleAvatar(
-                                  radius: 3.5.h,
-                                  backgroundImage: CachedNetworkImageProvider(
-                                      '${ServerApp.url}${fotoProfile}'),
-                                ),
-                                headerName(),
-                                Material(
-                                  color: Colors.transparent,
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.image,
-                                      size: 4.0.h,
-                                      color: Colors.green[400],
-                                    ),
-                                    onPressed: () {
-                                      showModalBottomSheet(
-                                          context: context,
-                                          builder: (context) =>
-                                              bottomImagePicker(context));
-                                    },
+            body: SafeArea(
+              child: ListView(children: [
+                Column(
+                  children: [
+                    SizedBox(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                                top: BorderSide(color: Colors.grey[200]),
+                                bottom: BorderSide(color: Colors.grey[200]))),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 1.0.w, vertical: 1.0.h),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  // avatar
+                                  CircleAvatar(
+                                    radius: 3.5.h,
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        '${ServerApp.url}${fotoProfile}'),
                                   ),
-                                )
-                              ],
-                            ),
-                          ],
+                                  headerName(),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.image,
+                                        size: 4.0.h,
+                                        color: Colors.green[400],
+                                      ),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (context) =>
+                                                bottomImagePicker(context));
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
 
-                  textFieldTulisStatus(),
-                  // gambar jika diupload
-                  gambarUploadStatus(),
+                    textFieldTulisStatus(),
+                    // gambar jika diupload
+                    gambarUploadStatus(),
 
-                  // divider untuk memberikan batas antara container gambar yg di upload dengan button bawahnya
-                  Divider(
-                    height: 2,
-                  ),
+                    // divider untuk memberikan batas antara container gambar yg di upload dengan button bawahnya
+                    Divider(
+                      height: 2,
+                    ),
 
-                  // button untuk upload gambar / pilih gambar
-                  buttonPilihGambar(context),
+                    // button untuk upload gambar / pilih gambar
+                    buttonPilihGambar(context),
 
-                  // button untuk kirim posting status
-                  buttonPosting(pickedFile, state, context)
-                ],
-              ),
-            ])),
+                    // button untuk kirim posting status
+                    buttonPosting(pickedFile, state, context)
+                  ],
+                ),
+              ]),
+            )),
       ),
     );
   }

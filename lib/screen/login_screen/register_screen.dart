@@ -56,67 +56,71 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: Text(
           'Register',
           style: TextStyle(fontSize: 14.0.sp),
         ),
       ),
-      body: Stepper(
-          physics: ScrollPhysics(),
-          type: StepperType.horizontal,
-          currentStep: currentStep,
-          controlsBuilder: (context, {onStepCancel, onStepContinue}) {
-            return Row(children: [
-              Expanded(
-                  child: ElevatedButton(
-                child: Text(
-                  'Next',
-                  style: TextStyle(fontSize: 11.0.sp),
-                ),
-                onPressed: onStepContinue,
-              )),
-              SizedBox(width: 2.0.w),
-              if (currentStep != 0)
-                Expanded(
-                    child: ElevatedButton(
-                  child: Text(
-                    'Back',
-                    style: TextStyle(fontSize: 11.0.sp),
-                  ),
-                  onPressed: onStepCancel,
-                )),
-            ]);
-          },
-          onStepContinue: () {
-            final isLastStep = currentStep == getSteps().length - 1;
+      body: Column(
+        
+      ),
 
-            // checker validate step account
-            if (currentStep == 0) {
-              if (_formKeyAccount.currentState.validate()) {
-                setState(() => currentStep++);
-              }
-            } else if (currentStep == 1) {
-              if (_formKeyContact.currentState.validate()) {
-                setState(() => currentStep++);
-              }
-            } else if (currentStep == 2) {
-              if (_formKeyIdentity.currentState.validate()) {
-                setState(() {
-                  if (isLastStep) {
-                    userRegistration();
-                  } else {
-                    currentStep++;
-                  }
-                });
-              }
-            }
-          },
-          onStepCancel: () {
-            currentStep > 0 ? setState(() => currentStep--) : currentStep = 0;
-          },
-          steps: getSteps()),
+      // body: Stepper(
+      //     physics: ScrollPhysics(),
+      //     type: StepperType.horizontal,
+      //     currentStep: currentStep,
+      //     controlsBuilder: (context, {onStepCancel, onStepContinue}) {
+      //       return Row(children: [
+      //         Expanded(
+      //             child: ElevatedButton(
+      //           child: Text(
+      //             'Next',
+      //             style: TextStyle(fontSize: 11.0.sp),
+      //           ),
+      //           onPressed: onStepContinue,
+      //         )),
+      //         SizedBox(width: 2.0.w),
+      //         if (currentStep != 0)
+      //           Expanded(
+      //               child: ElevatedButton(
+      //             child: Text(
+      //               'Back',
+      //               style: TextStyle(fontSize: 11.0.sp),
+      //             ),
+      //             onPressed: onStepCancel,
+      //           )),
+      //       ]);
+      //     },
+      //     onStepContinue: () {
+      //       final isLastStep = currentStep == getSteps().length - 1;
+
+      //       // checker validate step account
+      //       if (currentStep == 0) {
+      //         if (_formKeyAccount.currentState.validate()) {
+      //           setState(() => currentStep++);
+      //         }
+      //       } else if (currentStep == 1) {
+      //         if (_formKeyContact.currentState.validate()) {
+      //           setState(() => currentStep++);
+      //         }
+      //       } else if (currentStep == 2) {
+      //         if (_formKeyIdentity.currentState.validate()) {
+      //           setState(() {
+      //             if (isLastStep) {
+      //               userRegistration();
+      //             } else {
+      //               currentStep++;
+      //             }
+      //           });
+      //         }
+      //       }
+      //     },
+      //     onStepCancel: () {
+      //       currentStep > 0 ? setState(() => currentStep--) : currentStep = 0;
+      //     },
+      //     steps: getSteps()),
     );
   }
 
@@ -293,51 +297,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
           key: _formKeyAccount,
           child: Column(
             children: [
-              Container(
-                child: Stack(children: [
-                  Column(
-                    children: [
-                      Text(
-                        'Upload Foto Profile',
-                        style: TextStyle(
-                            fontSize: 12.0.sp, fontFamily: 'Montserrat '),
-                      ),
-                      SizedBox(
-                        height: 1.0.h,
-                      ),
-                      Container(
-                        height: 15.0.h,
-                        width: 30.0.w,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                repeat: ImageRepeat.noRepeat,
-                                image: (urlFotoProfile != null)
-                                    ? FileImage(File(urlFotoProfile))
-                                    : AssetImage(
-                                        'assets/img/blank_profile_picture.jpg'))),
-                      )
-                    ],
-                  ),
-                  Positioned(
-                    right: -2.7.w,
-                    bottom: -1.5.h,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.image,
-                        color: Colors.blue[800],
-                      ),
-                      onPressed: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: ((builder) => bottomImagePicker(context)));
-                      },
-                      iconSize: 5.0.h,
-                    ),
-                  )
-                ]),
-              ),
+              // buildContainerImageProfile(),
               Padding(
                 padding:
                     EdgeInsets.symmetric(horizontal: 1.0.w, vertical: 1.0.h),
@@ -450,6 +410,53 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
         ));
   }
 
+  Container buildContainerImageProfile() {
+    return Container(
+      child: Stack(children: [
+        Column(
+          children: [
+            Text(
+              'Upload Foto Profile',
+              style: TextStyle(fontSize: 12.0.sp, fontFamily: 'Montserrat '),
+            ),
+            SizedBox(
+              height: 1.0.h,
+            ),
+            Container(
+              height: 15.0.h,
+              width: 30.0.w,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      repeat: ImageRepeat.noRepeat,
+                      image: (urlFotoProfile != null)
+                          ? FileImage(File(urlFotoProfile))
+                          : AssetImage(
+                              'assets/img/blank_profile_picture.jpg'))),
+            )
+          ],
+        ),
+        Positioned(
+          right: -2.7.w,
+          bottom: -1.5.h,
+          child: IconButton(
+            icon: Icon(
+              Icons.image,
+              color: Colors.blue[800],
+            ),
+            onPressed: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: ((builder) => bottomImagePicker(context)));
+            },
+            iconSize: 5.0.h,
+          ),
+        )
+      ]),
+    );
+  }
+
   Widget bottomImagePicker(BuildContext context) => Container(
         margin: EdgeInsets.only(top: 20),
         width: MediaQuery.of(context).size.width,
@@ -517,8 +524,7 @@ class _RegisterScreenState extends State<RegisterScreen> with ValidationForm {
   }
 
   Future userRegistration() async {
-    String url =
-        '${ServerApp.url}src/login/register.php';
+    String url = '${ServerApp.url}src/login/register.php';
     var message;
     var request = http.MultipartRequest('POST', Uri.parse(url));
     String gambar = (urlFotoProfile != null && urlFotoProfile.isNotEmpty)

@@ -2,12 +2,10 @@ import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
 import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/model/card_news.dart';
-
 import 'package:aplikasi_rw/screen/home_screen/news_screen/news_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/status_warga.dart';
 import 'package:aplikasi_rw/screen/home_screen/tempat_tulis_status_screen.dart';
 import 'package:aplikasi_rw/server-app.dart';
-import 'package:aplikasi_rw/services/get_data_user_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';

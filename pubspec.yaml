@@ -64,6 +64,8 @@ dependencies:
   location: ^3.2.4
   geocoder: ^0.2.1
   shimmer: ^1.1.2
+  string_to_color: ^1.0.1
+  badges: ^1.2.0
 
 
   

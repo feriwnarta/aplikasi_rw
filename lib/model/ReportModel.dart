@@ -12,6 +12,7 @@ class ReportModel {
       iconCategory,
       latitude,
       longitude;
+  List<dynamic> dataKlasifikasi;    
 
   ReportModel({
     this.urlImageReport,
@@ -26,6 +27,7 @@ class ReportModel {
     this.category,
     this.iconCategory,
     this.latitude, 
-    this.longitude
+    this.longitude,
+    this.dataKlasifikasi
   });
 }

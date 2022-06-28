@@ -5,6 +5,7 @@ import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/history_report_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sizer/sizer.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -24,6 +25,7 @@ class CardLaporanView extends StatelessWidget {
       idReport,
       idUser,
       longitude;
+  List<dynamic> dataKlasifikasi;
 
   CardLaporanView(
       {this.urlImage,
@@ -37,10 +39,12 @@ class CardLaporanView extends StatelessWidget {
       this.latitude,
       this.idReport,
       this.idUser,
+      this.dataKlasifikasi,
       this.longitude});
 
   @override
   Widget build(BuildContext context) {
+    print(latitude);
     return Scaffold(
         backgroundColor: Colors.grey[100],
         appBar: AppBar(
@@ -106,17 +110,37 @@ class CardLaporanView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Feedback',
+                              'problem',
                               style: TextStyle(
                                   fontSize: 11.0.sp, fontFamily: 'poppins'),
                             ),
+                            SizedBox(height: 1.0.h),
+                            ListView.builder(
+                              itemCount: dataKlasifikasi.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) => Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(FontAwesomeIcons.exclamationCircle,
+                                          color: Colors.blue),
+                                      SizedBox(
+                                        width: 4.0.w,
+                                      ),
+                                      Text(
+                                        '${dataKlasifikasi[index]}',
+                                        style: TextStyle(
+                                            fontSize: 11.0.sp,
+                                            fontFamily: 'Montserrat'),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 1.0.h)
+                                ],
+                              ),
+                            ),
                             SizedBox(
                               height: 0.5.h,
-                            ),
-                            Text(
-                              additionalInformation,
-                              style: TextStyle(
-                                  fontSize: 11.0.sp, fontFamily: 'Montserrat'),
                             ),
                           ],
                         )),
@@ -151,26 +175,8 @@ class CardLaporanView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 2.0.h),
-                    Container(
-                      height: 40.0.h,
-                      child: GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                            bearing: 192.8334901395799,
-                            target: LatLng(double.parse(latitude),
-                                double.parse(longitude)),
-                            tilt: 0,
-                            zoom: 12.151926040649414),
-                        zoomControlsEnabled: false,
-                        zoomGesturesEnabled: false,
-                        mapType: MapType.normal,
-                        markers: {
-                          Marker(
-                              markerId: MarkerId('1'),
-                              position: LatLng(double.parse(latitude),
-                                  double.parse(longitude)))
-                        },
-                      ),
-                    ),
+                    GoogleMapViewReport(
+                        latitude: latitude, longitude: longitude),
                     SizedBox(height: 1.0.h),
                     buildContainerHistoryReport(),
                   ],
@@ -441,6 +447,55 @@ class CardLaporanView extends StatelessWidget {
             )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class GoogleMapViewReport extends StatefulWidget {
+  const GoogleMapViewReport({
+    Key key,
+    @required this.latitude,
+    @required this.longitude,
+  }) : super(key: key);
+
+  final String latitude;
+  final String longitude;
+
+  @override
+  _GoogleMapViewReportState createState() => _GoogleMapViewReportState();
+}
+
+class _GoogleMapViewReportState extends State<GoogleMapViewReport> {
+  GoogleMapController _controller;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40.0.h,
+      child: GoogleMap(
+        initialCameraPosition: CameraPosition(
+            bearing: 192.8334901395799,
+            target: LatLng(
+                double.parse(widget.latitude), double.parse(widget.longitude)),
+            tilt: 0,
+            zoom: 12.151926040649414),
+        zoomControlsEnabled: false,
+        zoomGesturesEnabled: false,
+        onMapCreated: (controller) => _controller = controller,
+        mapType: MapType.normal,
+        markers: {
+          Marker(
+              markerId: MarkerId('1'),
+              position: LatLng(double.parse(widget.latitude),
+                  double.parse(widget.longitude)))
+        },
       ),
     );
   }

@@ -16,6 +16,7 @@ class CardReportScreen extends StatelessWidget {
       idReport,
       idUser,
       longitude;
+  List<dynamic> dataKlasifikasi;
 
   CardReportScreen(
       {this.urlImageReport,
@@ -30,7 +31,9 @@ class CardReportScreen extends StatelessWidget {
       this.idReport,
       this.latitude,
       this.idUser,
-      this.longitude});
+      this.longitude,
+      this.dataKlasifikasi
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +168,7 @@ class CardReportScreen extends StatelessWidget {
                   longitude: longitude,
                   idReport: idReport,
                   idUser: idUser,
+                  dataKlasifikasi: dataKlasifikasi,
                 ),
               ));
         },

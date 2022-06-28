@@ -11,15 +11,15 @@ class KlasifikasiCategory {
 
 class KlasifikasiCategoryServices {
   static Future<List<KlasifikasiCategory>> getKlasifikasiCategory(
-      String idCategoryDetail) async {
+      String idCategory) async {
     String url = '${ServerApp.url}src/category/klasifikasi_category.php';
-    var data = {'id_category_detail': idCategoryDetail};
+    var data = {'id_category': idCategory};
 
     http.Response response = await http.post(url, body: jsonEncode(data));
     var obj = jsonDecode(response.body) as List;
     return obj
         .map((item) => KlasifikasiCategory(
-            idCategoryDetail: item['id_category_detail'],
+            idCategoryDetail: item['id_castegory_detail'],
             idKlasifikasi: item['id_klasifikasi'],
             klasifikasi: item['klasifikasi']))
         .toList();

@@ -26,7 +26,7 @@ class ViewImage extends StatelessWidget {
               urlImage,
               width: double.infinity,
               height: 55.0.h,
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
           ),
         ),

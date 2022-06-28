@@ -44,9 +44,11 @@ class _AddReportState extends State<AddReport> {
   final _formKeyError = GlobalKey<FormState>();
   String categoryPicked;
   String idCategoryDetail;
+  String icon;
   bool check = false;
   var selectedIndex = [];
   List<String> klasifikasiPicked = [];
+  List<String> nameKlasifikasi = [];
 
   // flutter maps
   double latitude, longitude;
@@ -55,6 +57,17 @@ class _AddReportState extends State<AddReport> {
   void initState() {
     _future = UserSecureStorage.getIdUser();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    latitude = null;
+    longitude = null;
+    categoryPicked = null;
+    idCategoryDetail = null;
+    klasifikasiPicked = [];
+    selectedIndex = [];
+    super.dispose();
   }
 
   ReportBloc bloc;
@@ -109,7 +122,7 @@ class _AddReportState extends State<AddReport> {
                 : (activeStep == 1)
                     ? stepKategory()
                     : stepCompleted(),
-            SizedBox(height: 4.0.h),
+            SizedBox(height: 2.0.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -119,152 +132,182 @@ class _AddReportState extends State<AddReport> {
                       )
                     : (activeStep == 1)
                         ? (idCategory == null)
-                            ? RaisedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    if (activeStep != 0) {
-                                      activeStep--;
-                                      isVisibility = true;
-                                    }
-                                  });
-                                },
-                                color: Colors.blue[400],
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50)),
-                                child: Text(
-                                  'Prev',
-                                  style: TextStyle(
-                                      fontSize: 11.0.sp, color: Colors.white),
+                            ? SizedBox(
+                                width: 40.0.w,
+                                child: RaisedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      if (activeStep != 0) {
+                                        activeStep--;
+                                        isVisibility = true;
+                                      }
+                                    });
+                                  },
+                                  color: Colors.blue[400],
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Text(
+                                    'Prev',
+                                    style: TextStyle(
+                                        fontSize: 11.0.sp, color: Colors.white),
+                                  ),
                                 ),
                               )
                             : (idCategoryDetail != null)
-                                ? RaisedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        idCategoryDetail = null;
-                                        selectedIndex = [];
-                                        klasifikasiPicked = [];
-                                        title = 'Detail report';
-                                      });
-                                    },
-                                    color: Colors.blue[400],
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    child: Text(
-                                      'Prev',
-                                      style: TextStyle(
-                                          fontSize: 11.0.sp,
-                                          color: Colors.white),
+                                ? SizedBox(
+                                    width: 40.0.w,
+                                    child: RaisedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          idCategoryDetail = null;
+                                          selectedIndex = [];
+                                          klasifikasiPicked = [];
+                                          title = 'Detail report';
+                                        });
+                                      },
+                                      color: Colors.blue[400],
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Text(
+                                        'Prev',
+                                        style: TextStyle(
+                                            fontSize: 11.0.sp,
+                                            color: Colors.white),
+                                      ),
                                     ),
                                   )
-                                : RaisedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        idCategory = null;
-                                        title = 'Select category report';
-                                      });
-                                    },
-                                    color: Colors.blue[400],
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(50)),
-                                    child: Text(
-                                      'Prev',
-                                      style: TextStyle(
-                                          fontSize: 11.0.sp,
-                                          color: Colors.white),
+                                : SizedBox(
+                                    width: 40.0.w,
+                                    child: RaisedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          idCategory = null;
+                                          title = 'Select category report';
+                                          selectedIndex = [];
+                                          klasifikasiPicked = [];
+                                        });
+                                      },
+                                      color: Colors.blue[400],
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Text(
+                                        'Prev',
+                                        style: TextStyle(
+                                            fontSize: 11.0.sp,
+                                            color: Colors.white),
+                                      ),
                                     ),
                                   )
-                        : RaisedButton(
-                            onPressed: () {
-                              setState(() {
-                                if (activeStep != 0) {
-                                  activeStep--;
-                                }
-                              });
-                            },
-                            color: Colors.blue[400],
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50)),
-                            child: Text(
-                              'Prev',
-                              style: TextStyle(
-                                  fontSize: 11.0.sp, color: Colors.white),
-                            ),
-                          ),
-                SizedBox(width: 20.0.w),
-                Visibility(
-                  visible: (isVisibility) ? true : false,
-                  child: RaisedButton(
-                    onPressed: () {
-                      setState(() {
-                        if (activeStep == 0) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MapSample(),
-                              )).then((value) {
-                            latitude = value[0];
-                            longitude = value[1];
-                            address = value[2];
-                            print('${latitude} ${longitude} ${address}');
-                          });
-                        }
-                        if (activeStep != 2) {
-                          activeStep++;
-                          if (activeStep == 1 && klasifikasiPicked.isEmpty) {
-                            setState(() {
-                              isVisibility = !isVisibility;
-                            });
-                          }
-                        } else {
-                          if (_formKeyError.currentState.validate()) {
-                            String stringKlasifikasi = "";
-                            klasifikasiPicked.forEach((element) {
-                              stringKlasifikasi += element + ',';
-                            });
-                            ReportServices.sendDataReport(
-                                    description: controllerDescription.text,
-                                    additionalLocation:
-                                        controllerAdditionalLocation.text,
-                                    category: categoryPicked,
-                                    feedback: controllerFeedBack.text,
-                                    idUser: idUser,
-                                    imgPath: imagePath,
-                                    idCategory: idCategory,
-                                    idCategoryDetail: idCategoryDetail,
-                                    latitude: latitude.toString(),
-                                    longitude: longitude.toString(),
-                                    idKlasifikasiCategory: stringKlasifikasi,
-                                    status: 'listed')
-                                .then((value) {
-                              showLoading(context);
-                              value.send().then((value) {
-                                http.Response.fromStream(value).then((value) {
-                                  String message = json.decode(value.body);
-                                  if (message != null && message.isNotEmpty) {
-                                    Navigator.of(context)
-                                        .popUntil((route) => route.isFirst);
-                                    bloc.add(ReportEventRefresh());
+                        : SizedBox(
+                            width: 40.0.w,
+                            child: RaisedButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (activeStep != 0) {
+                                    activeStep--;
                                   }
                                 });
-                              });
+                              },
+                              color: Colors.blue[400],
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Text(
+                                'Prev',
+                                style: TextStyle(
+                                    fontSize: 11.0.sp, color: Colors.white),
+                              ),
+                            ),
+                          ),
+                (isVisibility)
+                    ? SizedBox()
+                    : SizedBox(
+                        width: 30.0.w,
+                      ),
+                Visibility(
+                  visible: (isVisibility) ? true : false,
+                  child: SizedBox(
+                    width: 40.0.w,
+                    child: RaisedButton(
+                      onPressed: () {
+                        setState(() {
+                          if (activeStep == 0) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MapSample(),
+                                )).then((value) {
+                              if (value != null) {
+                                latitude = value[0];
+                                longitude = value[1];
+                                address = value[2];
+                                print('${latitude} ${longitude} ${address}');
+                                if (activeStep == 0) {
+                                  setState(() {
+                                    activeStep++;
+                                  });
+                                }
+                              }
                             });
                           }
-                        }
-                      });
-                    },
-                    color: Colors.blue[400],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50)),
-                    child: Text(
-                      (activeStep) != 2 ? 'Next' : 'Send',
-                      style: TextStyle(fontSize: 11.0.sp, color: Colors.white),
+                          if (activeStep != 2) {
+                            if (latitude != null) {
+                              activeStep++;
+                            }
+                            if (activeStep == 1 && klasifikasiPicked.isEmpty) {
+                              setState(() {
+                                isVisibility = !isVisibility;
+                              });
+                            }
+                          } else {
+                            if (_formKeyError.currentState.validate()) {
+                              String stringKlasifikasi = "";
+                              klasifikasiPicked.forEach((element) {
+                                stringKlasifikasi += element + ',';
+                              });
+                              ReportServices.sendDataReport(
+                                      description: controllerDescription.text,
+                                      category: categoryPicked,
+                                      idUser: idUser,
+                                      imgPath: imagePath,
+                                      idCategory: idCategory,
+                                      latitude: latitude.toString(),
+                                      longitude: longitude.toString(),
+                                      idKlasifikasiCategory: stringKlasifikasi,
+                                      status: 'listed')
+                                  .then((value) {
+                                showLoading(context);
+                                value.send().then((value) {
+                                  http.Response.fromStream(value).then((value) {
+                                    String message = json.decode(value.body);
+                                    if (message != null && message.isNotEmpty) {
+                                      Navigator.of(context)
+                                          .popUntil((route) => route.isFirst);
+                                      bloc.add(ReportEventRefresh());
+                                    }
+                                  });
+                                });
+                              });
+                            }
+                          }
+                        });
+                      },
+                      color: Colors.blue[400],
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Text(
+                        (activeStep) != 2 ? 'Next' : 'Send',
+                        style:
+                            TextStyle(fontSize: 11.0.sp, color: Colors.white),
+                      ),
                     ),
                   ),
                 ),
               ],
+            ),
+            SizedBox(
+              height: 3.0.h,
             )
           ],
         ),
@@ -287,6 +330,96 @@ class _AddReportState extends State<AddReport> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
+                      width: 95.0.w,
+                      child: Card(
+                        elevation: 10.0,
+                        color: Colors.blueAccent[100],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 5),
+                                    child: Text(
+                                      'Details',
+                                      style: TextStyle(
+                                          color: Colors.blueAccent[100],
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                  SizedBox(
+                                    width: 19.0.w,
+                                  ),
+                                  Container(
+                                      height: 10.0.h,
+                                      width: 10.0.w,
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  '${ServerApp.url}icon/$icon')))),
+                                  SizedBox(
+                                    width: 1.5.w,
+                                  ),
+                                  Text('$categoryPicked',
+                                      style: TextStyle(
+                                          fontSize: 10.0.sp,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                              SizedBox(height: 1.0.h),
+                              Text(
+                                'Complaint',
+                                style: TextStyle(
+                                    fontSize: 9.0.sp,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 1.5.h,
+                              ),
+                              ListView.builder(
+                                itemCount: nameKlasifikasi.length,
+                                shrinkWrap: true,
+                                physics: ScrollPhysics(),
+                                itemBuilder: (context, index) => Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(FontAwesomeIcons.exclamationCircle,
+                                            color: Colors.red),
+                                        SizedBox(width: 1.0.w),
+                                        Text(
+                                          '${nameKlasifikasi[index]}',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 1.0.h,
+                                    )
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 1.5.h)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
                       height: 2.0.h,
                     ),
                     Text(
@@ -298,14 +431,14 @@ class _AddReportState extends State<AddReport> {
                       height: 2.0.h,
                     ),
                     Container(
-                      width: 90.0.w,
+                      width: 95.0.w,
                       padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.blue[200].withOpacity(0.5),
                       ),
                       child: Text(
-                        'Description problem dapat berisi isi permasalahan, tanggal, waktu, jenis pelanggaran, dll',
+                        'Description problem dapat berisi detail permasalahan',
                         softWrap: true,
                         maxLines: 2,
                         style: TextStyle(color: Colors.blue, fontSize: 11.0.sp),
@@ -315,7 +448,7 @@ class _AddReportState extends State<AddReport> {
                     Text('Problem :'),
                     SizedBox(height: 1.0.h),
                     SizedBox(
-                      width: 90.0.w,
+                      width: 95.0.w,
                       child: TextFormField(
                         maxLines: 10,
                         maxLength: 2000,
@@ -324,62 +457,13 @@ class _AddReportState extends State<AddReport> {
                         style: TextStyle(fontSize: 12.0.sp),
                         validator: (description) => (description.isEmpty)
                             ? 'form problem tidak boleh kosong'
-                            : (description.length < 50)
-                                ? 'minimal kata harus lebih dari 50 karakter'
-                                : null,
-                        decoration: InputDecoration(
-                            errorMaxLines: 3,
-                            hintText:
-                                'contoh: kemalingan motor di daerah sewan, walaupun kondisi ramai pelaku tetap nekat mencuri sepeda motor. minimnya cctv menjadi faktor utama pelaku nekat.',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10))),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 2.0.h,
-                    ),
-                    Text(
-                      'Additional Location Description',
-                      style:
-                          TextStyle(fontFamily: 'poppins', fontSize: 11.0.sp),
-                    ),
-                    SizedBox(
-                      height: 2.0.h,
-                    ),
-                    Container(
-                      width: 90.0.w,
-                      padding: EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue[200].withOpacity(0.5),
-                      ),
-                      child: Text(
-                        'Additional location description, dapat berisi informasi tambahan mengenai lokasi laporan. Seperti nama gedung, nama jalan, atau ciri khusus dekat sekitar. dll',
-                        softWrap: true,
-                        maxLines: 5,
-                        style: TextStyle(color: Colors.blue, fontSize: 11.0.sp),
-                      ),
-                    ),
-                    SizedBox(height: 2.0.h),
-                    Text('Location :'),
-                    SizedBox(height: 1.0.h),
-                    SizedBox(
-                      width: 90.0.w,
-                      child: TextFormField(
-                        maxLines: 10,
-                        maxLength: 2000,
-                        controller: controllerAdditionalLocation,
-                        keyboardType: TextInputType.name,
-                        style: TextStyle(fontSize: 12.0.sp),
-                        validator: (description) => (description.isEmpty)
-                            ? 'form additional location tidak boleh kosong'
                             : (description.length < 10)
-                                ? 'minimal kata harus lebih 10 karakter'
+                                ? 'minimal kata harus lebih dari 10 karakter'
                                 : null,
                         decoration: InputDecoration(
                             errorMaxLines: 3,
                             hintText:
-                                'contoh: lokasi dekat dengan gedung cisadane. samping warung sembako',
+                                'contoh: pohon di cluster Ebony dekat rumah pak udin hampir rubuh',
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10))),
                       ),
@@ -387,52 +471,101 @@ class _AddReportState extends State<AddReport> {
                     SizedBox(
                       height: 2.0.h,
                     ),
-                    Text(
-                      'Feedback',
-                      style:
-                          TextStyle(fontFamily: 'poppins', fontSize: 11.0.sp),
-                    ),
-                    SizedBox(
-                      height: 2.0.h,
-                    ),
-                    Container(
-                      width: 90.0.w,
-                      padding: EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.blue[200].withOpacity(0.5),
-                      ),
-                      child: Text(
-                        'Feedback merupakan bagian saran dan kritik untuk pengelola, agar setiap permasalahan dapat ditangani dengan baik',
-                        softWrap: true,
-                        maxLines: 5,
-                        style: TextStyle(color: Colors.blue, fontSize: 11.0.sp),
-                      ),
-                    ),
-                    SizedBox(height: 2.0.h),
-                    Text('Feedback :'),
-                    SizedBox(height: 1.0.h),
-                    SizedBox(
-                      width: 90.0.w,
-                      child: TextFormField(
-                        maxLines: 10,
-                        maxLength: 2000,
-                        controller: controllerFeedBack,
-                        keyboardType: TextInputType.name,
-                        style: TextStyle(fontSize: 12.0.sp),
-                        // validator: (description) => (description.isEmpty)
-                        //     ? 'form feedback tidak boleh kosong'
-                        //     : (description.length < 50)
-                        //         ? 'minimal kata harus lebih dari 50 karakter'
-                        //         : null,
-                        decoration: InputDecoration(
-                            errorMaxLines: 3,
-                            hintText:
-                                'contoh: dimohon pengelola setiap tempat yang rawan diberikan cctv',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10))),
-                      ),
-                    ),
+                    // Text(
+                    //   'Additional Location Description',
+                    //   style:
+                    //       TextStyle(fontFamily: 'poppins', fontSize: 11.0.sp),
+                    // ),
+                    // SizedBox(
+                    //   height: 2.0.h,
+                    // ),
+                    // Container(
+                    //   width: 90.0.w,
+                    //   padding: EdgeInsets.all(15),
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(10),
+                    //     color: Colors.blue[200].withOpacity(0.5),
+                    //   ),
+                    //   child: Text(
+                    //     'Additional location description, dapat berisi informasi tambahan mengenai lokasi laporan. Seperti nama gedung, nama jalan, atau ciri khusus dekat sekitar. dll',
+                    //     softWrap: true,
+                    //     maxLines: 5,
+                    //     style: TextStyle(color: Colors.blue, fontSize: 11.0.sp),
+                    //   ),
+                    // ),
+                    // SizedBox(height: 2.0.h),
+                    // Text('Location :'),
+                    // SizedBox(height: 1.0.h),
+                    // SizedBox(
+                    //   width: 90.0.w,
+                    //   child: TextFormField(
+                    //     maxLines: 10,
+                    //     maxLength: 2000,
+                    //     controller: controllerAdditionalLocation,
+                    //     keyboardType: TextInputType.name,
+                    //     style: TextStyle(fontSize: 12.0.sp),
+                    //     validator: (description) => (description.isEmpty)
+                    //         ? 'form additional location tidak boleh kosong'
+                    //         : (description.length < 10)
+                    //             ? 'minimal kata harus lebih 10 karakter'
+                    //             : null,
+                    //     decoration: InputDecoration(
+                    //         errorMaxLines: 3,
+                    //         hintText:
+                    //             'contoh: lokasi dekat dengan gedung cisadane. samping warung sembako',
+                    //         border: OutlineInputBorder(
+                    //             borderRadius: BorderRadius.circular(10))),
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: 2.0.h,
+                    // ),
+                    // Text(
+                    //   'Feedback',
+                    //   style:
+                    //       TextStyle(fontFamily: 'poppins', fontSize: 11.0.sp),
+                    // ),
+                    // SizedBox(
+                    //   height: 2.0.h,
+                    // ),
+                    // Container(
+                    //   width: 90.0.w,
+                    //   padding: EdgeInsets.all(15),
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(10),
+                    //     color: Colors.blue[200].withOpacity(0.5),
+                    //   ),
+                    //   child: Text(
+                    //     'Feedback merupakan bagian saran dan kritik untuk pengelola, agar setiap permasalahan dapat ditangani dengan baik',
+                    //     softWrap: true,
+                    //     maxLines: 5,
+                    //     style: TextStyle(color: Colors.blue, fontSize: 11.0.sp),
+                    //   ),
+                    // ),
+                    // SizedBox(height: 2.0.h),
+                    // Text('Feedback :'),
+                    // SizedBox(height: 1.0.h),
+                    // SizedBox(
+                    //   width: 90.0.w,
+                    //   child: TextFormField(
+                    //     maxLines: 10,
+                    //     maxLength: 2000,
+                    //     controller: controllerFeedBack,
+                    //     keyboardType: TextInputType.name,
+                    //     style: TextStyle(fontSize: 12.0.sp),
+                    //     // validator: (description) => (description.isEmpty)
+                    //     //     ? 'form feedback tidak boleh kosong'
+                    //     //     : (description.length < 50)
+                    //     //         ? 'minimal kata harus lebih dari 50 karakter'
+                    //     //         : null,
+                    //     decoration: InputDecoration(
+                    //         errorMaxLines: 3,
+                    //         hintText:
+                    //             'contoh: dimohon pengelola setiap tempat yang rawan diberikan cctv',
+                    //         border: OutlineInputBorder(
+                    //             borderRadius: BorderRadius.circular(10))),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -476,9 +609,7 @@ class _AddReportState extends State<AddReport> {
                   case ConnectionState.done:
                     return (idCategory == null)
                         ? gridViewCategory(snapshot.data)
-                        : (idCategoryDetail == null)
-                            ? gridViewCategoryDetail()
-                            : viewKlasifikasiCategory();
+                        : viewKlasifikasiCategory(idCategory);
                   default:
                     if (snapshot.hasError)
                       return new Text('Error: ${snapshot.error}');
@@ -494,10 +625,10 @@ class _AddReportState extends State<AddReport> {
     );
   }
 
-  FutureBuilder<List<KlasifikasiCategory>> viewKlasifikasiCategory() {
+  FutureBuilder<List<KlasifikasiCategory>> viewKlasifikasiCategory(
+      String idCategory) {
     return FutureBuilder<List<KlasifikasiCategory>>(
-        future: KlasifikasiCategoryServices.getKlasifikasiCategory(
-            idCategoryDetail),
+        future: KlasifikasiCategoryServices.getKlasifikasiCategory(idCategory),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
@@ -532,12 +663,16 @@ class _AddReportState extends State<AddReport> {
       controlAffinity: ListTileControlAffinity.leading,
       activeColor: Colors.blue,
       value: selectedIndex.contains(index),
-      title: Text(klasifikasi),
+      title: Text(
+        klasifikasi,
+        textAlign: TextAlign.left,
+      ),
       onChanged: (value) {
         setState(() {
           if (selectedIndex.contains(index)) {
             selectedIndex.remove(index);
             klasifikasiPicked.remove(idKlasifikasi);
+            nameKlasifikasi.remove(klasifikasi);
             if (klasifikasiPicked.isEmpty) {
               isVisibility = false;
             }
@@ -545,6 +680,7 @@ class _AddReportState extends State<AddReport> {
           } else {
             selectedIndex.add(index);
             klasifikasiPicked.add(idKlasifikasi);
+            nameKlasifikasi.add(klasifikasi);
             isVisibility = true;
             print(klasifikasiPicked);
           }
@@ -628,7 +764,7 @@ class _AddReportState extends State<AddReport> {
           crossAxisCount: 3,
           // childAspectRatio: 0.05.w / 0.05.h
           // childAspectRatio: 100.0.h / 1100,
-          childAspectRatio: 100.0.h / 600,
+          childAspectRatio: 100.0.h / 900,
           crossAxisSpacing: 0.5.w,
           mainAxisSpacing: 0.7.h),
       itemCount: category.length,
@@ -649,6 +785,7 @@ class _AddReportState extends State<AddReport> {
                           setState(() {
                             idCategory = '${category[index].idCategory}';
                             categoryPicked = '${category[index].category}';
+                            icon = '${category[index].icon}';
                             title = 'Detail Report';
                           });
                         },
