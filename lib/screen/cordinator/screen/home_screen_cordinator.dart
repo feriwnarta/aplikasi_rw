@@ -1,3 +1,4 @@
+import 'package:aplikasi_rw/screen/cordinator/screen/complaint_screen/complaint_screen.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -87,6 +88,9 @@ class HomeScreenCordinator extends StatelessWidget {
               ButtonIconCordinator(
                 asset: 'assets/img/image-svg/Group 4.svg',
                 title: 'Complaint',
+                navigator: ComplaintScreen(
+                  name: name,
+                ),
               ),
               SizedBox(width: 44.w),
               ButtonIconCordinator(
@@ -142,9 +146,10 @@ class HomeScreenCordinator extends StatelessWidget {
 }
 
 class ButtonIconCordinator extends StatelessWidget {
-  ButtonIconCordinator({Key key, this.asset, this.title}) : super(key: key);
-
+  ButtonIconCordinator({Key key, this.asset, this.title, this.navigator})
+      : super(key: key);
   String asset, title;
+  Widget navigator;
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +168,11 @@ class ButtonIconCordinator extends StatelessWidget {
                   child: new InkWell(
                     borderRadius: BorderRadius.circular(5),
                     splashColor: Colors.grey[100].withOpacity(0.5),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => navigator,
+                      ));
+                    },
                   ),
                 )),
           )

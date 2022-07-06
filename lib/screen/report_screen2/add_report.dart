@@ -244,6 +244,7 @@ class _AddReportState extends State<AddReport> {
                                 latitude = value[0];
                                 longitude = value[1];
                                 address = value[2];
+                                print(address);
                                 if (activeStep == 0) {
                                   setState(() {
                                     activeStep++;
@@ -276,6 +277,7 @@ class _AddReportState extends State<AddReport> {
                                       latitude: latitude.toString(),
                                       longitude: longitude.toString(),
                                       idKlasifikasiCategory: stringKlasifikasi,
+                                      address: address,
                                       status: 'listed')
                                   .then((value) {
                                 showLoading(context);

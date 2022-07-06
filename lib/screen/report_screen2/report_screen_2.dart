@@ -140,13 +140,15 @@ class _ReportScreen2State extends State<ReportScreen2> {
                                   builder: (context, snapshot) => (snapshot
                                           .hasData)
                                       ? GestureDetector(
-                                        onTap:  () {
-                                          Navigator.of(context).push(MaterialPageRoute(
-                                            builder: (context) => FinishedReportScreen(
-                                              report: snapshot.data,
-                                            ),
-                                          ));
-                                        },
+                                          onTap: () {
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FinishedReportScreen(
+                                                report: snapshot.data,
+                                              ),
+                                            ));
+                                          },
                                           child: Badge(
                                             badgeColor: Colors.red,
                                             badgeContent: (snapshot.data !=

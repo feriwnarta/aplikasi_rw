@@ -6,6 +6,7 @@ import 'package:aplikasi_rw/bloc/google_map_bloc.dart';
 import 'package:aplikasi_rw/bloc/like_status_bloc.dart';
 import 'package:aplikasi_rw/bloc/payment_bloc.dart';
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
+import 'package:aplikasi_rw/bloc/report_cordinator_bloc.dart';
 import 'package:aplikasi_rw/bloc/shimmer_loading_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
 import 'package:aplikasi_rw/bloc/user_loading_bloc.dart';
@@ -93,6 +94,11 @@ class _MyApp extends State<MyApp> {
               ..add(UserLoadingEvent())),
         BlocProvider<GoogleMapBloc>(
           create: (context) => GoogleMapBloc(GoogleMapState()),
+        ),
+        BlocProvider<ReportCordinatorBloc>(
+          create: (context) =>
+              ReportCordinatorBloc(ReportCordinatorUnitialized())
+                ..add(ReportCordinatorEvent()),
         ),
       ],
       child: LayoutBuilder(builder: (context, constraints) {
@@ -301,16 +307,13 @@ class _MainAppState extends State<MainApp> {
             leading: Icon(Icons.logout, color: Colors.blue),
             title: Text('Log Out'),
             onTap: () async {
-              // UserSecureStorage.deleteIdUser().then((value) {
-              //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-              //     builder: (context) => OnboardingScreen(),
-              //   ));
-              // });
               await UserSecureStorage.deleteIdUser();
               await UserSecureStorage.deleteStatus();
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => OnboardingScreen(),
-              ));
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(
+                    builder: (context) => OnboardingScreen(),
+                  ))
+                  .then((value) => setState(() {}));
             },
           ),
         ],

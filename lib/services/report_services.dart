@@ -41,6 +41,7 @@ class ReportServices extends ReportModel {
       String idCategory,
       String latitude,
       String longitude,
+      String address,
       String idCategoryDetail,
       String idKlasifikasiCategory}) async {
     String uri = '${ServerApp.url}/src/report/add_report.php';
@@ -58,6 +59,7 @@ class ReportServices extends ReportModel {
       request.fields['id_category'] = idCategory;
       request.fields['latitude'] = latitude;
       request.fields['longitude'] = longitude;
+      request.fields['address'] = address;
       request.fields['id_klasifikasi_category'] = idKlasifikasiCategory;
 
       return request;
@@ -83,7 +85,7 @@ class ReportServices extends ReportModel {
       var jsonObject = json.decode(apiResult.body) as List;
       return jsonObject
           .map<ReportModel>((item) => ReportModel(
-              noTicket: item['no_ticket'].toString(),
+              noTicket: item['no_ticFket'].toString(),
               urlImageReport: '${ServerApp.url}' + item['url_image'],
               location: item['no_ticket'],
               status: item['status'].toString(),
