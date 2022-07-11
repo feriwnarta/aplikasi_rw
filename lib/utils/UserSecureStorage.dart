@@ -26,4 +26,9 @@ class UserSecureStorage {
       await _STORAGE.delete(key: _KEYSTATUSUSER);
     }
   }
+
+  static Future setPosition(double position) async =>
+      await _STORAGE.write(key: 'POSITION', value: position.toString());
+  static Future<String> getPoisition() async =>
+      await _STORAGE.read(key: 'POSITION');
 }

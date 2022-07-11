@@ -1,42 +1,58 @@
-import 'package:aplikasi_rw/bloc/comment_bloc.dart';
-import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
+import 'package:aplikasi_rw/controller/comment_user_controller.dart';
+import 'package:aplikasi_rw/model/comment_model.dart';
 import 'package:aplikasi_rw/services/add_comment_services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
 import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 //ignore: must_be_immutable
-class CommentScreen extends StatelessWidget {
+class CommentScreen extends StatefulWidget {
   // bloc
-  CommentBloc bloc;
-  StatusUserBloc statusBloc;
-  TextEditingController controllerWriteStatus = TextEditingController();
   String idStatus;
-  bool _isValidate = false;
 
   CommentScreen({this.idStatus});
 
-  ScrollController controller = ScrollController();
+  @override
+  _CommentScreenState createState() => _CommentScreenState();
+}
+
+class _CommentScreenState extends State<CommentScreen> {
+  TextEditingController controllerWriteStatus = TextEditingController();
+  bool _isValidate = false;
+  final commentController = Get.put(CommentUserController());
+  ScrollController scrollcontroller = ScrollController();
+
   void onScroll() {
-    if (controller.position.maxScrollExtent == controller.position.pixels) {
-      bloc.add(CommentBlocEvent());
+    if (scrollcontroller.position.maxScrollExtent ==
+        scrollcontroller.position.pixels) {
+      commentController.getComment(idStatus: widget.idStatus);
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    // bloc
-    bloc = BlocProvider.of<CommentBloc>(context);
-    statusBloc = BlocProvider.of<StatusUserBloc>(context);
-    controller.addListener(onScroll);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    scrollcontroller.addListener(onScroll);
+  }
 
+  @override
+  void dispose() {
+    scrollcontroller.dispose();
+    controllerWriteStatus.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(0.6.h),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
       height: 60.0.h,
       child: WillPopScope(
         onWillPop: () async {
-          bloc.add(CommentEventRefresh());
+          commentController.listComment = <CommentModel>[].obs;
           return true;
         },
         child: Scaffold(
@@ -57,6 +73,9 @@ class CommentScreen extends StatelessWidget {
                   IconButton(
                     icon: Icon(Icons.clear_rounded),
                     onPressed: () {
+                      commentController.listComment = <CommentModel>[].obs;
+                      commentController.isMaxReached = false.obs;
+                      // commentController.listStatusNew = <CommentModel>[].obs;
                       Navigator.of(context).pop();
                     },
                   )
@@ -64,52 +83,60 @@ class CommentScreen extends StatelessWidget {
           ),
           body: Stack(children: [
             Container(
-              height: 47.0.h,
-              child: BlocBuilder<CommentBloc, CommentBlocState>(
-                  builder: (context, state) {
-                if (state is CommentBlocUnitialized) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: SizedBox(
-                        width: 5.0.w,
-                        height: 3.0.h,
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  );
-                } else {
-                  CommentBlocLoaded commentLoaded = state as CommentBlocLoaded;
-                  return ListView.builder(
-                    controller: controller,
-                    physics: ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: (commentLoaded.isMaxReached)
-                        ? commentLoaded.listComment.length
-                        : commentLoaded.listComment.length + 1,
-                    itemBuilder: (context, index) => (index <
-                            commentLoaded.listComment.length)
-                        ? buildColumnComment(
-                            commentLoaded.listComment[index].urlImage,
-                            commentLoaded.listComment[index].userName,
-                            commentLoaded.listComment[index].date,
-                            commentLoaded.listComment[index].comment)
-                        : (index == commentLoaded.listComment.length)
-                            ? Container()
-                            : Container(
-                                margin: EdgeInsets.symmetric(vertical: 1.0.h),
-                                child: Center(
-                                  child: SizedBox(
-                                    width: 10.0.w,
-                                    height: 5.0.h,
-                                    child: CircularProgressIndicator(),
+                height: 47.0.h,
+                child: GetX<CommentUserController>(
+                  init: CommentUserController(),
+                  initState: (state) =>
+                      commentController.getComment(idStatus: widget.idStatus),
+                  builder: (controller) {
+                    if (controller.isLoading.value) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: SizedBox(
+                            width: 5.0.w,
+                            height: 3.0.h,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
+                    } else {
+                      if (controller.listComment.length > 0) {
+                        return ListView.builder(
+                          physics: ScrollPhysics(),
+                          controller: scrollcontroller,
+                          shrinkWrap: true,
+                          itemCount: (controller.isMaxReached.value)
+                              ? controller.listComment.length
+                              : controller.listComment.length + 1,
+                          itemBuilder: (context, index) => (index <
+                                  controller.listComment.length)
+                              ? buildColumnComment(
+                                  controller.listComment[index].urlImage,
+                                  controller.listComment[index].userName,
+                                  controller.listComment[index].date,
+                                  controller.listComment[index].comment)
+                              : Container(
+                                  margin: EdgeInsets.symmetric(vertical: 1.0.h),
+                                  child: Center(
+                                    child: SizedBox(
+                                      width: 10.0.w,
+                                      height: 5.0.h,
+                                      child: CircularProgressIndicator(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                  );
-                }
-              }),
-            ),
+                        );
+                      } else {
+                        return Center(
+                            child: Text(
+                          'No comment',
+                          style: TextStyle(fontSize: 13.sp),
+                        ));
+                      }
+                    }
+                  },
+                )),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -154,11 +181,9 @@ class CommentScreen extends StatelessWidget {
                               size: 4.0.h,
                             ),
                             onPressed: () {
-                              AddCommentServices.addComment(idStatus,
+                              AddCommentServices.addComment(widget.idStatus,
                                   controllerWriteStatus.text, context);
-                              bloc.add(CommentEventRefresh());
-                              bloc.add(CommentBlocEvent(
-                                  idStatus: int.parse(idStatus)));
+                              commentController.afterComment(widget.idStatus);
                             }),
                       )
                     ],

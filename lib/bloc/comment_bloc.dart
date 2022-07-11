@@ -11,7 +11,10 @@ abstract class CommentBlocState {}
 
 class CommentBlocUnitialized extends CommentBlocState {}
 
-class CommentEventRefresh extends CommentBlocEvent {}
+class CommentEventRefresh extends CommentBlocEvent {
+  int idStatus;
+  CommentEventRefresh({this.idStatus});
+}
 
 class CommentBlocLoaded extends CommentBlocState {
   List<CommentModel> listComment = [];
@@ -35,10 +38,9 @@ class CommentBloc extends Bloc<CommentBlocEvent, CommentBlocState> {
   Stream<CommentBlocState> mapEventToState(CommentBlocEvent event) async* {
     print('event id status bloc ${event.idStatus}');
 
-    if (event is CommentEventRefresh) {
-      listComment = [];
-      print('status di load ulang');
-      yield CommentBlocUnitialized();
+    if (event is CommentBlocEvent) {
+      listComment = await CommentService.getDataApi(event.idStatus, 0, 10);
+      yield CommentBlocLoaded(isMaxReached: false, listComment: listComment);
     }
 
     if (state is CommentBlocUnitialized) {

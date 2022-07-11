@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
+//ignore: must_be_immutable
 class ProcessReportScreen extends StatefulWidget {
   ProcessReportScreen(
       {Key key,
@@ -20,9 +21,18 @@ class ProcessReportScreen extends StatefulWidget {
       this.latitude,
       this.location,
       this.idReport,
-      this.longitude})
+      this.longitude,
+      this.name})
       : super(key: key);
-  String url, title, description, location, time, latitude, longitude, idReport;
+  String url,
+      title,
+      description,
+      location,
+      time,
+      latitude,
+      longitude,
+      idReport,
+      name;
   @override
   _ProcessReportScreenState createState() => _ProcessReportScreenState();
 
@@ -155,7 +165,8 @@ class _ProcessReportScreenState extends State<ProcessReportScreen> {
                       SizedBox(height: 16.h),
                       Text(
                         'Informasi Pengerjaan',
-                        style: TextStyle(fontSize: 16.sp),
+                        style: TextStyle(
+                            fontSize: 16.sp, fontWeight: FontWeight.w500),
                       ),
                       SizedBox(height: 24.h),
                       Text('Foto Pengerjaan'),
@@ -254,6 +265,7 @@ class _ProcessReportScreenState extends State<ProcessReportScreen> {
                                 TextStyle(fontSize: 16.sp, color: Colors.white),
                           ),
                           onPressed: () {
+                            // insert process work ke tb process
                             if (imagePathCond1.isNotEmpty ||
                                 imagePathCond2.isNotEmpty) {
                               ProcessReportServices.insertProcessWork(
@@ -267,13 +279,27 @@ class _ProcessReportScreenState extends State<ProcessReportScreen> {
                                     String message = json.decode(value.body);
                                     if (message != null && message.isNotEmpty) {
                                       if (message == 'OKE') {
-                                        Navigator.of(context)
-                                            .push(MaterialPageRoute(
-                                          builder: (context) =>
-                                              FinishReportScreen(
-                                            idReport: widget.idReport,
-                                          ),
-                                        ));
+                                        ProcessReportServices.getDataFinish(
+                                                idReport: widget.idReport)
+                                            .then((value) {
+                                          print(
+                                              'current time ${value.currentTimeWork}');
+                                          if (value != null) {
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        FinishReportScreen(
+                                                            idReport:
+                                                                widget.idReport,
+                                                            time: value
+                                                                .currentTimeWork,
+                                                            name: widget.name)))
+                                                .then((value) =>
+                                                    Navigator.of(context)
+                                                      ..pop()
+                                                      ..pop());
+                                          }
+                                        });
                                       }
                                     }
                                   });

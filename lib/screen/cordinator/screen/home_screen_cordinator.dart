@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+//ignore: must_be_immutable
 class HomeScreenCordinator extends StatelessWidget {
   String name;
 
@@ -145,6 +146,7 @@ class HomeScreenCordinator extends StatelessWidget {
   }
 }
 
+//ignore: must_be_immutable
 class ButtonIconCordinator extends StatelessWidget {
   ButtonIconCordinator({Key key, this.asset, this.title, this.navigator})
       : super(key: key);

@@ -21,7 +21,8 @@ class ReportLoaded extends ReportState2 {
   ReportLoaded({this.listReport, this.isMaxReached, this.idUser});
 
   // update max reached
-  ReportLoaded copyWith({List<ReportModel> listReport, bool isMaxReached, String idUser}) {
+  ReportLoaded copyWith(
+      {List<ReportModel> listReport, bool isMaxReached, String idUser}) {
     return ReportLoaded(
         listReport: listReport ?? this.listReport,
         isMaxReached: isMaxReached ?? this.isMaxReached,
@@ -36,24 +37,29 @@ class ReportBloc extends Bloc<ReportEvent2, ReportState2> {
   Stream<ReportState2> mapEventToState(ReportEvent2 event) async* {
     List<ReportModel> listReport;
 
-    if(event is ReportEventRefresh) {
-      // listReport = [];
-      yield ReportUnitialized();
+    String idUser = await UserSecureStorage.getIdUser();
+
+    if (event is ReportEventRefresh) {
+      listReport = await ReportServices.getDataApi(idUser, 0, 10);
+      yield ReportLoaded(
+          listReport: listReport, isMaxReached: false, idUser: idUser);
     }
 
     if (state is ReportUnitialized) {
-      String idUser = await UserSecureStorage.getIdUser();
       listReport = await ReportServices.getDataApi(idUser, 0, 10);
-      yield ReportLoaded(listReport: listReport, isMaxReached: false, idUser: idUser);
+      yield ReportLoaded(
+          listReport: listReport, isMaxReached: false, idUser: idUser);
     } else {
       ReportLoaded reportLoaded = state as ReportLoaded;
       listReport = await ReportServices.getDataApi(
           reportLoaded.idUser, reportLoaded.listReport.length, 10);
       yield (listReport.isEmpty)
-          ? reportLoaded.copyWith(isMaxReached: true, idUser: reportLoaded.idUser)
+          ? reportLoaded.copyWith(
+              isMaxReached: true, idUser: reportLoaded.idUser)
           : ReportLoaded(
               listReport: reportLoaded.listReport + listReport,
-              isMaxReached: false, idUser: reportLoaded.idUser);
+              isMaxReached: false,
+              idUser: reportLoaded.idUser);
     }
   }
 }

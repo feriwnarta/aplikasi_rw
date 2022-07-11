@@ -20,8 +20,6 @@ import 'package:aplikasi_rw/screen/user_screen/change_data_user.dart';
 import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/check_session.dart';
 import 'package:aplikasi_rw/utils/UserSecureStorage.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,10 +54,10 @@ class _MyApp extends State<MyApp> {
           create: (context) => TempatTulisStatusBloc(
               TempatTulisStatusState(imageFile: null, isVisible: false)),
         ),
-        BlocProvider<StatusUserBloc>(
-          create: (context) =>
-              StatusUserBloc(StatusUserUnitialized())..add(StatusUserEvent()),
-        ), // fungsi ..add akan langusung menjalankan blocnya
+        // BlocProvider<StatusUserBloc>(
+        //   create: (context) =>
+        //       StatusUserBloc(StatusUserUnitialized())..add(StatusUserEvent()),
+        // ), // fungsi ..add akan langusung menjalankan blocnya
         BlocProvider<ReportBloc>(
           create: (context) =>
               ReportBloc(ReportUnitialized())..add(ReportEvent2()),
@@ -98,6 +96,16 @@ class _MyApp extends State<MyApp> {
         BlocProvider<ReportCordinatorBloc>(
           create: (context) =>
               ReportCordinatorBloc(ReportCordinatorUnitialized())
+                ..add(ReportCordinatorEvent()),
+        ),
+        BlocProvider<ReportCordinatorProcessBloc>(
+          create: (context) =>
+              ReportCordinatorProcessBloc(ReportCordinatorStateProcess())
+                ..add(ReportCordinatorEvent()),
+        ),
+        BlocProvider<ReportCordinatorFinishBloc>(
+          create: (context) =>
+              ReportCordinatorFinishBloc(ReportCordinatorStateFinish())
                 ..add(ReportCordinatorEvent()),
         ),
       ],

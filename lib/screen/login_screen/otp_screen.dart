@@ -9,6 +9,7 @@ import 'dart:convert';
 
 import 'insert_password.dart';
 
+//ignore: must_be_immutable
 class OtpScreen extends StatelessWidget {
   String noIpl;
   OtpScreen({this.noIpl});
@@ -151,7 +152,12 @@ class OtpScreen extends StatelessWidget {
                     child: TextFormField(
                       onChanged: (value) {
                         if (value.length == 1) {
-                          String otp = num1.text + num2.text + num3.text + num4.text + num5.text + num6.text;
+                          String otp = num1.text +
+                              num2.text +
+                              num3.text +
+                              num4.text +
+                              num5.text +
+                              num6.text;
                           checkOtp(noIpl, otp, context);
                         }
                         if (value.length == 0) {
@@ -175,6 +181,7 @@ class OtpScreen extends StatelessWidget {
         ));
   }
 
+  //ignore: must_be_immutable
   Future<String> checkOtp(
       String noIpl, String otp, BuildContext context) async {
     String url = '${ServerApp.url}src/login/verify_otp.php';

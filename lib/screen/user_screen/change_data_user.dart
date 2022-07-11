@@ -9,6 +9,7 @@ import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+//ignore: must_be_immutable
 class ChangeDataUser extends StatefulWidget {
   String urlProfile;
   String username;
@@ -31,6 +32,17 @@ class _ChangeDataUserState extends State<ChangeDataUser> {
 
   String status;
   UserLoadingBloc bloc;
+
+  @override
+  void dispose() {
+    bloc.close();
+    controllerUsername.dispose();
+    controllerEmail.dispose();
+    controllerFullName.dispose();
+    controllerPhone.dispose();
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -396,6 +408,7 @@ class UserChangeServices {
           username: result['username']);
       return model;
     }
+    return UserChangeModel();
   }
 
   static Future<String> editData(

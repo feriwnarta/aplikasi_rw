@@ -94,6 +94,36 @@ class ProcessReportServices {
       print('error insert proses');
     }
   }
+
+  static Future<http.MultipartRequest> completeWork(
+      {String idReport,
+      String message,
+      String img1,
+      String img2,
+      String duration,
+      String finishTime}) async {
+    String idCordinator = await UserSecureStorage.getIdUser();
+    String url = '${ServerApp.url}src/cordinator/report_pull/complete_work.php';
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+    if (img1.isNotEmpty && img2.isNotEmpty) {
+      var pic1 = await http.MultipartFile.fromPath('image1', img1);
+      var pic2 = await http.MultipartFile.fromPath('image2', img2);
+      request.files.add(pic1);
+      request.files.add(pic2);
+    } else if (img2.isEmpty && img1.isNotEmpty) {
+      var pic1 = await http.MultipartFile.fromPath('image1', img1);
+      request.files.add(pic1);
+    } else if (img1.isEmpty && img2.isNotEmpty) {
+      var pic2 = await http.MultipartFile.fromPath('image2', img2);
+      request.files.add(pic2);
+    }
+    request.fields['id_report'] = idReport;
+    request.fields['id_estate_cordinator'] = idCordinator;
+    request.fields['message'] = message;
+    request.fields['finish_time'] = finishTime;
+    request.fields['duration'] = duration;
+    return request;
+  }
 }
 
 class FinishWorkCordinator {

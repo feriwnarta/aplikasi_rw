@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aplikasi_rw/bloc/report_bloc.dart';
 import 'package:aplikasi_rw/model/ReportModel.dart';
 import 'package:aplikasi_rw/screen/report_screen2/card_report_screen.dart';
@@ -29,6 +31,7 @@ class _ReportScreen2State extends State<ReportScreen2> {
   TextEditingController controllerSearch = TextEditingController();
 
   List<ReportModel> searchReport;
+  Timer _timer;
 
   void onScroll() {
     if (controller.position.haveDimensions) {
@@ -51,10 +54,16 @@ class _ReportScreen2State extends State<ReportScreen2> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  didChangeDependencies() async {
     bloc = BlocProvider.of<ReportBloc>(context);
     controller.addListener(onScroll);
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      context.read<ReportBloc>().add(ReportEventRefresh());
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Stack(children: [
       Scaffold(
         resizeToAvoidBottomInset: false,
@@ -347,8 +356,8 @@ class _ReportScreen2State extends State<ReportScreen2> {
 
   Future loadReport() async {
     await Future.delayed(Duration(seconds: 2));
-    _future = ReportFinishedServices.getDataApi();
     bloc.add(ReportEventRefresh());
+    _future = ReportFinishedServices.getDataApi();
   }
 }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aplikasi_rw/bloc/comment_bloc.dart';
 import 'package:aplikasi_rw/bloc/count_comment_bloc.dart';
 import 'package:aplikasi_rw/bloc/like_status_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:aplikasi_rw/services/count_comment_services.dart';
 import 'package:aplikasi_rw/services/like_status_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
 
@@ -217,6 +220,7 @@ class _StatusWargaState extends State<StatusWarga> {
   }
 }
 
+//ignore: must_be_immutable
 class ButtonLike extends StatefulWidget {
   ButtonLike({
     Key key,
@@ -315,15 +319,25 @@ class ButtonComment extends StatefulWidget {
 
 class _ButtonCommentState extends State<ButtonComment> {
   String count = '0';
+  Timer _timer;
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
+
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      getCountComment();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    getCountComment();
     return Row(
       children: [
         Material(
@@ -335,9 +349,12 @@ class _ButtonCommentState extends State<ButtonComment> {
               color: Colors.black,
             ),
             onPressed: () {
-              widget.commentBloc.add(CommentEventRefresh());
-              widget.commentBloc.add(CommentBlocEvent(
-                  idStatus: int.parse(widget.widget.idStatus)));
+              // widget.commentBloc.add(CommentEventRefresh(
+              //     idStatus: int.parse(widget.widget.idStatus)));
+              // widget.commentBloc.add(CommentBlocEvent(
+              //     idStatus: int.parse(widget.widget.idStatus)));
+              // widget.commentBloc.add(CommentBlocEvent(
+              //     idStatus: int.parse(widget.widget.idStatus)));
               showModalBottomSheet(
                   barrierColor: Colors.black.withOpacity(0.4),
                   shape: const RoundedRectangleBorder(

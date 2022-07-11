@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:aplikasi_rw/bloc/carousel_bloc.dart';
 import 'package:aplikasi_rw/bloc/status_user_bloc.dart';
 import 'package:aplikasi_rw/bloc/tempat_tulis_status_bloc.dart';
+import 'package:aplikasi_rw/controller/status_user_controller.dart';
 import 'package:aplikasi_rw/model/card_news.dart';
 import 'package:aplikasi_rw/screen/home_screen/news_screen/news_screen.dart';
 import 'package:aplikasi_rw/screen/home_screen/status_warga.dart';
@@ -12,70 +15,100 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:sizer/sizer.dart';
 
 //ignore: must_be_immutable
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   String userName, urlProfile;
-  HomeScreen({this.scaffoldKey, this.idUser, this.userName, this.urlProfile});
-  var colorRoundedCircle = Color(0xff8CBBF1);
-  var colorCard = Color(0xffFCEECB);
-
-  // demo user
+  HomeScreen({
+    Key key,
+    this.scaffoldKey,
+    this.idUser,
+    this.userName,
+    this.urlProfile,
+  }) : super(key: key);
+  // HomeScreen(
+  //     {this.scaffoldKey, this.idUser, this.userName, this.urlProfile, Key key});
   String idUser;
-  String rt = 'RT 02';
-  String rw = 'RW 07';
-  String fotoProfile =
-      'https://cms.sehatq.com/cdn-cgi/image/f=auto,width=480,fit=pad,background=white,quality=100/public/img/article_img/tanda-orang-belum-dewasa-haus-perhatian-hingga-tak-mau-akui-kesalahan-1631606175.jpg';
 
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
+  String rt, rw, fotoProfile;
   double mediaSizeHeight;
   bool statusPicker = false;
-
-  // untuk image picker
   final _picker = ImagePicker();
   String imagePath = '';
   PickedFile imageFile;
-
-  // bloc
   CarouselBloc blocColor;
   TempatTulisStatusBloc blocTulisStatus;
-  StatusUserBloc blocStatusUser;
+  final controllerStatus = Get.put(StatusUserController());
+  ScrollController controller = ScrollController(keepScrollOffset: true);
 
-  // scroll controller
-  ScrollController controller = ScrollController();
-
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
+  Timer _timer;
 
   void onScroll() {
     if (controller.position.haveDimensions) {
       if (controller.position.maxScrollExtent == controller.position.pixels) {
-        blocStatusUser.add(StatusUserEvent());
+        controllerStatus.getDataFromDb();
       }
     }
   }
 
+  final key = GlobalKey();
+
   @override
-  Widget build(BuildContext context) {
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
     blocColor = BlocProvider.of<CarouselBloc>(context);
     blocTulisStatus = BlocProvider.of<TempatTulisStatusBloc>(context);
-    blocStatusUser = BlocProvider.of<StatusUserBloc>(context);
+    // blocStatusUser = BlocProvider.of<StatusUserBloc>(context);
     controller.addListener(onScroll);
 
+    _timer = Timer.periodic(Duration(seconds: 5), (duration) async {
+      print(duration);
+      controllerStatus.realtimeData();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    controller.dispose();
+    blocColor.close();
+    controllerStatus.dispose();
+    blocTulisStatus.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    // blocColor = BlocProvider.of<CarouselBloc>(context);
+    // blocTulisStatus = BlocProvider.of<TempatTulisStatusBloc>(context);
+    // blocStatusUser = BlocProvider.of<StatusUserBloc>(context);
+    // controller.addListener(onScroll);
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async => loadStatus(),
           child: SingleChildScrollView(
+              key: key,
+              physics: ClampingScrollPhysics(),
               controller: controller,
               child: Column(
                 children: <Widget>[
                   Stack(children: [
-                    headerBackground(context, urlProfile, userName)
+                    headerBackground(
+                        context, widget.urlProfile, widget.userName)
                   ]),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +127,7 @@ class HomeScreen extends StatelessWidget {
                         height: 17,
                       ),
                       StreamBuilder<List<CardNews>>(
-                          stream: NewsServices.getNews(idUser),
+                          stream: NewsServices.getNews(widget.idUser),
                           builder: (context, snapshot) => (snapshot.hasData)
                               ? (snapshot.data.length > 0)
                                   ? Center(
@@ -128,75 +161,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      BlocBuilder<StatusUserBloc, StatusUserState>(
-                        builder: (context, state) {
-                          if (state is StatusUserUnitialized) {
-                            // _refreshIndicatorKey.currentState.show();
-                            return Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 10),
-                                child: SizedBox(
-                                  width: 30,
-                                  height: 30,
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            );
-                            // return Container();
-                          } else {
-                            StatusUserLoaded statusLoaded =
-                                state as StatusUserLoaded;
-                            return ListView.builder(
-                              physics: ScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: (statusLoaded.isMaxReached)
-                                  ? statusLoaded.listStatusUser.length
-                                  : statusLoaded.listStatusUser.length + 1,
-                              itemBuilder: (context, index) => (index <
-                                      statusLoaded.listStatusUser.length)
-                                  ? StatusWarga(
-                                      userName: statusLoaded
-                                          .listStatusUser[index].userName,
-                                      caption: statusLoaded
-                                          .listStatusUser[index].caption,
-                                      fotoProfile: statusLoaded
-                                          .listStatusUser[index].urlProfile,
-                                      urlStatusImage: statusLoaded
-                                          .listStatusUser[index].urlStatusImage,
-                                      numberOfComments: statusLoaded
-                                          .listStatusUser[index]
-                                          .numberOfComments,
-                                      uploadTime: statusLoaded
-                                          .listStatusUser[index].uploadTime,
-                                      numberOfLikes: statusLoaded
-                                          .listStatusUser[index].numberOfLikes,
-                                      idStatus: statusLoaded
-                                          .listStatusUser[index].idStatus,
-                                      idUser: idUser,
-                                    )
-                                  : (statusLoaded.listStatusUser.length ==
-                                          index)
-                                      ? Center(
-                                          child: Padding(
-                                          padding: EdgeInsets.only(top: 3.0.h),
-                                          child: Text('No Status'),
-                                        ))
-                                      : Container(
-                                          margin: EdgeInsets.symmetric(
-                                              vertical: 10),
-                                          child: Center(
-                                            child: SizedBox(
-                                              width: 30,
-                                              height: 30,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            ),
-                                          ),
-                                        ),
-                            );
-                          }
-                        },
-                      )
+                      ListViewStatusWarga(widget: widget)
                     ],
                   )
                   // status dari warga
@@ -210,7 +175,7 @@ class HomeScreen extends StatelessWidget {
 
   StreamBuilder buildCarouselSliderNews() {
     return StreamBuilder<List<CardNews>>(
-      stream: NewsServices.getNews(idUser),
+      stream: NewsServices.getNews(widget.idUser),
       builder: (context, snapshot) => (snapshot.hasData)
           ? (snapshot.data.length > 0)
               ? CarouselSlider.builder(
@@ -351,7 +316,8 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.black,
                       size: 8.0.w,
                     ),
-                    onPressed: () => scaffoldKey.currentState.openDrawer()),
+                    onPressed: () =>
+                        widget.scaffoldKey.currentState.openDrawer()),
               ),
             ),
             Padding(
@@ -385,7 +351,6 @@ class HomeScreen extends StatelessWidget {
     ));
   }
 
-  // versi update
   Padding cardStatus(
       BuildContext context, String fotoProfile, String username) {
     return Padding(
@@ -552,6 +517,83 @@ class HomeScreen extends StatelessWidget {
 
   Future loadStatus() async {
     await Future.delayed(Duration(seconds: 2));
-    blocStatusUser.add(StatusUserEventRefresh());
+    // blocStatusUser.add(StatusUserEventRefresh());
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class ListViewStatusWarga extends StatelessWidget {
+  ListViewStatusWarga({
+    Key key,
+    @required this.widget,
+  }) : super(key: key);
+
+  final HomeScreen widget;
+  final contol = Get.put(StatusUserController());
+
+  @override
+  Widget build(BuildContext context) {
+    return GetX<StatusUserController>(
+        init: StatusUserController(),
+        initState: (state) => contol.getDataFromDb(),
+        dispose: (state) => contol.dispose(),
+        builder: (controller) {
+          if (controller.isLoading.value) {
+            // _refreshIndicatorKey.currentState.show();
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+            // return Container();
+          } else {
+            return ListView.builder(
+              physics: ClampingScrollPhysics(),
+              addAutomaticKeepAlives: true,
+              shrinkWrap: true,
+              itemCount: (controller.isMaxReached.value)
+                  ? controller.listStatus.length
+                  : controller.listStatus.length + 1,
+              itemBuilder: (context, index) => (index <
+                      controller.listStatus.length)
+                  ? StatusWarga(
+                      userName: controller.listStatus[index].userName,
+                      caption: controller.listStatus[index].caption,
+                      fotoProfile: controller.listStatus[index].urlProfile,
+                      urlStatusImage:
+                          controller.listStatus[index].urlStatusImage,
+                      numberOfComments:
+                          controller.listStatus[index].numberOfComments,
+                      uploadTime: controller.listStatus[index].uploadTime,
+                      numberOfLikes: controller.listStatus[index].numberOfLikes,
+                      idStatus: controller.listStatus[index].idStatus,
+                      idUser: widget.idUser,
+                    )
+                  : (controller.listStatus.length == index)
+                      ? Center(
+                          child: Padding(
+                          padding: EdgeInsets.only(top: 3.0.h),
+                          child: Text('No Status'),
+                        ))
+                      : Container(
+                          margin: EdgeInsets.symmetric(vertical: 10),
+                          child: Center(
+                            child: SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
+            );
+          }
+        });
   }
 }

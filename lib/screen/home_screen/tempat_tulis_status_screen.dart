@@ -46,14 +46,12 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
   // field untuk data user
   String fotoProfile, username, rt, rw;
   TempatTulisStatusBloc bloc;
-  StatusUserBloc statusBloc;
   final TextEditingController controllerStatus = TextEditingController();
   PickedFile pickedFile;
 
   Widget build(BuildContext context) {
     print(kBottomNavigationBarHeight);
     bloc = BlocProvider.of<TempatTulisStatusBloc>(context);
-    statusBloc = BlocProvider.of<StatusUserBloc>(context);
 
     appBar = AppBar(
       leading: IconButton(
@@ -186,7 +184,6 @@ class _TempatTulisStatusState extends State<TempatTulisStatus> {
               String message = json.decode(value.body);
               if (message != null && message.isNotEmpty) {
                 Navigator.of(context)..pop()..pop();
-                statusBloc.add(StatusUserEventRefresh());
               }
             });
           });

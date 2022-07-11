@@ -68,6 +68,8 @@ dependencies:
   badges: ^1.2.0
   flutter_svg: ^0.19.1
   flutter_screenutil: ^4.0.4+1
+  stop_watch_timer: ^0.7.0
+  get: ^3.26.0
 
 
   

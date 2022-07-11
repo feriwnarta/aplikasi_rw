@@ -2,6 +2,7 @@ import 'package:aplikasi_rw/screen/report_screen2/card_laporan_view.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+//ignore: must_be_immutable
 class CardReportScreen extends StatelessWidget {
   String urlImageReport,
       noTicket,

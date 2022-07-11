@@ -29,6 +29,7 @@ class SubMenuReport extends StatelessWidget {
   }
 }
 
+//ignore: must_be_immutable
 class RadioMenu extends StatefulWidget {
   RadioMenu({
     Key key,

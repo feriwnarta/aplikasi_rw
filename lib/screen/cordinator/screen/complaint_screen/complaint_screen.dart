@@ -1,14 +1,18 @@
+import 'dart:async';
+
 import 'package:aplikasi_rw/bloc/report_cordinator_bloc.dart';
 import 'package:aplikasi_rw/screen/cordinator/screen/complaint_screen/detail_report_screen.dart';
+import 'package:aplikasi_rw/screen/cordinator/screen/complaint_screen/finish_report_screen.dart';
 import 'package:aplikasi_rw/screen/cordinator/screen/complaint_screen/process_report.dart';
 import 'package:aplikasi_rw/server-app.dart';
-import 'package:aplikasi_rw/services/cordinator/cordinator_report_services.dart';
 import 'package:aplikasi_rw/services/cordinator/process_report_services.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
+//ignore: must_be_immutable
 class ComplaintScreen extends StatefulWidget {
   ComplaintScreen({Key key, this.name}) : super(key: key);
   String name;
@@ -18,12 +22,11 @@ class ComplaintScreen extends StatefulWidget {
 }
 
 class _ComplaintScreenState extends State<ComplaintScreen>
-    with AutomaticKeepAliveClientMixin<ComplaintScreen> {
+    with AutomaticKeepAliveClientMixin {
   @override
-  bool get wantKeepAlive => true;
-
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -90,22 +93,42 @@ class _ComplaintScreenState extends State<ComplaintScreen>
           children: [
             CardReport(
               name: widget.name,
+              status: 'bukan finish',
             ),
-            Container(),
-            Container(),
+            CardReportProcess(
+              name: widget.name,
+              status: 'bukan finish',
+            ),
+            CardReportFinish(
+              name: widget.name,
+              status: 'finish',
+            )
           ],
         ),
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class CardReport extends StatelessWidget {
-  CardReport({Key key, this.name}) : super(key: key);
+//ignore: must_be_immutable
+class CardReportProcess extends StatefulWidget {
+  CardReportProcess({Key key, this.name, this.status}) : super(key: key);
 
-  String name;
-  ReportCordinatorBloc bloc;
+  String name, status;
+
+  @override
+  _CardReportProcessState createState() => _CardReportProcessState();
+}
+
+class _CardReportProcessState extends State<CardReportProcess> {
+  ReportCordinatorProcessBloc bloc;
+  Timer timer;
+
   final ScrollController controller = ScrollController();
+
   void onScroll() {
     if (controller.position.maxScrollExtent == controller.position.pixels) {
       bloc.add(ReportCordinatorEvent());
@@ -113,10 +136,129 @@ class CardReport extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    bloc = BlocProvider.of<ReportCordinatorBloc>(context);
-    controller.addListener(onScroll);
+  void dispose() {
+    print('dispose 2');
+    timer.cancel();
+    super.dispose();
+  }
 
+  @override
+  didChangeDependencies() async {
+    super.didChangeDependencies();
+    controller.addListener(onScroll);
+    timer = Timer.periodic(Duration(seconds: 5), (second) {
+      context
+          .read<ReportCordinatorProcessBloc>()
+          .add(ReportCordinatorEventProcess());
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bloc = BlocProvider.of<ReportCordinatorProcessBloc>(context);
+
+    return Container(
+      child: BlocBuilder<ReportCordinatorProcessBloc, ReportCordinatorState>(
+          builder: (context, state) {
+        if (state is ReportCordinatorStateProcess) {
+          return Center(
+            child: SizedBox(
+                height: 30, width: 30, child: CircularProgressIndicator()),
+          );
+        } else if (state is ReportCordinatorLoadedProcess) {
+          ReportCordinatorLoadedProcess loaded =
+              state as ReportCordinatorLoadedProcess;
+          return ListView.builder(
+              controller: controller,
+              itemCount: (loaded.isMaxReached)
+                  ? loaded.listReport.length + 1
+                  : loaded.listReport.length + 1,
+              // itemCount: loaded.listReport.length,
+              itemBuilder: (context, index) =>
+                  (index < loaded.listReport.length)
+                      ? CardListReport(
+                          description: loaded.listReport[index].description,
+                          location: loaded.listReport[index].address,
+                          time: loaded.listReport[index].time,
+                          title: loaded.listReport[index].title,
+                          url:
+                              '${ServerApp.url}${loaded.listReport[index].urlImage}',
+                          idReport: loaded.listReport[index].idReport,
+                          latitude: loaded.listReport[index].latitude,
+                          longitude: loaded.listReport[index].longitude,
+                          name: widget.name,
+                          status: widget.status,
+                        )
+                      : (index == loaded.listReport.length)
+                          ? Center(
+                              child: Column(
+                              children: [
+                                SizedBox(height: 10.h),
+                                Text('Tidak ada laporan lagi'),
+                              ],
+                            ))
+                          : Center(
+                              child: SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.5,
+                                ),
+                              ),
+                            ));
+        } else {
+          print(state);
+          bloc.add(ReportCordinatorEventProcess());
+          return Center(
+            child: SizedBox(
+                height: 30, width: 30, child: CircularProgressIndicator()),
+          );
+        }
+      }),
+    );
+  }
+}
+
+//ignore: must_be_immutable
+class CardReport extends StatefulWidget {
+  CardReport({Key key, this.name, this.status}) : super(key: key);
+
+  String name, status;
+
+  @override
+  _CardReportState createState() => _CardReportState();
+}
+
+class _CardReportState extends State<CardReport> {
+  ReportCordinatorBloc bloc;
+  Timer timer;
+
+  final ScrollController controller = ScrollController();
+
+  void onScroll() {
+    if (controller.position.maxScrollExtent == controller.position.pixels) {
+      bloc.add(ReportCordinatorEvent());
+    }
+  }
+
+  @override
+  void dispose() {
+    print('dispose');
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  didChangeDependencies() async {
+    super.didChangeDependencies();
+    timer = Timer.periodic(Duration(seconds: 5), (second) {
+      context.read<ReportCordinatorBloc>().add(ReportCordinatorEventRefresh());
+    });
+    controller.addListener(onScroll);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       child: BlocBuilder<ReportCordinatorBloc, ReportCordinatorState>(
           builder: (context, state) {
@@ -145,10 +287,17 @@ class CardReport extends StatelessWidget {
                           idReport: loaded.listReport[index].idReport,
                           latitude: loaded.listReport[index].latitude,
                           longitude: loaded.listReport[index].longitude,
-                          name: name,
+                          name: widget.name,
+                          status: widget.status,
                         )
                       : (index == loaded.listReport.length)
-                          ? Center(child: Text('Tidak ada laporan lagi'))
+                          ? Center(
+                              child: Column(
+                              children: [
+                                SizedBox(height: 10.h),
+                                Text('Tidak ada laporan lagi'),
+                              ],
+                            ))
                           : Center(
                               child: SizedBox(
                                 height: 30,
@@ -158,14 +307,13 @@ class CardReport extends StatelessWidget {
                                 ),
                               ),
                             ));
-        } else {
-          return Container();
         }
       }),
     );
   }
 }
 
+//ignore: must_be_immutable
 class CardListReport extends StatelessWidget {
   CardListReport(
       {Key key,
@@ -177,6 +325,7 @@ class CardListReport extends StatelessWidget {
       this.idReport,
       this.latitude,
       this.name,
+      this.status,
       this.longitude})
       : super(key: key);
 
@@ -188,41 +337,57 @@ class CardListReport extends StatelessWidget {
       latitude,
       longitude,
       idReport,
-      name;
+      name,
+      status;
 
   @override
   Widget build(BuildContext context) {
+    print('finish from $status');
     return GestureDetector(
       onTap: () {
-        ProcessReportServices.checkExistProcess(idReport).then((value) {
-          if (value == 'FALSE') {
-            print(value);
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => ProcessReportScreen(
-                      url: url,
-                      title: title,
-                      description: description,
-                      idReport: idReport,
-                      latitude: latitude,
-                      location: location,
-                      longitude: longitude,
-                      time: time,
-                    )));
-          } else {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => DetailReportScreen(
-                  description: description,
-                  idReport: idReport,
-                  latitude: latitude,
-                  location: location,
-                  longitude: longitude,
-                  time: time,
-                  title: title,
-                  url: url,
-                  name: name),
-            ));
-          }
-        });
+        (status != 'finish')
+            ? ProcessReportServices.getDataFinish(idReport: idReport)
+                .then((value) {
+                if (value == null) {
+                  ProcessReportServices.checkExistProcess(idReport)
+                      .then((value) {
+                    if (value == 'FALSE') {
+                      print(value);
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ProcessReportScreen(
+                                url: url,
+                                title: title,
+                                description: description,
+                                idReport: idReport,
+                                latitude: latitude,
+                                location: location,
+                                longitude: longitude,
+                                time: time,
+                              )));
+                    } else {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DetailReportScreen(
+                            description: description,
+                            idReport: idReport,
+                            latitude: latitude,
+                            location: location,
+                            longitude: longitude,
+                            time: time,
+                            title: title,
+                            url: url,
+                            name: name),
+                      ));
+                    }
+                  });
+                } else {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => FinishReportScreen(
+                            idReport: value.idReport,
+                            time: value.currentTimeWork,
+                          )));
+                }
+              })
+            : Container();
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 2.h),
@@ -235,14 +400,24 @@ class CardListReport extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: Image.network(
-                  url,
-                  height: 70.h,
-                  width: 70.w,
-                  fit: BoxFit.cover,
+              CachedNetworkImage(
+                imageUrl: url,
+                height: 70.h,
+                width: 70.w,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
+                placeholder: (context, url) => SizedBox(
+                    height: 70.h,
+                    width: 70.w,
+                    child: Center(child: CircularProgressIndicator())),
+                errorWidget: (context, url, error) => Icon(Icons.error),
               ),
               SizedBox(width: 16.w),
               Column(
@@ -288,6 +463,101 @@ class CardListReport extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CardReportFinish extends StatefulWidget {
+  CardReportFinish({Key key, this.name, this.status}) : super(key: key);
+
+  String name, status;
+
+  @override
+  _CardReportFinish createState() => _CardReportFinish();
+}
+
+class _CardReportFinish extends State<CardReportFinish> {
+  ReportCordinatorFinishBloc bloc;
+  Timer timer;
+
+  final ScrollController controller = ScrollController();
+
+  void onScroll() {
+    if (controller.position.maxScrollExtent == controller.position.pixels) {
+      bloc.add(ReportCordinatorEvent());
+    }
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  didChangeDependencies() async {
+    super.didChangeDependencies();
+    timer = Timer.periodic(Duration(seconds: 5), (second) {
+      context
+          .read<ReportCordinatorFinishBloc>()
+          .add(ReportCordinatorEventFinish());
+    });
+    controller.addListener(onScroll);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: BlocBuilder<ReportCordinatorFinishBloc, ReportCordinatorState>(
+          builder: (context, state) {
+        if (state is ReportCordinatorStateFinish) {
+          return Center(
+            child: SizedBox(
+                height: 30, width: 30, child: CircularProgressIndicator()),
+          );
+        } else if (state is ReportCordinatorLoadedFinish) {
+          ReportCordinatorLoadedFinish loaded =
+              state as ReportCordinatorLoadedFinish;
+          return ListView.builder(
+              controller: controller,
+              itemCount: (loaded.isMaxReached)
+                  ? loaded.listReport.length + 1
+                  : loaded.listReport.length + 1,
+              // itemCount: loaded.listReport.length,
+              itemBuilder: (context, index) =>
+                  (index < loaded.listReport.length)
+                      ? CardListReport(
+                          description: loaded.listReport[index].description,
+                          location: loaded.listReport[index].address,
+                          time: loaded.listReport[index].time,
+                          title: loaded.listReport[index].title,
+                          url:
+                              '${ServerApp.url}${loaded.listReport[index].urlImage}',
+                          idReport: loaded.listReport[index].idReport,
+                          latitude: loaded.listReport[index].latitude,
+                          longitude: loaded.listReport[index].longitude,
+                          name: widget.name,
+                          status: widget.status,
+                        )
+                      : (index == loaded.listReport.length)
+                          ? Center(
+                              child: Column(
+                              children: [
+                                SizedBox(height: 10.h),
+                                Text('Tidak ada laporan lagi'),
+                              ],
+                            ))
+                          : Center(
+                              child: SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.5,
+                                ),
+                              ),
+                            ));
+        }
+      }),
     );
   }
 }

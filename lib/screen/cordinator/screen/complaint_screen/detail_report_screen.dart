@@ -1,12 +1,12 @@
 import 'package:aplikasi_rw/screen/cordinator/screen/complaint_screen/process_report.dart';
 import 'package:aplikasi_rw/screen/report_screen2/view_image.dart';
-import 'package:aplikasi_rw/server-app.dart';
 import 'package:aplikasi_rw/services/cordinator/process_report_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+//ignore: must_be_immutable
 class DetailReportScreen extends StatelessWidget {
   String url,
       title,
@@ -154,15 +154,15 @@ class DetailReportScreen extends StatelessWidget {
                       if (value == 'OKE') {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => ProcessReportScreen(
-                                  url: url,
-                                  title: title,
-                                  description: description,
-                                  idReport: idReport,
-                                  latitude: latitude,
-                                  location: location,
-                                  longitude: longitude,
-                                  time: time,
-                                )));
+                                url: url,
+                                title: title,
+                                description: description,
+                                idReport: idReport,
+                                latitude: latitude,
+                                location: location,
+                                longitude: longitude,
+                                time: time,
+                                name: name)));
                       } else {
                         print('error');
                       }

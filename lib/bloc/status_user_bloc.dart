@@ -41,13 +41,17 @@ class StatusUserBloc extends Bloc<StatusUserEvent, StatusUserState> {
   Stream<StatusUserState> mapEventToState(StatusUserEvent event) async* {
     List<StatusUserModel> listStatusUser;
 
+    String idUser = await UserSecureStorage.getIdUser();
+
     if (event is StatusUserEventRefresh) {
-      listStatusUser = [];
-      yield StatusUserUnitialized();
+      List<StatusUserModel> listStatusUserNew = [];
+      listStatusUserNew = await StatusUserServices.getDataApi(idUser, 0, 10);
+
+      yield StatusUserLoaded(
+          listStatusUser: listStatusUser, isMaxReached: false, idUser: idUser);
     }
 
     if (state is StatusUserUnitialized) {
-      String idUser = await UserSecureStorage.getIdUser();
       listStatusUser = await StatusUserServices.getDataApi(idUser, 0, 10);
       yield StatusUserLoaded(
           listStatusUser: listStatusUser, isMaxReached: false, idUser: idUser);
